@@ -4,10 +4,10 @@ The goal of this project is to improve the author's original work.
 For this Paper:**Evading Machine Learning Malware Detection**.
 This is a framework for attacking static PE anti-malware engines based on reinforcement learning.
 
-### Objective
+## Objective
 Create an AI that learns through reinforcement learning which functionality-preserving transformations to make on a malware sample to break through / bypass machine learning static-analysis malware detection.
 
-### Basics
+## Basics
 There are two basic concepts in reinforcement learning: the environment (in our case, the malware sample) and the agent (namely, the algorithm used to change the environment). The agent sends `actions` to the environment, and the environment replies with `observations` and `rewards` (that is, a score).
 
 This repo provides an environment for manipulating PE files and providing rewards that are based around bypassing AV.  An agent can be deployed that have already been written for the rich ``gym`` framework.  For example
@@ -15,14 +15,14 @@ This repo provides an environment for manipulating PE files and providing reward
 1. https://github.com/pfnet/chainerrl [recommended]
 2. https://github.com/matthiasplappert/keras-rl
  
-### Gym-Malware Environment
+## Gym-Malware Environment
 EvadeRL pits a reinforcement agent against the malware environment consisting of the following components:
 
 * Action Space
 * Independent Malware Classifier
 * OpenAI framework malware environment (aka gym-malware)
  
-### Action Space
+## Action Space
 
 The moves or actions that can be performed on a malware sample in our environment consist of the following binary manipulations:
 * append_zero
@@ -51,8 +51,8 @@ in his paper action space describes like this:
 
 The agent will randomly select these actions in an attempt to bypass the classifier (info on default classifier below). Over time, the agent learns which combinations lead to the highest rewards, or learns a policy (*like an optimal plan of attack for any given observation*).
 
-Independent Classifier
-----
+## Independent Classifier
+
 Included as a default model is a [gradient boosted decision trees model] trained on 50k malicious and 50k benign samples with the following features extracted:
 * Byte-level data (e.g. histogram and entropy)
 * Header
