@@ -30,10 +30,10 @@ obs_size = env.observation_space.shape[0]
 n_actions = env.action_space.n
 q_func = QFunction(obs_size, n_actions)
 # use ChainerRL's predefined Q-functions
-# q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(
+#q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(
 #     obs_size, n_actions,
 #     n_hidden_layers=2, n_hidden_channels=50)
-
+q_func.to_gpu()
 # Use Adam to optimize q_func. eps=1e-2 is for stability.
 optimizer = chainer.optimizers.Adam(eps=1e-2)
 optimizer.setup(q_func)
@@ -60,8 +60,8 @@ agent = chainerrl.agents.DoubleDQN(
     replay_start_size=500, update_interval=1,
     target_update_interval=100, phi=phi)
 
-n_episodes = 200
-max_episode_len = 200
+n_episodes = 300
+max_episode_len = 300
 for i in range(1, n_episodes + 1):
     obs = env.reset()
     reward = 0
@@ -80,7 +80,7 @@ for i in range(1, n_episodes + 1):
               'R:', R,
               'statistics:', agent.get_statistics())
     agent.stop_episode_and_train(obs, reward, done)
-print('Finished.')
+print('Training malware agent Finished.')
 
 for i in range(10):
     obs = env.reset()
@@ -88,14 +88,14 @@ for i in range(10):
     R = 0
     t = 0
     while not done and t < 200:
-        env.render()
+#        env.render()
         action = agent.act(obs)
         obs, r, done, _ = env.step(action)
         R += r
         t += 1
     print('test episode:', i, 'R:', R)
     agent.stop_episode()
-print('RL completed!')
+print('Malware samples environment RL completed!')
 
 
 # Set up the logger to print info messages for understandability.
