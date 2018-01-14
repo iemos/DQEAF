@@ -1,16 +1,19 @@
 # Malware Env for OpenAI Gym
 
-The goal of this project is to improve the author's original work.
-For this Paper:**Evading Machine Learning Malware Detection**.
-This is a framework for attacking static PE anti-malware engines based on reinforcement learning.
-
-## Objective
-Create an AI that learns through reinforcement learning which functionality-preserving transformations to make on a malware sample to break through / bypass machine learning static-analysis malware detection.
+The goal of this project is to improve the author's [original work](https://github.com/endgameinc/gym-malware).  
+In his Paper: **Evading Machine Learning Malware Detection**, He builds a framework for attacking static PE anti-malware engines based on reinforcement learning.
 
 ## Basics
-There are two basic concepts in reinforcement learning: the environment (in our case, the malware sample) and the agent (namely, the algorithm used to change the environment). The agent sends `actions` to the environment, and the environment replies with `observations` and `rewards` (that is, a score).
+There are two basic concepts in reinforcement learning: 
+* the environment (in our case, the malware sample) 
+* the agent (namely, the algorithm used to change the environment).  
 
-This repo provides an environment for manipulating PE files and providing rewards that are based around bypassing AV.  An agent can be deployed that have already been written for the rich ``gym`` framework.  For example
+The agent sends `actions` to the environment, and the 
+environment replies with `observations` and `rewards` (that is, a score).
+
+This repo provides an environment for manipulating PE files 
+and providing rewards that are based around bypassing AV.  
+An agent can be deployed that have already been written for the rich ``gym`` framework.  For example
 
 1. https://github.com/pfnet/chainerrl [recommended]
 2. https://github.com/matthiasplappert/keras-rl
