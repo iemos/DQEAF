@@ -33,7 +33,7 @@ q_func = QFunction(obs_size, n_actions)
 #q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(
 #     obs_size, n_actions,
 #     n_hidden_layers=2, n_hidden_channels=50)
-q_func.to_gpu()
+# q_func.to_gpu()
 # Use Adam to optimize q_func. eps=1e-2 is for stability.
 optimizer = chainer.optimizers.Adam(eps=1e-2)
 optimizer.setup(q_func)
@@ -60,8 +60,8 @@ agent = chainerrl.agents.DoubleDQN(
     replay_start_size=500, update_interval=1,
     target_update_interval=100, phi=phi)
 
-n_episodes = 300
-max_episode_len = 300
+n_episodes = 200
+max_episode_len = 200
 for i in range(1, n_episodes + 1):
     obs = env.reset()
     reward = 0
@@ -70,7 +70,7 @@ for i in range(1, n_episodes + 1):
     t = 0  # time step
     while not done and t < max_episode_len:
         # Uncomment to watch the behaviour
-        # env.render()
+        env.render()
         action = agent.act_and_train(obs, reward)
         obs, reward, done, _ = env.step(action)
         R += reward
@@ -96,6 +96,8 @@ for i in range(10):
     print('test episode:', i, 'R:', R)
     agent.stop_episode()
 print('Malware samples environment RL completed!')
+
+agent.save("cart")
 
 
 # Set up the logger to print info messages for understandability.
