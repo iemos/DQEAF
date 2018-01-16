@@ -73,19 +73,19 @@ if __name__ == '__main__':
         return f
 
 
-    agent = create_acer_agent(env)
-    # pull latest stored model
-    last_model_dir = get_latest_model_from('models/acer_chainer')
-    agent.load(last_model_dir)
-    success, _ = evaluate(agent_policy(agent))
+    # agent = create_acer_agent(env)
+    # # pull latest stored model
+    # last_model_dir = get_latest_model_from('models/acer_chainer')
+    # agent.load(last_model_dir)
+    # success, _ = evaluate(agent_policy(agent))
 
     agent_score = create_acer_agent(env)
     # pull latest stored model
     last_model_dir = get_latest_model_from('models/acer_score_chainer')
     agent_score.load(last_model_dir)
 
-    score_success, _ = evaluate(agent_policy(agent))
+    score_success, _ = evaluate(agent_policy(agent_score))
 
     print("Success rate of random chance: {}\n".format(len(random_success) / total))
-    print("Success rate (black box): {}\n".format(len(success) / total))
+    # print("Success rate (black box): {}\n".format(len(success) / total))
     print("Success rate (score): {}\n".format(len(score_success) / total))
