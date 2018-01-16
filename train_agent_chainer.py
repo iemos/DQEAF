@@ -147,8 +147,9 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
 
 if __name__ == '__main__':
     agent_score = train_agent(rounds=50000, use_score=True, name='models/acer_score_chainer',
-                              create_agent=create_ddqn_agent)  # allow agent to see scores
+                              create_agent=create_acer_agent)  # allow agent to see scores
     # models are automatically saved
 
-    # agent_blackbox = train_agent( rounds=50000, use_score=False, name='models/acer_chainer', create_agent=create_acer_agent) # black blox
+    agent_blackbox = train_agent(rounds=50000, use_score=False, name='models/acer_chainer',
+                                 create_agent=create_acer_agent)  # black blox
     # models are automatically saved
