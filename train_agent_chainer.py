@@ -3,6 +3,7 @@ import chainer.functions as F
 import chainer.links as L
 import chainerrl
 import gym
+import gym_malware
 import numpy as np
 from chainerrl import links
 from chainerrl.action_value import DiscreteActionValue
