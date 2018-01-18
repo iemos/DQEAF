@@ -70,7 +70,7 @@ for i in range(1, n_episodes + 1):
     t = 0  # time step
     while not done and t < max_episode_len:
         # Uncomment to watch the behaviour
-        env.render()
+        # env.render()
         action = agent.act_and_train(obs, reward)
         obs, reward, done, _ = env.step(action)
         R += reward
