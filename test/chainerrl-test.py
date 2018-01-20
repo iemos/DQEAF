@@ -80,7 +80,7 @@ for i in range(1, n_episodes + 1):
               'R:', R,
               'statistics:', agent.get_statistics())
     agent.stop_episode_and_train(obs, reward, done)
-print('Training malware agent Finished.')
+print('Agent Finished.')
 
 for i in range(10):
     obs = env.reset()
@@ -95,9 +95,10 @@ for i in range(10):
         t += 1
     print('test episode:', i, 'R:', R)
     agent.stop_episode()
-print('Malware samples environment RL completed!')
+print('RL completed!')
 
 agent.save("cart")
+print("Agent cart saved!")
 
 
 # Set up the logger to print info messages for understandability.
