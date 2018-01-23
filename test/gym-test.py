@@ -9,7 +9,7 @@ import numpy as np
 env = gym.make('CartPole-v0')
 
 
-def createAgent():
+def createAgentDQN():
     class QFunction(chainer.Chain):
         def __init__(self, obs_size, n_actions, n_hidden_channels=50):
             super().__init__()
@@ -65,15 +65,29 @@ def createAgent():
     return agent
 
 
-agent = createAgent()
+class randomAgent():
+    """The world's simplest agent!"""
+
+    def __init__(self, action_space):
+        self.action_space = action_space
+
+    def act(self, observation):
+        return self.action_space.sample()
+
+    def stop_episode(self):
+        pass
+
+
+agent = createAgentDQN()
 agent.load("cart")
+# agent = randomAgent(env.action_space)
+
 
 for i_episode in range(10):
     observation = env.reset()
     R = 0
     for t in range(300):
-        # env.render()
-        # action either 0 or 1
+        env.render()
         action = agent.act(observation)
         observation, reward, done, info = env.step(action)
         R += reward
