@@ -3,6 +3,8 @@
 The goal of this project is to improve the author's [original work](https://github.com/endgameinc/gym-malware).  
 In his Paper: **Evading Machine Learning Malware Detection**, He builds a framework for attacking static PE anti-malware engines based on reinforcement learning.
 
+Sth. like this:![img1](docs/images/IMG_7408.JPG)
+
 ## Basics
 There are two basic concepts in reinforcement learning: 
 * the environment (in our case, the malware sample) 
