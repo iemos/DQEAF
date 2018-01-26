@@ -3,7 +3,7 @@
 The goal of this project is to improve the author's [original work](https://github.com/endgameinc/gym-malware).  
 In his Paper: **Evading Machine Learning Malware Detection**, He builds a framework for attacking static PE anti-malware engines based on reinforcement learning.
 
-Sth. like this:![img1](docs/images/IMG_7408.JPG)
+Sth. like this:![img1](docs/images/gym-malware.jpg)
 
 ## Basics
 There are two basic concepts in reinforcement learning: 
@@ -19,6 +19,8 @@ An agent can be deployed that have already been written for the rich ``gym`` fra
 
 1. https://github.com/pfnet/chainerrl [recommended]
 2. https://github.com/matthiasplappert/keras-rl
+
+`CartPole-v0` example in chainerrl DQN describes Q-function:![img2](docs/images/chainerrl-Q-function.jpg)
  
 ## Gym-Malware Environment
 EvadeRL pits a reinforcement agent against the malware environment consisting of the following components:
@@ -66,5 +68,3 @@ Included as a default model is a [gradient boosted decision trees model] trained
 
 
 [gradient boosted decision trees model]: http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
-
-
