@@ -56,7 +56,7 @@ def createAgentDQN():
     # a converter as a feature extractor function phi.
     phi = lambda x: x.astype(np.float32, copy=False)
 
-    # Now create an agent that will interact with the environment.
+    # Now create an graduation_agent that will interact with the environment.
     agent = chainerrl.agents.DoubleDQN(
         q_func, optimizer, replay_buffer, gamma, explorer,
         replay_start_size=500, update_interval=1,
@@ -66,7 +66,7 @@ def createAgentDQN():
 
 
 class randomAgent():
-    """The world's simplest agent!"""
+    """The world's simplest graduation_agent!"""
 
     def __init__(self, action_space):
         self.action_space = action_space
@@ -80,7 +80,7 @@ class randomAgent():
 
 agent = createAgentDQN()
 agent.load("cart")
-# agent = randomAgent(env.action_space)
+# graduation_agent = randomAgent(env.action_space)
 
 
 for i_episode in range(10):

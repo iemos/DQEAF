@@ -8,7 +8,7 @@ from gym_malware.envs.utils import interface, pefeatures
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
-from agent.train_agent_chainer import create_ddqn_agent
+from graduation_agent.train_agent_chainer import create_ddqn_agent
 import gym
 
 
@@ -74,11 +74,11 @@ if __name__ == '__main__':
         return f
 
 
-    # agent = create_acer_agent(env)
+    # graduation_agent = create_acer_agent(env)
     # # pull latest stored model
     # last_model_dir = get_latest_model_from('models/acer_chainer')
-    # agent.load(last_model_dir)
-    # success, _ = evaluate(agent_policy(agent))
+    # graduation_agent.load(last_model_dir)
+    # success, _ = evaluate(agent_policy(graduation_agent))
 
     # agent_score = create_acer_agent(env)
     # # pull latest stored model

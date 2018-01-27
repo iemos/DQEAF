@@ -73,8 +73,8 @@ def create_ddqn_agent(env):
     # a converter as a feature extractor function phi.
     phi = lambda x: x.astype(np.float32, copy=False)
 
-    # Now create an agent that will interact with the environment.
-    # DQN agent as described in Mnih (2013) and Mnih (2015).
+    # Now create an graduation_agent that will interact with the environment.
+    # DQN graduation_agent as described in Mnih (2013) and Mnih (2015).
     # http://arxiv.org/pdf/1312.5602.pdf
     # http://arxiv.org/abs/1509.06461        
     agent = chainerrl.agents.DoubleDQN(
@@ -137,9 +137,9 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
 
     chainerrl.experiments.train_agent_with_evaluation(
         agent, env,
-        steps=rounds,  # Train the agent for this many rounds steps
+        steps=rounds,  # Train the graduation_agent for this many rounds steps
         max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=1000,  # Evaluate the agent after every 1000 steps
+        eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=100,  # 100 episodes are sampled for each evaluation
         outdir=name)  # Save everything to 'result' directory
 
@@ -148,7 +148,7 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
 
 if __name__ == '__main__':
     agent_score = train_agent(rounds=5000, use_score=True, name='models/create_ddqn_agent_score_5000',
-                              create_agent=create_ddqn_agent)  # allow agent to see scores
+                              create_agent=create_ddqn_agent)  # allow graduation_agent to see scores
     # models are automatically saved
 
     agent_blackbox = train_agent(rounds=5000, use_score=False, name='models/create_ddqn_agent_5000',
