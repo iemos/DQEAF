@@ -80,19 +80,19 @@ if __name__ == '__main__':
     # last_model_dir = get_latest_model_from('models/acer_score_chainer')
     # agent_score.load(last_model_dir)
 
-    # env = gym.make('malware-test-v0')
+    env = gym.make('malware-test-v0')
     env_score = gym.make('malware-score-test-v0')
     # ddqn
-    # agent = create_ddqn_agent(env)
-    # last_model_dir = get_latest_model_from('models/create_ddqn_agent')
-    # agent.load(last_model_dir)
-    # success, _ = evaluate(agent_policy(agent))
+    agent = create_ddqn_agent(env)
+    last_model_dir = get_latest_model_from('models/create_ddqn_agent_5000')
+    agent.load(last_model_dir)
+    success, _ = evaluate(agent_policy(agent))
 
     agent_score = create_ddqn_agent(env_score)
-    last_model_dir = get_latest_model_from('models/create_ddqn_agent_score')
+    last_model_dir = get_latest_model_from('models/create_ddqn_agent_score_5000')
     agent_score.load(last_model_dir)
     score_success, _ = evaluate(agent_policy(agent_score))
 
     print("Success rate of random chance: {}\n".format(len(random_success) / total))
-    # print("Success rate (black box): {}\n".format(len(success) / total))
+    print("Success rate (black box): {}\n".format(len(success) / total))
     print("Success rate (score): {}\n".format(len(score_success) / total))
