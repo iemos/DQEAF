@@ -1,13 +1,13 @@
-from gym_malware.envs.controls import manipulate2
 from gym_malware.envs.utils import interface
+from gym_malware.envs.controls.manipulate2 import *
 
 # 本程序用于逐个运行lief修改PE文件的action，来删除不适合实验的PE文件
-total = {
+action_test_dict = {
     "test_overlay_append": 0,
     "test_imports_append": 0,
     "test_section_rename": 0,
     "test_section_add": 0,
-    "test_section_append": 0,
+    # "test_section_append": 0,
     "test_create_new_entry": 0,
     "test_remove_signature": 0,
     "test_remove_debug": 0,
@@ -22,56 +22,18 @@ for sha256 in file_list:
     print("{}:[file]:{}".format(index, sha256))
     try:
         bytez = interface.fetch_file(sha256)
-        if manipulate2.test_overlay_append(bytez):
-            total['test_overlay_append'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
+        # 逐个调用测试方法
+        for function_name in action_test_dict.keys():
+            # 根据字符串名称 动态调用 python文件内的方法eval("function_name")(参数)
+            if eval(function_name)(bytez):
+                action_test_dict[function_name] += 1
+            else:
+                bad_file_list.append(sha256)
+                break
 
-        if manipulate2.test_imports_append(bytez):
-            total['test_imports_append'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-
-        if manipulate2.test_section_rename(bytez):
-            total['test_section_rename'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-
-        if manipulate2.test_section_add(bytez):
-            total['test_section_add'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-        # total['test_section_append'] += manipulate2.test_section_append(bytez)
-
-        if manipulate2.test_create_new_entry(bytez):
-            total['test_create_new_entry'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-
-        if manipulate2.test_remove_signature(bytez):
-            total['test_remove_signature'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-
-        if manipulate2.test_remove_debug(bytez):
-            total['test_remove_debug'] += 1
-        else:
-            bad_file_list.append(sha256)
-            continue
-
-        if manipulate2.test_break_optional_header_checksum(bytez):
-            total['test_break_optional_header_checksum'] += 1
-        else:
-            bad_file_list.append(sha256)
-
-    except:
+    except Exception as e:
         print("exception")
+        print(e)
         bad_file_list.append(sha256)
     index += 1
 
@@ -82,5 +44,5 @@ for sha256 in bad_file_list:
 
 # sort and print result list
 print("total:{}".format(file_list.__len__()))
-for key, value in sorted(total.items(), key=lambda d: d[1]):
+for key, value in sorted(action_test_dict.items(), key=lambda d: d[1]):
     print("{}:{}".format(key, value))

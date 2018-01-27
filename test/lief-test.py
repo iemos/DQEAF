@@ -3,14 +3,14 @@ import lief
 from gym_malware.envs.utils import interface
 
 # 从文件名parse
-file_path = interface.get_sample_real_path("VirusShare_616a0554aa4821545c4a0aa1e89420ba")
+file_path = interface.get_sample_real_path("Backdoor.Win32.Hupigon.zah")
 binary = lief.parse(file_path)
 print(binary)
 print("-----------------------------")
 
 # 从bytez字节parse，该方法只能使用lief 0.7版本
 # Mac系统下使用0.8要报错，原因未知
-binary1 = lief.PE.parse(interface.fetch_file("VirusShare_616a0554aa4821545c4a0aa1e89420ba"))
+binary1 = lief.PE.parse(interface.fetch_file("Backdoor.Win32.Hupigon.zah"))
 print(binary1)
 
 ######################
