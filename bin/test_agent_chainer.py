@@ -8,7 +8,7 @@ from gym_malware.envs.utils import interface, pefeatures
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
-from graduation_agent.train_agent_chainer import create_ddqn_agent
+from bin.train_agent_chainer import create_ddqn_agent
 import gym
 
 
