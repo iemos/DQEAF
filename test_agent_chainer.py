@@ -57,12 +57,7 @@ if __name__ == '__main__':
     random_success, misclassified = evaluate(random_action)
     total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
-    # ENV_NAME = 'malware-test-v0'
-    ENV_NAME = 'malware-score-test-v0'
-    env = gym.make(ENV_NAME)
-
     fe = pefeatures.PEFeatureExtractor()
-
 
     def agent_policy(agent):
         def f(bytez):
@@ -85,16 +80,17 @@ if __name__ == '__main__':
     # last_model_dir = get_latest_model_from('models/acer_score_chainer')
     # agent_score.load(last_model_dir)
 
+    env = gym.make('malware-test-v0')
+    env_score = gym.make('malware-score-test-v0')
     # ddqn
     agent = create_ddqn_agent(env)
     last_model_dir = get_latest_model_from('models/create_ddqn_agent')
     agent.load(last_model_dir)
     success, _ = evaluate(agent_policy(agent))
 
-    agent_score = create_ddqn_agent(env)
+    agent_score = create_ddqn_agent(env_score)
     last_model_dir = get_latest_model_from('models/create_ddqn_agent_score')
     agent_score.load(last_model_dir)
-
     score_success, _ = evaluate(agent_policy(agent_score))
 
     print("Success rate of random chance: {}\n".format(len(random_success) / total))
