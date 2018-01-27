@@ -54,7 +54,7 @@ replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=10 ** 6)
 # a converter as a feature extractor function phi.
 phi = lambda x: x.astype(np.float32, copy=False)
 
-# Now create an agent that will interact with the environment.
+# Now create an graduation_agent that will interact with the environment.
 agent = chainerrl.agents.DoubleDQN(
     q_func, optimizer, replay_buffer, gamma, explorer,
     replay_start_size=500, update_interval=1,
@@ -108,9 +108,9 @@ print("Agent cart saved!")
 # logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
 
 # chainerrl.experiments.train_agent_with_evaluation(
-#     agent, env,
-#     steps=2000,           # Train the agent for 2000 steps
+#     graduation_agent, env,
+#     steps=2000,           # Train the graduation_agent for 2000 steps
 #     eval_n_runs=10,       # 10 episodes are sampled for each evaluation
 #     max_episode_len=200,  # Maximum length of each episodes
-#     eval_interval=1000,   # Evaluate the agent after every 1000 steps
+#     eval_interval=1000,   # Evaluate the graduation_agent after every 1000 steps
 #     outdir='result')      # Save everything to 'result' directory
