@@ -21,8 +21,8 @@ def get_args(argv):
 model_dir = "models/"
 model_saved_name, rounds, agent_method = get_args(sys.argv)
 
-score_model = model_dir + model_saved_name + "_score_" + rounds
-model = model_dir + model_saved_name + "_" + rounds
+score_model = model_dir + model_saved_name + "_score_{}".format(rounds)
+model = model_dir + model_saved_name + "_{}".format(rounds)
 
 # allow graduation_agent to see scores
 train_agent(rounds=rounds, use_score=True, name=score_model, create_agent=agent_method)
