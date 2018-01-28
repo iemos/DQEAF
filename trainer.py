@@ -1,4 +1,4 @@
-from train_agent_chainer import *
+from bin.train_agent_chainer import *
 
 train_agent(rounds=5000, use_score=True, name='models/create_ddqn_agent_score_5000',
             create_agent=create_ddqn_agent)  # allow graduation_agent to see scores
