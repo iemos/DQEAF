@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("..")
 from gym_malware.envs.utils import interface
 from gym_malware.envs.controls.manipulate2 import *
 
@@ -40,7 +43,7 @@ for sha256 in file_list:
 # delete bad files
 for sha256 in bad_file_list:
     print("delete file:{}".format(sha256))
-    interface.delete_file(sha256)
+    # interface.delete_file(sha256)
 
 # sort and print result list
 print("total:{}".format(file_list.__len__()))
