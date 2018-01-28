@@ -1,7 +1,6 @@
 from bin.train_agent_chainer import *
 import sys
 
-
 # 获取命令行参数
 def get_args(argv):
     model_saved_name = "model_saved_name"
@@ -20,13 +19,9 @@ def get_args(argv):
 
 model_dir = "models/"
 model_saved_name, rounds, agent_method = get_args(sys.argv)
-print(type(rounds))
 
-
-score_model = model_dir + model_saved_name + "_score_{}".format(rounds)
-model = model_dir + model_saved_name + "_{}".format(rounds)
-
-print(type(rounds))
+score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
+model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 
 # allow graduation_agent to see scores
 train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
