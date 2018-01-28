@@ -1,7 +1,17 @@
-from bin.train_agent_chainer import *
+from bin.train_agent_chainer import train_agent
+import sys
 
-train_agent(rounds=5000, use_score=True, name='models/create_ddqn_agent_score_5000',
-            create_agent=create_ddqn_agent)  # allow graduation_agent to see scores
+model_dir = "models/"
+try:
+    agent_name = sys.argv[1]
+    rounds = sys.argv[2]
+    score_model = model_dir + agent_name + "_score_" + rounds
+    model = model_dir + agent_name + "_" + rounds
 
-train_agent(rounds=5000, use_score=False, name='models/create_ddqn_agent_5000',
-            create_agent=create_ddqn_agent)  # black blox
+    # allow graduation_agent to see scores
+    train_agent(rounds=rounds, use_score=True, name=score_model, create_agent=agent_name)
+
+    # black blox
+    train_agent(rounds=rounds, use_score=False, name=model, create_agent=agent_name)
+except:
+    print("you need to enter the training rounds and the agent you use!")
