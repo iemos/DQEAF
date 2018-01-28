@@ -1,6 +1,13 @@
 from bin.train_agent_chainer import *
 import sys
 
+
+# 用于快速调用chainerrl的训练方法，参数如下：
+# python trainer.py dqn_5w 50000 create_ddqn_agent
+# 1. 保存的模型名称
+# 2. 训练的次数
+# 3. 使用的创建agent方法
+
 # 获取命令行参数
 def get_args(argv):
     model_saved_name = "model_saved_name"
@@ -15,7 +22,6 @@ def get_args(argv):
         agent_method = eval(argv[3])
 
     return model_saved_name, rounds, agent_method
-
 
 model_dir = "models/"
 model_saved_name, rounds, agent_method = get_args(sys.argv)
