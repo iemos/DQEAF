@@ -2,14 +2,24 @@ import sys
 
 from bin.test_agent_chainer import test_models
 
-model = "models/create_ddqn_agent_"
-score_model = model + "score_"
-try:
-    rounds = sys.argv[1]
-    model += rounds
-    score_model += rounds
 
-    test_models(model, score_model)
-except Exception as e:
-    print(e)
-    print("you need to enter the training rounds!")
+def get_args(argv):
+    model_saved_name = "model_saved_name"
+    rounds = 50000
+
+    arg_length = argv.__len__()
+    # 必须输入四个参数，否则使用默认设置
+    if arg_length == 3:
+        model_saved_name = argv[1]
+        rounds = argv[2]
+
+    return model_saved_name, rounds
+
+
+model_dir = "models/"
+model_saved_name, rounds = get_args(sys.argv)
+
+score_model = model_dir + model_saved_name + "_score_" + rounds
+model = model_dir + model_saved_name + "_" + rounds
+
+test_models(model, score_model)
