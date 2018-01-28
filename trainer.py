@@ -13,5 +13,6 @@ try:
 
     # black blox
     train_agent(rounds=rounds, use_score=False, name=model, create_agent=agent_name)
-except:
+except Exception as e:
+    print(e)
     print("you need to enter the training rounds and the agent you use!")
