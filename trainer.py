@@ -9,10 +9,10 @@ try:
     model = model_dir + agent_name + "_" + rounds
 
     # allow graduation_agent to see scores
-    train_agent(rounds=rounds, use_score=True, name=score_model, create_agent=eval(agent_name))
+    train_agent(rounds=rounds, use_score=True, name=score_model, create_agent=agent_name)
 
     # black blox
-    train_agent(rounds=rounds, use_score=False, name=model, create_agent=eval(agent_name))
+    train_agent(rounds=rounds, use_score=False, name=model, create_agent=agent_name)
 except Exception as e:
     print(e)
     print("you need to enter the training rounds and the agent you use!")
