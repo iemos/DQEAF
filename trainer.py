@@ -24,6 +24,11 @@ model_saved_name, rounds, agent_method = get_args(sys.argv)
 score_model = model_dir + model_saved_name + "_score_{}".format(rounds)
 model = model_dir + model_saved_name + "_{}".format(rounds)
 
+print(score_model)
+print(model)
+print(agent_method)
+print(type(agent_method))
+
 # allow graduation_agent to see scores
 train_agent(rounds=rounds, use_score=True, name=score_model, create_agent=agent_method)
 
