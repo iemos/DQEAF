@@ -10,6 +10,7 @@ ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
 from bin.train_agent_chainer import create_ddqn_agent
 import gym
+import gym_malware
 import os
 
 
