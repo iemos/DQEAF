@@ -13,7 +13,7 @@ def get_args(argv):
     if arg_length == 4:
         model_saved_name = argv[1]
         rounds = argv[2]
-        agent_method = argv[3]
+        agent_method = eval(argv[3])
 
     return model_saved_name, rounds, agent_method
 
