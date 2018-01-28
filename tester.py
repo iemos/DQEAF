@@ -10,5 +10,6 @@ try:
     score_model += rounds
 
     test_models(model, score_model)
-except:
+except Exception as e:
+    print(e)
     print("you need to enter the training rounds!")
