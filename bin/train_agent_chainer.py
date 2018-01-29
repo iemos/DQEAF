@@ -147,13 +147,3 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         outdir=name)  # Save everything to 'result' directory
 
     return agent
-
-
-if __name__ == '__main__':
-    agent_score = train_agent(rounds=30000, use_score=True, name='models/create_ddqn_agent_score_30000',
-                              create_agent=create_ddqn_agent)  # allow graduation_agent to see scores
-    # models are automatically saved
-
-    agent_blackbox = train_agent(rounds=30000, use_score=False, name='models/create_ddqn_agent_30000',
-                                 create_agent=create_ddqn_agent)  # black blox
-    # models are automatically saved

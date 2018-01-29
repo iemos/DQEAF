@@ -13,7 +13,6 @@ import gym
 import gym_malware
 import os
 
-
 # 动作评估
 def evaluate(action_function):
     success = []
@@ -87,20 +86,3 @@ def test_models(model, score_model):
     print("Success rate (black box): {}\n".format(len(success) / total))
     print("Success rate (score): {}\n".format(len(score_success) / total))
 
-
-import sys
-
-if __name__ == '__main__':
-    model = "models/create_ddqn_agent"
-    score_model = model + "_score"
-    try:
-        rounds = sys.argv[1]
-        model += "_" + rounds
-        score_model += "_" + rounds
-        print(model)
-        print(score_model)
-
-    except:
-        print("you need to input the training rounds!")
-
-    test_models(model, score_model)
