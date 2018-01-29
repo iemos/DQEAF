@@ -1,7 +1,7 @@
+#! /usr/bin/python
+
 import sys
-
 from bin.test_agent_chainer import test_models
-
 
 def get_args(argv):
     model_saved_name = "model_saved_name"
@@ -19,7 +19,7 @@ def get_args(argv):
 model_dir = "models/"
 model_saved_name, rounds = get_args(sys.argv)
 
-score_model = model_dir + model_saved_name + "_score_" + rounds
-model = model_dir + model_saved_name + "_" + rounds
+score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
+model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 
 test_models(model, score_model)

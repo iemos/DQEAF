@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 from bin.train_agent_chainer import *
 import sys
 
