@@ -60,7 +60,7 @@ agent = chainerrl.agents.DoubleDQN(
     replay_start_size=500, update_interval=1,
     target_update_interval=100, phi=phi)
 
-n_episodes = 200
+n_episodes = 180
 max_episode_len = 200
 for i in range(1, n_episodes + 1):
     obs = env.reset()
@@ -77,8 +77,7 @@ for i in range(1, n_episodes + 1):
         t += 1
     if i % 10 == 0:
         print('episode:', i,
-              'R:', R,
-              'statistics:', agent.get_statistics())
+              'R:', R)
     agent.stop_episode_and_train(obs, reward, done)
 print('Agent Finished.')
 
@@ -87,7 +86,7 @@ for i in range(10):
     done = False
     R = 0
     t = 0
-    while not done and t < 200:
+    while not done and t < max_episode_len:
 #        env.render()
         action = agent.act(obs)
         obs, r, done, _ = env.step(action)
@@ -106,11 +105,12 @@ print("Agent cart saved!")
 # import sys
 # gym.undo_logger_setup()  # Turn off gym's default logger settings
 # logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
-
+#
 # chainerrl.experiments.train_agent_with_evaluation(
-#     graduation_agent, env,
-#     steps=2000,           # Train the graduation_agent for 2000 steps
+#     agent, env,
+#     steps=200,           # Train the graduation_agent for 2000 steps
 #     eval_n_runs=10,       # 10 episodes are sampled for each evaluation
 #     max_episode_len=200,  # Maximum length of each episodes
-#     eval_interval=1000,   # Evaluate the graduation_agent after every 1000 steps
+#     eval_interval=100,   # Evaluate the graduation_agent after every 1000 steps
 #     outdir='result')      # Save everything to 'result' directory
+
