@@ -3,6 +3,7 @@ import pickle
 import gym
 import numpy as np
 import sys
+import gym_malware
 
 np.random.seed(123)  # set a random seed when setting up the gym environment (train_test_split)
 
