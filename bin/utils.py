@@ -16,5 +16,7 @@ def get_args(argv):
             agent_method = create_ddqn_agent
         elif argv[3] == "acer":
             agent_method = create_acer_agent
+        else:
+            print("wrong agent method!")
 
     return model_saved_name, rounds, agent_method

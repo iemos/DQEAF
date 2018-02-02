@@ -71,13 +71,13 @@ def test_models(model, score_model, agent_method):
 
     # ddqn
     env = gym.make('malware-test-v0')
-    agent = eval(agent_method)(env)
+    agent = agent_method(env)
     last_model_dir = get_latest_model_from(model)
     agent.load(last_model_dir)
     success, _ = evaluate(agent_policy(agent))
 
     env_score = gym.make('malware-score-test-v0')
-    agent_score = eval(agent_method)(env_score)
+    agent_score = agent_method(env_score)
     last_model_dir = get_latest_model_from(score_model)
     agent_score.load(last_model_dir)
     score_success, _ = evaluate(agent_policy(agent_score))
