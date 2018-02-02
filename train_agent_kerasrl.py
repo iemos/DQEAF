@@ -16,6 +16,7 @@ from change_agent import DQNAgent_Change
 from change_memory import SequentialMemory_Change
 from rl.policy import BoltzmannQPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
+import gym_malware
 
 
 def generate_dense_model(input_shape, layers, nb_actions):
