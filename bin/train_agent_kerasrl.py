@@ -80,12 +80,6 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
 
 
 if __name__ == '__main__':
-    # python train_agent_kerasrl.py dqn ...
-    # function_name = sys.argv[1]
-    # if function_name == 'dqn':
-    #     # ...
-    # else:
-    #     # ...
 
     agent1, model1, history_train1, history_test1 = train_dqn_model([1024, 256], rounds=50000, run_test=True,
                                                                     use_score=False)  # black blox
