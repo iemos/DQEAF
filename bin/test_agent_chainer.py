@@ -52,7 +52,7 @@ def get_latest_model_from(basedir):
 
 
 # 测试模型，传入两种model的路径
-def test_models(model, score_model):
+def test_models(model, score_model, agent_method):
     # baseline: choose actions at random
     random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
     random_success, misclassified = evaluate(random_action)
@@ -71,13 +71,13 @@ def test_models(model, score_model):
 
     # ddqn
     env = gym.make('malware-test-v0')
-    agent = create_ddqn_agent(env)
+    agent = eval(agent_method)(env)
     last_model_dir = get_latest_model_from(model)
     agent.load(last_model_dir)
     success, _ = evaluate(agent_policy(agent))
 
     env_score = gym.make('malware-score-test-v0')
-    agent_score = create_ddqn_agent(env_score)
+    agent_score = eval(agent_method)(env_score)
     last_model_dir = get_latest_model_from(score_model)
     agent_score.load(last_model_dir)
     score_success, _ = evaluate(agent_policy(agent_score))
