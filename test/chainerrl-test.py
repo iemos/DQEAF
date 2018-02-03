@@ -60,7 +60,8 @@ agent = chainerrl.agents.DoubleDQN(
     replay_start_size=500, update_interval=1,
     target_update_interval=100, phi=phi)
 
-n_episodes = 180
+# train agent
+n_episodes = 300
 max_episode_len = 200
 for i in range(1, n_episodes + 1):
     obs = env.reset()
@@ -81,6 +82,7 @@ for i in range(1, n_episodes + 1):
     agent.stop_episode_and_train(obs, reward, done)
 print('Agent Finished.')
 
+# test agent
 for i in range(10):
     obs = env.reset()
     done = False

@@ -77,7 +77,11 @@ class randomAgent():
     def stop_episode(self):
         pass
 
+    def load(self, model_name):
+        pass
 
+
+# agent = randomAgent(env.action_space)
 agent = createAgentDQN()
 agent.load("cart")
 # graduation_agent = randomAgent(env.action_space)
@@ -86,7 +90,7 @@ agent.load("cart")
 for i_episode in range(10):
     observation = env.reset()
     R = 0
-    for t in range(300):
+    for t in range(200):
         env.render()
         action = agent.act(observation)
         observation, reward, done, info = env.step(action)
