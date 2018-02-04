@@ -13,18 +13,15 @@ from rl.util import *
 def mean_q(y_true, y_pred):
     return K.mean(K.max(y_pred, axis=-1))
 
-
 def action_values(action, values):
     a2v = []
     for a, v in action, values:
         a2v.append(v[a])
     return a2v
 
-
 class AbstractDQNAgent(Agent):
     """Write me
     """
-
     def __init__(self, nb_actions, memory, gamma=.99, batch_size=32, nb_steps_warmup=1000,
                  train_interval=1, memory_interval=1, target_model_update=10000,
                  delta_range=None, delta_clip=np.inf, custom_model_objects={}, **kwargs):
@@ -100,7 +97,6 @@ class AbstractDQNAgent(Agent):
 class DQNAgent_Change(AbstractDQNAgent):
     """Write me
     """
-
     def __init__(self, model, policy=None, test_policy=None, enable_double_dqn=True, enable_dueling_network=False,
                  dueling_type='avg', *args, **kwargs):
         super(DQNAgent_Change, self).__init__(*args, **kwargs)
@@ -157,8 +153,6 @@ class DQNAgent_Change(AbstractDQNAgent):
 
         # State.
         self.reset_states()
-
-        self.action_memory = ActionQueue(self.memory.limit)
 
     def get_config(self):
         config = super(DQNAgent_Change, self).get_config()
@@ -384,7 +378,6 @@ class DQNAgent_Change(AbstractDQNAgent):
 class NAFLayer(Layer):
     """Write me
     """
-
     def __init__(self, nb_actions, mode='full', **kwargs):
         if mode not in ('full', 'diag'):
             raise RuntimeError('Unknown mode "{}" in NAFLayer.'.format(self.mode))
@@ -570,7 +563,6 @@ class NAFLayer(Layer):
 class NAFAgent(AbstractDQNAgent):
     """Write me
     """
-
     def __init__(self, V_model, L_model, mu_model, random_process=None,
                  covariance_mode='full', *args, **kwargs):
         super(NAFAgent, self).__init__(*args, **kwargs)
@@ -758,3 +750,4 @@ class NAFAgent(AbstractDQNAgent):
 
 # Aliases
 ContinuousDQNAgent = NAFAgent
+
