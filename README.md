@@ -68,3 +68,8 @@ Included as a default model is a [gradient boosted decision trees model] trained
 
 
 [gradient boosted decision trees model]: http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
+
+## TODO
+
+1. Karesrl using GPU.
+2. Modify the agent training method.
