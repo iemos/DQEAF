@@ -32,7 +32,7 @@ def evaluate(action_function):
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
 
-if __name__ == '__main__':
+def test_models(model, score_model):
     # baseline: choose actions at random
     random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
     random_success, misclassified = evaluate(random_action)
@@ -61,10 +61,12 @@ if __name__ == '__main__':
 
 
     # compare to keras models with windowlength=1
-    dqn = load_model('models/dqn.h5')
+    dqn = load_model(model)
+    # dqn = load_model('models/dqn.h5')
     dqn_success, _ = evaluate(model_policy(dqn))
 
-    dqn_score = load_model('models/dqn_score.h5')
+    dqn_score = load_model(score_model)
+    # dqn_score = load_model('models/dqn_score.h5')
     dqn_score_success, _ = evaluate(model_policy(dqn_score))
 
     # let's compare scores
