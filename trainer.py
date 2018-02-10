@@ -10,7 +10,7 @@ import sys
 # 3. 使用的创建agent方法
 
 model_dir = "models/"
-model_saved_name, rounds, agent_method = util.get_args(sys.argv)
+model_saved_name, rounds, agent_method = util.get_args3(sys.argv)
 
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)

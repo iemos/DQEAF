@@ -2,7 +2,7 @@ from bin.train_agent_chainer import *
 
 
 # 获取命令行参数
-def get_args(argv):
+def get_args3(argv):
     model_saved_name = "model_saved_name"
     rounds = 50000
     agent_method = create_ddqn_agent
@@ -20,3 +20,14 @@ def get_args(argv):
             print("wrong agent method!")
 
     return model_saved_name, rounds, agent_method
+
+
+def get_args(argv):
+    model_saved_name = "model_saved_name"
+
+    arg_length = argv.__len__()
+    # 必须输入1个参数，否则使用默认设置
+    if arg_length == 2:
+        model_saved_name = argv[1]
+
+    return model_saved_name
