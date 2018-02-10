@@ -6,7 +6,7 @@ import bin.utils as util
 
 
 model_dir = "models/"
-model_saved_name, rounds, agent_method = util.get_args(sys.argv)
+model_saved_name, rounds, agent_method = util.get_args3(sys.argv)
 
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
