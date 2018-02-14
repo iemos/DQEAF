@@ -2,6 +2,7 @@
 import pickle
 
 import gym
+import gym_malware
 import numpy as np
 import sys
 
