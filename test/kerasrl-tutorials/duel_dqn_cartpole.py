@@ -7,7 +7,8 @@ from keras.optimizers import Adam
 
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
-from rl.memory import SequentialMemory
+# from rl.memory import SequentialMemory
+from change_memory import SequentialMemory_Change
 
 ENV_NAME = 'CartPole-v0'
 
@@ -33,7 +34,8 @@ print(model.summary())
 
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
-memory = SequentialMemory(limit=50000, window_length=1)
+memory = SequentialMemory_Change(limit=10000, window_length=1)
+# memory = SequentialMemory(limit=10000, window_length=1)
 policy = BoltzmannQPolicy()
 # enable the dueling network
 # you can specify the dueling_type to one of {'avg','max','naive'}
@@ -44,7 +46,7 @@ dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
-dqn.fit(env, nb_steps=10000, visualize=False, verbose=2)
+dqn.fit(env, nb_steps=5000, visualize=False, verbose=2)
 
 # After training is done, we save the final weights.
 dqn.save_weights('duel_dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
