@@ -15,7 +15,7 @@ print(binary1)
 
 ######################
 for imported_library in binary.imports:
-    print("Library name: " + imported_library)
+    print("Library name: ", imported_library)
     for func in imported_library.entries:
         if not func.is_ordinal:
             print(func.name)

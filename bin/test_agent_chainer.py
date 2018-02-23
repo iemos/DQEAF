@@ -25,6 +25,7 @@ def evaluate(action_function):
             misclassified.append(sha256)
             continue  # already misclassified, move along
         for _ in range(MAXTURNS):
+            # action_function代表一个RL中的智能体agent，输入样本，返回采用哪个action
             action = action_function(bytez)
             print(action)
             success_dict[sha256].append(action)
@@ -36,8 +37,8 @@ def evaluate(action_function):
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
 
-# 获取保存的模型
-def get_latest_model_from(basedir):
+# 获取保存的模型目录
+def get_latest_model_dir_from(basedir):
     dirs = os.listdir(basedir)
     lastmodel = -1
     for d in dirs:
@@ -70,19 +71,18 @@ def test_models(model, score_model, agent_method):
         return f
 
     # ddqn
-    env = gym.make('malware-test-v0')
-    agent = agent_method(env)
-    last_model_dir = get_latest_model_from(model)
-    agent.load(last_model_dir)
-    success, _ = evaluate(agent_policy(agent))
-
-    env_score = gym.make('malware-score-test-v0')
-    agent_score = agent_method(env_score)
-    last_model_dir = get_latest_model_from(score_model)
-    agent_score.load(last_model_dir)
-    score_success, _ = evaluate(agent_policy(agent_score))
+    # env = gym.make('malware-test-v0')
+    # agent = agent_method(env)
+    # last_model_dir = get_latest_model_dir_from(model)
+    # agent.load(last_model_dir)
+    # success, _ = evaluate(agent_policy(agent))
+    #
+    # env_score = gym.make('malware-score-test-v0')
+    # agent_score = agent_method(env_score)
+    # last_model_dir = get_latest_model_dir_from(score_model)
+    # agent_score.load(last_model_dir)
+    # score_success, _ = evaluate(agent_policy(agent_score))
 
     print("Success rate of random chance: {}\n".format(len(random_success) / total))
-    print("Success rate (black box): {}\n".format(len(success) / total))
-    print("Success rate (score): {}\n".format(len(score_success) / total))
-
+    # print("Success rate (black box): {}\n".format(len(success) / total))
+    # print("Success rate (score): {}\n".format(len(score_success) / total))
