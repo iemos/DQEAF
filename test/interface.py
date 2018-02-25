@@ -1,11 +1,20 @@
 # gym_malware interface hello world
+from collections import defaultdict
 from sklearn.model_selection import train_test_split
 
 from gym_malware.envs.utils import interface
 
-sha256 = interface.get_available_sha256()
-print(sha256.__len__())
+# 统计sample里样本组成情况
+sha_list = interface.get_available_sha256()
+malware = []
+benign = []
+for sha256 in sha_list:
+    bytez = interface.fetch_file(sha256)
+    label = interface.get_label_local(bytez)
+    if label == 0.0:
+        benign.append(sha256)
+        interface.delete_file(sha256)
+    else:
+        malware.append(sha256)
 
-sha256_train, sha256_holdout = train_test_split(sha256, test_size=200)
-print(sha256_train.__len__())
-print(sha256_holdout.__len__())
+print('malware:{}, benign:{}'.format(malware.__len__(), benign.__len__()))
