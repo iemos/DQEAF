@@ -78,7 +78,7 @@ def train_dqn_model_Boltz_policy(layers, rounds=10000, run_test=False, use_score
         TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(TEST_NAME)
 
-        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples
+        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
         agent.test(test_env, nb_episodes=100, visualize=False)
         history_test = test_env.history
 
@@ -124,7 +124,7 @@ def train_dqn_model_EpsGreedy_Policy(layers, rounds=10000, run_test=False, use_s
         TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(TEST_NAME)
 
-        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples
+        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
         agent.test(test_env, nb_episodes=100, visualize=False)
         history_test = test_env.history
 
@@ -170,7 +170,7 @@ def train_dqn_model_EpsGreedy_Policy_window(layers, rounds=10000, run_test=False
         TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(TEST_NAME)
 
-        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples
+        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
         agent.test(test_env, nb_episodes=100, visualize=False)
         history_test = test_env.history
 
@@ -216,7 +216,7 @@ def train_dqn_model_sarsa(layers, rounds=10000, run_test=False, use_score=False)
         TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(TEST_NAME)
 
-        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples
+        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
         agent.test(test_env, nb_episodes=100, visualize=False)
         history_test = test_env.history
 
@@ -228,14 +228,14 @@ if __name__ == '__main__':
     function_name = sys.argv[1]
     if function_name == 'Boltz':
         # the policy is Boltzman
-        agent1, model1, history_train1, history_test1 = train_dqn_model_Boltz_policy([1024, 256], rounds=50000,
+        agent1, model1, history_train1, history_test1 = train_dqn_model_Boltz_policy([1024, 256], rounds=5000,
                                                                                      run_test=True,
                                                                                      use_score=False)  # black blox
         model1.save('models/dqn_Boltz.h5', overwrite=True)
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_Boltz_policy([1024, 256], rounds=50000,
+        agent2, model2, history_train2, history_test2 = train_dqn_model_Boltz_policy([1024, 256], rounds=5000,
                                                                                      run_test=True,
                                                                                      use_score=True)  # allow graduation_agent to see scores
         model2.save('models/dqn_score_Boltz.h5', overwrite=True)
@@ -245,7 +245,7 @@ if __name__ == '__main__':
 
     elif function_name == 'EpsGreedy':
         # the policy is EpsGreedy
-        agent1, model1, history_train1, history_test1 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=50000,
+        agent1, model1, history_train1, history_test1 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=5000,
                                                                                          run_test=True,
                                                                                          use_score=False)
 
@@ -253,7 +253,7 @@ if __name__ == '__main__':
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=50000,
+        agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=5000,
                                                                                          run_test=True,
                                                                                          use_score=True)  # allow graduation_agent to see scores
 

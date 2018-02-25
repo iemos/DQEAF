@@ -72,7 +72,7 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
         TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(TEST_NAME)
 
-        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples
+        # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
         agent.test(test_env, nb_episodes=100, visualize=False)
         history_test = test_env.history
 
@@ -80,8 +80,7 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
 
 
 if __name__ == '__main__':
-
-    agent1, model1, history_train1, history_test1 = train_dqn_model([1024, 256], rounds=50000, run_test=True,
+    agent1, model1, history_train1, history_test1 = train_dqn_model([1024, 256], rounds=10000, run_test=True,
                                                                     use_score=False)  # black blox
     model1.save('models/dqn.h5', overwrite=True)
     with open('history_blackbox.pickle', 'wb') as f:

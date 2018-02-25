@@ -10,7 +10,6 @@ no upx
 8:Success rate of random chance: 0.19008264462809918
 9:Success rate of random chance: 0.19008264462809918
 upx
-
 0:Success rate of random chance: 0.21487603305785125
 1:Success rate of random chance: 0.2066115702479339
 2:Success rate of random chance: 0.21487603305785125
@@ -21,3 +20,16 @@ upx
 7:Success rate of random chance: 0.23140495867768596
 8:Success rate of random chance: 0.19834710743801653
 9:Success rate of random chance: 0.2066115702479339
+
+0:Success rate of random chance: 0.21487603305785125
+Success rate (black box): 0.19008264462809918
+Success rate (score): 0.23140495867768596
+1:Success rate of random chance: 0.19008264462809918
+Success rate (black box): 0.2231404958677686
+Success rate (score): 0.2066115702479339
+3:Success rate of random chance: 0.19008264462809918
+Success rate (black box): 0.2396694214876033
+Success rate (score): 0.23140495867768596
+4:Success rate of random chance: 0.19008264462809918
+Success rate (black box): 0.23140495867768596
+Success rate (score): 0.2231404958677686
