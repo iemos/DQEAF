@@ -1,7 +1,7 @@
 # gym_malware interface hello world
-from collections import defaultdict
-from sklearn.model_selection import train_test_split
+import sys
 
+sys.path.append("..")
 from gym_malware.envs.utils import interface
 
 # 统计sample里样本组成情况
