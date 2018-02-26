@@ -23,11 +23,12 @@ else:
 
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
+test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 
 for i in range(5):
-    with open('test_result.txt', 'a+') as f:
+    with open(test_result, 'a+') as f:
         result1, result2, result3 = test_models(model, score_model, agent_method)
-        f.write("{}:".format(i))
+        f.write("{}:\n".format(i))
         f.write("{}".format(result1))
         f.write("{}".format(result2))
         f.write("{}".format(result3))
