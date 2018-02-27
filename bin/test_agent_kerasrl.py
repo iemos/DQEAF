@@ -65,16 +65,16 @@ def test_models(model, score_model):
     # dqn = load_model('models/dqn.h5')
     dqn_success, _ = evaluate(model_policy(dqn))
 
-    dqn_score = load_model(score_model)
+    # dqn_score = load_model(score_model)
     # dqn_score = load_model('models/dqn_score.h5')
-    dqn_score_success, _ = evaluate(model_policy(dqn_score))
+    # dqn_score_success, _ = evaluate(model_policy(dqn_score))
 
     # let's compare scores
     with open("log_test_all.txt", 'a') as logfile:
         logfile.write("Success rate (random chance): {}\n".format(len(random_success) / total))
         logfile.write("Success rate (dqn): {}\n".format(len(dqn_success) / total))
-        logfile.write("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))
+        # logfile.write("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))
 
     print("Success rate of random chance: {}\n".format(len(random_success) / total))
     print("Success rate (dqn): {}\n".format(len(dqn_success) / total))
-    print("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))
+    # print("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))

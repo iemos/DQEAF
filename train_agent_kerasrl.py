@@ -1,10 +1,10 @@
 # 冯同学修改的keras版本
 import pickle
+import sys
 
 import gym
 import gym_malware
 import numpy as np
-import sys
 
 np.random.seed(123)  # set a random seed when setting up the gym environment (train_test_split)
 
@@ -14,8 +14,8 @@ from keras.optimizers import RMSprop
 
 # pip install keras-rl
 from rl.agents.dqn import DQNAgent
-from change_agent import DQNAgent_Change
-from change_memory import SequentialMemory_Change
+from bin.change_agent import DQNAgent_Change
+from bin.change_memory import SequentialMemory_Change
 from rl.policy import BoltzmannQPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 
@@ -228,24 +228,24 @@ if __name__ == '__main__':
     function_name = sys.argv[1]
     if function_name == 'Boltz':
         # the policy is Boltzman
-        agent1, model1, history_train1, history_test1 = train_dqn_model_Boltz_policy([1024, 256], rounds=5000,
+        agent1, model1, history_train1, history_test1 = train_dqn_model_Boltz_policy([1024, 256], rounds=10000,
                                                                                      run_test=True,
                                                                                      use_score=False)  # black blox
         model1.save('models/dqn_Boltz.h5', overwrite=True)
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_Boltz_policy([1024, 256], rounds=5000,
-                                                                                     run_test=True,
-                                                                                     use_score=True)  # allow graduation_agent to see scores
-        model2.save('models/dqn_score_Boltz.h5', overwrite=True)
-        with open('history_score.pickle', 'wb') as f:
-            pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
+            # agent2, model2, history_train2, history_test2 = train_dqn_model_Boltz_policy([1024, 256], rounds=10000,
+            #                                                                              run_test=True,
+            #                                                                              use_score=True)  # allow graduation_agent to see scores
+            # model2.save('models/dqn_Boltz_score.h5', overwrite=True)
+            # with open('history_score.pickle', 'wb') as f:
+            #     pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
 
 
     elif function_name == 'EpsGreedy':
         # the policy is EpsGreedy
-        agent1, model1, history_train1, history_test1 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=5000,
+        agent1, model1, history_train1, history_test1 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=10000,
                                                                                          run_test=True,
                                                                                          use_score=False)
 
@@ -253,36 +253,36 @@ if __name__ == '__main__':
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=5000,
-                                                                                         run_test=True,
-                                                                                         use_score=True)  # allow graduation_agent to see scores
-
-        model2.save('models/dqn_score_EpsGreedy.h5', overwrite=True)
-        with open('history_score.pickle', 'wb') as f:
-            pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
+            # agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy([1024, 256], rounds=10000,
+            #                                                                                  run_test=True,
+            #                                                                                  use_score=True)  # allow graduation_agent to see scores
+            #
+            # model2.save('models/dqn_EpsGreedy_score.h5', overwrite=True)
+            # with open('history_score.pickle', 'wb') as f:
+            #     pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
 
     elif function_name == 'Sarsa':
         # change the impletementation of agent
         # the target_value is the value of next taken action
-        agent1, model1, history_train1, history_test1 = train_dqn_model_sarsa([1024, 256], rounds=50000, run_test=True,
+        agent1, model1, history_train1, history_test1 = train_dqn_model_sarsa([1024, 256], rounds=10000, run_test=True,
                                                                               use_score=False)
 
         model1.save('models/dqn_sarsa.h5', overwrite=True)
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_sarsa([1024, 256], rounds=50000,
-                                                                              run_test=True,
-                                                                              use_score=True)  # allow graduation_agent to see scores
-
-        model2.save('models/dqn_score_sarsa.h5', overwrite=True)
-        with open('history_score.pickle', 'wb') as f:
-            pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
+            # agent2, model2, history_train2, history_test2 = train_dqn_model_sarsa([1024, 256], rounds=10000,
+            #                                                                       run_test=True,
+            #                                                                       use_score=True)  # allow graduation_agent to see scores
+            #
+            # model2.save('models/dqn_sarsa_score.h5', overwrite=True)
+            # with open('history_score.pickle', 'wb') as f:
+            #     pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
 
     elif function_name == 'Window':
         # window_length is 2
         agent1, model1, history_train1, history_test1 = train_dqn_model_EpsGreedy_Policy_window([1024, 256],
-                                                                                                rounds=50000,
+                                                                                                rounds=10000,
                                                                                                 run_test=True,
                                                                                                 use_score=False)
 
@@ -290,12 +290,11 @@ if __name__ == '__main__':
         with open('history_blackbox.pickle', 'wb') as f:
             pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-        agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy_window([1024, 256],
-                                                                                                rounds=50000,
-                                                                                                run_test=True,
-                                                                                                use_score=True)  # allow graduation_agent to see scores
-
-        model2.save('models/dqn_score_window.h5', overwrite=True)
-        with open('history_score.pickle', 'wb') as f:
-            pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)
-
+            # agent2, model2, history_train2, history_test2 = train_dqn_model_EpsGreedy_Policy_window([1024, 256],
+            #                                                                                         rounds=10000,
+            #                                                                                         run_test=True,
+            #                                                                                         use_score=True)  # allow graduation_agent to see scores
+            #
+            # model2.save('models/dqn_window_score.h5', overwrite=True)
+            # with open('history_score.pickle', 'wb') as f:
+            #     pickle.dump(history_test2, f, pickle.HIGHEST_PROTOCOL)

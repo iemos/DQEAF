@@ -1,14 +1,13 @@
-import numpy as np
 import gym
-
-from keras.models import Sequential
+import numpy as np
 from keras.layers import Dense, Activation, Flatten
+from keras.models import Sequential
 from keras.optimizers import Adam
-
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
+
 # from rl.memory import SequentialMemory
-from change_memory import SequentialMemory_Change
+from bin.change_memory import SequentialMemory_Change
 
 ENV_NAME = 'CartPole-v0'
 
