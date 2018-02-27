@@ -64,7 +64,9 @@ def create_ddqn_agent(env):
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    explorer = chainerrl.explorers.Boltzmann()
+    # explorer = chainerrl.explorers.Boltzmann()
+    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+        epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
@@ -138,12 +140,52 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
 
     agent = create_agent(env)
 
-    chainerrl.experiments.train_agent_with_evaluation(
-        agent, env,
-        steps=rounds,  # Train the graduation_agent for this many rounds steps
-        max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
-        eval_n_runs=100,  # 100 episodes are sampled for each evaluation
-        outdir=name)  # Save everything to 'result' directory
+    # train agent
+    n_episodes = rounds
+    max_episode_len = env.maxturns
+    for i in range(1, n_episodes + 1):
+        obs = env.reset()
+        reward = 0
+        done = False
+        R = 0  # return (sum of rewards)
+        t = 0  # time step
+        while not done and t < max_episode_len:
+            # Uncomment to watch the behaviour
+            # env.render()
+            action = agent.act_and_train(obs, reward)
+            obs, reward, done, _ = env.step(action)
+            R += reward
+            t += 1
+        if i % 10 == 0:
+            print('episode:', i,
+                  'R:', R)
+        agent.stop_episode_and_train(obs, reward, done)
+    print('Agent Finished.')
+
+    # test agent
+    # for i in range(10):
+    #     obs = env.reset()
+    #     done = False
+    #     R = 0
+    #     t = 0
+    #     while not done and t < max_episode_len:
+    # #        env.render()
+    #         action = agent.act(obs)
+    #         obs, r, done, _ = env.step(action)
+    #         R += r
+    #         t += 1
+    #     print('test episode:', i, 'R:', R)
+    #     agent.stop_episode()
+    # print('RL completed!')
+
+    agent.save(name)
+
+    # chainerrl.experiments.train_agent_with_evaluation(
+    #     agent, env,
+    #     steps=rounds,  # Train the graduation_agent for this many rounds steps
+    #     max_episode_len=env.maxturns,  # Maximum length of each episodes
+    #     eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
+    #     eval_n_runs=100,  # 100 episodes are sampled for each evaluation
+    #     outdir=name)  # Save everything to 'result' directory
 
     return agent
