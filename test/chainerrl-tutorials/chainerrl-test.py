@@ -57,62 +57,65 @@ phi = lambda x: x.astype(np.float32, copy=False)
 # Now create an graduation_agent that will interact with the environment.
 agent = chainerrl.agents.DoubleDQN(
     q_func, optimizer, replay_buffer, gamma, explorer,
-    replay_start_size=500, update_interval=1,
+    replay_start_size=32, update_interval=1,
     target_update_interval=100, phi=phi)
 
-# # train agent
-# n_episodes = 300
-# max_episode_len = 200
-# for i in range(1, n_episodes + 1):
-#     obs = env.reset()
-#     reward = 0
-#     done = False
-#     R = 0  # return (sum of rewards)
-#     t = 0  # time step
-#     while not done and t < max_episode_len:
-#         # Uncomment to watch the behaviour
-#         # env.render()
-#         action = agent.act_and_train(obs, reward)
-#         obs, reward, done, _ = env.step(action)
-#         R += reward
-#         t += 1
-#     if i % 10 == 0:
-#         print('episode:', i,
-#               'R:', R)
-#     agent.stop_episode_and_train(obs, reward, done)
-# print('Agent Finished.')
-#
-# # test agent
-# for i in range(10):
-#     obs = env.reset()
-#     done = False
-#     R = 0
-#     t = 0
-#     while not done and t < max_episode_len:
-# #        env.render()
-#         action = agent.act(obs)
-#         obs, r, done, _ = env.step(action)
-#         R += r
-#         t += 1
-#     print('test episode:', i, 'R:', R)
-#     agent.stop_episode()
-# print('RL completed!')
+# train agent
+n_episodes = 200
+max_episode_len = 200
+steps = 1
+for i in range(1, n_episodes + 1):
+    obs = env.reset()
+    reward = 0
+    done = False
+    R = 0  # return (sum of rewards)
+    t = 0  # time step
+    while not done and t < max_episode_len:
+        print(steps)
+        steps += 1
+        # Uncomment to watch the behaviour
+        # env.render()
+        action = agent.act_and_train(obs, reward)
+        obs, reward, done, _ = env.step(action)
+        R += reward
+        t += 1
+    if i % 10 == 0:
+        print('episode:', i,
+              'R:', R)
+    agent.stop_episode_and_train(obs, reward, done)
+print('Agent Finished.')
+
+# test agent
+for i in range(10):
+    obs = env.reset()
+    done = False
+    R = 0
+    t = 0
+    while not done and t < max_episode_len:
+        #        env.render()
+        action = agent.act(obs)
+        obs, r, done, _ = env.step(action)
+        R += r
+        t += 1
+    print('test episode:', i, 'R:', R)
+    agent.stop_episode()
+print('RL completed!')
 #
 # agent.save("cart")
 # print("Agent cart saved!")
 
 
 # Set up the logger to print info messages for understandability.
-import logging
-import sys
-
-gym.undo_logger_setup()  # Turn off gym's default logger settings
-logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
-
-chainerrl.experiments.train_agent_with_evaluation(
-    agent, env,
-    steps=2000,  # Train the graduation_agent for 2000 steps
-    eval_n_runs=10,  # 10 episodes are sampled for each evaluation
-    max_episode_len=200,  # Maximum length of each episodes
-    eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
-    outdir='result')  # Save everything to 'result' directory
+# import logging
+# import sys
+#
+# gym.undo_logger_setup()  # Turn off gym's default logger settings
+# logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='')
+#
+# chainerrl.experiments.train_agent_with_evaluation(
+#     agent, env,
+#     steps=3000,  # Train the graduation_agent for 2000 steps
+#     eval_n_runs=10,  # 10 episodes are sampled for each evaluation
+#     max_episode_len=200,  # Maximum length of each episodes
+#     eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
+#     outdir='result')  # Save everything to 'result' directory
