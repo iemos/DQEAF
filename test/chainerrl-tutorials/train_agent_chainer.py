@@ -6,7 +6,8 @@ import gym
 import numpy as np
 
 
-class QFunction(chainer.Chain):
+# Q函数
+class QFunction1(chainer.Chain):
     def __init__(self, obs_size, n_actions, n_hidden_channels=[1024, 256]):
         super(QFunction, self).__init__()
         net = []
@@ -39,6 +40,25 @@ class QFunction(chainer.Chain):
                 x = f(x)
 
         return chainerrl.action_value.DiscreteActionValue(x)
+
+
+class QFunction(chainer.Chain):
+    def __init__(self, obs_size, n_actions, n_hidden_channels=50):
+        super().__init__()
+        with self.init_scope():
+            self.l0 = L.Linear(obs_size, n_hidden_channels)
+            self.l1 = L.Linear(n_hidden_channels, n_hidden_channels)
+            self.l2 = L.Linear(n_hidden_channels, n_actions)
+
+    def __call__(self, x, test=False):
+        """
+        Args:
+            x (ndarray or chainer.Variable): An observation
+            test (bool): a flag indicating whether it is in test mode
+        """
+        h = F.tanh(self.l0(x))
+        h = F.tanh(self.l1(h))
+        return chainerrl.action_value.DiscreteActionValue(self.l2(h))
 
 
 # 创建ddqn agent
@@ -80,8 +100,8 @@ def create_ddqn_agent(env):
     return agent
 
 
-# 开始训练
-def train_agent(n_episodes=10000, name='result_dir', create_agent=create_ddqn_agent):
+# 训练
+def train_agent(n_episodes=200, name='result_dir', create_agent=create_ddqn_agent):
     env = gym.make('CartPole-v0')
     np.random.seed(123)
     env.seed(123)
