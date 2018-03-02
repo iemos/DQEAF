@@ -63,9 +63,9 @@ def create_ddqn_agent(env):
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    # explorer = chainerrl.explorers.Boltzmann()
-    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
-        epsilon=0.3, random_action_func=env.action_space.sample)
+    explorer = chainerrl.explorers.Boltzmann()
+    # explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+    #     epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
