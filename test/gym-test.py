@@ -1,4 +1,4 @@
-# gym hello world
+# 《先进计算模型》深度强化学习 hello world 程序
 import chainer
 import chainer.functions as F
 import chainer.links as L
@@ -6,10 +6,10 @@ import chainerrl
 import gym
 import numpy as np
 
-env = gym.make('CartPole-v0')
 
-
-def createAgentDQN():
+# 使用强化学习模型，创建一个agent智能体
+def createAgentDQN(env):
+    # 构建Q Network
     class QFunction(chainer.Chain):
         def __init__(self, obs_size, n_actions, n_hidden_channels=50):
             super().__init__()
@@ -28,14 +28,12 @@ def createAgentDQN():
             h = F.tanh(self.l1(h))
             return chainerrl.action_value.DiscreteActionValue(self.l2(h))
 
+
     obs_size = env.observation_space.shape[0]
     n_actions = env.action_space.n
     q_func = QFunction(obs_size, n_actions)
-    # use ChainerRL's predefined Q-functions
-    # q_func = chainerrl.q_functions.FCStateQFunctionWithDiscreteAction(
-    #     obs_size, n_actions,
-    #     n_hidden_layers=2, n_hidden_channels=50)
     # q_func.to_gpu()
+
     # Use Adam to optimize q_func. eps=1e-2 is for stability.
     optimizer = chainer.optimizers.Adam(eps=1e-2)
     optimizer.setup(q_func)
@@ -59,11 +57,35 @@ def createAgentDQN():
     # Now create an graduation_agent that will interact with the environment.
     agent = chainerrl.agents.DoubleDQN(
         q_func, optimizer, replay_buffer, gamma, explorer,
-        replay_start_size=500, update_interval=1,
+        replay_start_size=32, update_interval=1,
         target_update_interval=100, phi=phi)
 
     return agent
 
+
+def trainingAgent(agent, env):
+    # train agent
+    print('开始训练agent')
+    n_episodes = 200
+    max_episode_len = 200
+    for i in range(1, n_episodes + 1):
+        obs = env.reset()
+        reward = 0
+        done = False
+        R = 0  # return (sum of rewards)
+        t = 0  # time step
+        while not done and t < max_episode_len:
+            # Uncomment to watch the behaviour
+            # env.render()
+            action = agent.act_and_train(obs, reward)
+            obs, reward, done, _ = env.step(action)
+            R += reward
+            t += 1
+        if i % 10 == 0:
+            print('episode:', i,
+                  'R:', R)
+        agent.stop_episode_and_train(obs, reward, done)
+    print('Agent training finished！')
 
 class randomAgent():
     """The world's simplest graduation_agent!"""
@@ -81,12 +103,20 @@ class randomAgent():
         pass
 
 
+# 使用gym的CartPole游戏
+env = gym.make('CartPole-v0')
+
+# 随机的方法创建智能体
 # agent = randomAgent(env.action_space)
-agent = createAgentDQN()
-agent.load("cart")
-# graduation_agent = randomAgent(env.action_space)
 
+# 强化学习的方法创建智能体
+agent = createAgentDQN(env)
+# 现场训练模型
+trainingAgent(agent, env)
+# 加载训练好的模型
+# agent.load("cart")
 
+# 循环运行10次游戏，对agent进行测试
 for i_episode in range(10):
     observation = env.reset()
     R = 0
