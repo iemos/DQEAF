@@ -62,12 +62,13 @@ def createAgentDQN(env):
 
     return agent
 
-
 def trainingAgent(agent, env):
     # train agent
     print('开始训练agent')
+
     n_episodes = 200
     max_episode_len = 200
+
     for i in range(1, n_episodes + 1):
         obs = env.reset()
         reward = 0
@@ -85,6 +86,7 @@ def trainingAgent(agent, env):
             print('episode:', i,
                   'R:', R)
         agent.stop_episode_and_train(obs, reward, done)
+
     print('Agent training finished！')
 
 class randomAgent():
@@ -115,6 +117,10 @@ agent = createAgentDQN(env)
 trainingAgent(agent, env)
 # 加载训练好的模型
 # agent.load("cart")
+
+
+
+
 
 # 循环运行10次游戏，对agent进行测试
 for i_episode in range(10):
