@@ -1,6 +1,3 @@
-import datetime
+from gym_malware.envs.controls import manipulate2 as manipulate
 
-now = datetime.datetime.now()
-print(now)
-
-print()
+print(manipulate.ACTION_TABLE.keys())

@@ -4,6 +4,8 @@ import datetime
 
 from bin.test_agent_chainer import test_models
 from bin.train_agent_chainer import *
+from gym_malware.envs.controls import manipulate2 as manipulate
+
 
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python run_chainer.py --model-name name --rounds rounds --agent dqn(or acer)
@@ -30,11 +32,21 @@ score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 
+# start time
+training_start_time = datetime.datetime.now()
+
 # allow graduation_agent to see scores
 train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
 
 # black blox
 train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
+
+training_end_time = datetime.datetime.now()
+# 训练时间，分钟数
+training_elapse = round((training_end_time - training_start_time).seconds / 60)
+with open(test_result, 'a+') as f:
+    f.write("训练共耗时{}分钟".format(training_elapse))
+    f.write("action：{}".format(manipulate.ACTION_TABLE.keys()))
 
 # test
 for i in range(5):
