@@ -45,8 +45,8 @@ training_end_time = datetime.datetime.now()
 # 训练时间，分钟数
 training_elapse = round((training_end_time - training_start_time).seconds / 60)
 with open(test_result, 'a+') as f:
-    f.write("训练共耗时{}分钟".format(training_elapse))
-    f.write("action：{}".format(manipulate.ACTION_TABLE.keys()))
+    f.write("训练共耗时{}分钟\n".format(training_elapse))
+    f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
 
 # test
 for i in range(5):
