@@ -1,7 +1,7 @@
 from gym.envs.registration import register
 
 # get samples for environment
-from gym_malware.envs.utils import interface, pefeatures
+from graduation.tools import interface
 
 sha256 = interface.get_available_sha256()
 # create a holdout set

@@ -28,7 +28,21 @@ class DQN():
 
         # Init session
         self.session = tf.InteractiveSession()
-        self.session.run(tf.initialize_all_variables())
+        self.session.run(tf.global_variables_initializer())
+
+        # loading networks
+        self.saver = tf.train.Saver()
+        checkpoint = tf.train.get_checkpoint_state("saved_networks")
+        if checkpoint and checkpoint.model_checkpoint_path:
+            self.saver.restore(self.session, checkpoint.model_checkpoint_path)
+            print("Successfully loaded:", checkpoint.model_checkpoint_path)
+
+        else:
+            print("Could not find old network weights"
+                  )
+
+        global summary_writer
+        summary_writer = tf.summary.FileWriter('logs', graph=self.session.graph)
 
     def create_Q_network(self):  # 创建Q网络
         # network weights
@@ -52,6 +66,27 @@ class DQN():
         return tf.Variable(initial)
 
     def create_training_method(self):  # 创建训练方法
+        self.action_input = tf.placeholder("float", [None, self.action_dim])  # one hot presentation
+        self.y_input = tf.placeholder("float", [None])
+        Q_action = tf.reduce_sum(tf.multiply(self.Q_value, self.action_input), reduction_indices=1)
+        self.cost = tf.reduce_mean(tf.square(self.y_input - Q_action))
+        tf.summary.scalar("loss", self.cost)
+        global merged_summary_op
+        merged_summary_op = tf.summary.merge_all()
+        self.optimizer = tf.train.AdamOptimizer(0.0001).minimize(self.cost)
+
+    def perceive(self, state, action, reward, next_state, done):  # 感知存储信息
+        one_hot_action = np.zeros(self.action_dim)
+        one_hot_action[action] = 1
+        self.replay_buffer.append((state, one_hot_action, reward, next_state, done))
+
+        if len(self.replay_buffer) > REPLAY_SIZE:
+            self.replay_buffer.popleft()
+
+        if len(self.replay_buffer) > BATCH_SIZE:
+            self.train_Q_network()
+
+    def train_Q_network(self):  # 训练网络
         self.time_step += 1
         # Step 1: obtain random minibatch from replay memory
         minibatch = random.sample(self.replay_buffer, BATCH_SIZE)
@@ -76,23 +111,16 @@ class DQN():
             self.state_input: state_batch
         })
 
-    def perceive(self, state, action, reward, next_state, done):  # 感知存储信息
-        one_hot_action = np.zeros(self.action_dim)
-        one_hot_action[action] = 1
-        self.replay_buffer.append((state, one_hot_action, reward, next_state, done))
+        summary_str = self.session.run(merged_summary_op, feed_dict={
+            self.y_input: y_batch,
+            self.action_input: action_batch,
+            self.state_input: state_batch
+        })
+        summary_writer.add_summary(summary_str, self.time_step)
 
-        if len(self.replay_buffer) > REPLAY_SIZE:
-            self.replay_buffer.popleft()
-
-        if len(self.replay_buffer) > BATCH_SIZE:
-            self.train_Q_network()
-
-    def train_Q_network(self):  # 训练网络
-        self.action_input = tf.placeholder("float", [None, self.action_dim])  # one hot presentation
-        self.y_input = tf.placeholder("float", [None])
-        Q_action = tf.reduce_sum(tf.mul(self.Q_value, self.action_input), reduction_indices=1)
-        self.cost = tf.reduce_mean(tf.square(self.y_input - Q_action))
-        self.optimizer = tf.train.AdamOptimizer(0.0001).minimize(self.cost)
+        # save network every 1000 iteration
+        if self.time_step % 1000 == 0:
+            self.saver.save(self.session, 'saved_networks/' + 'network' + '-dqn', global_step=self.time_step)
 
     def egreedy_action(self, state):  # 输出带随机的动作
         Q_value = self.Q_value.eval(feed_dict={
@@ -152,7 +180,6 @@ def main():
             print('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
             if ave_reward >= 200:
                 break
-
 
 if __name__ == '__main__':
     main()
