@@ -2,12 +2,13 @@ import glob
 import os
 import sys
 
+from graduation.tools.pefeatures import PEFeatureExtractor
+
 module_path = os.path.dirname(os.path.abspath(sys.modules[__name__].__file__))
 
 SAMPLE_PATH = os.path.join(module_path, 'samples')
 
 # for local model
-from gym_malware.envs.utils.pefeatures import PEFeatureExtractor
 from sklearn.externals import joblib
 
 feature_extractor = PEFeatureExtractor()
@@ -40,6 +41,7 @@ def delete_file(sha256):
     location = os.path.join(SAMPLE_PATH, sha256)
     os.remove(location)
 
+
 # 在samples目录中读取样本，放入list返回
 def get_available_sha256():
     sha256list = []
@@ -57,6 +59,7 @@ def get_available_sha256():
 def get_sample_real_path(filename):
     return os.path.join(SAMPLE_PATH, filename)
 
+
 # 获取分类器评分
 def get_score_local(bytez):
     # extract features
@@ -73,5 +76,4 @@ def get_label_local(bytez):
     # mimic black box by thresholding here
     score = get_score_local(bytez)
     label = float(get_score_local(bytez) >= local_model_threshold)
-    print("score={} (hidden), label={}".format(score, label))
     return label
