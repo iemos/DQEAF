@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 np.random.seed(123)
-sha256_train, sha256_holdout = train_test_split(sha256, test_size=1)
+sha256_train, sha256_holdout = train_test_split(sha256, test_size=200)
 
 MAXTURNS = 100
 
