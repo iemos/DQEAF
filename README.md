@@ -13,14 +13,7 @@ There are two basic concepts in reinforcement learning:
 The agent sends `actions` to the environment, and the 
 environment replies with `observations` and `rewards` (that is, a score).
 
-This repo provides an environment for manipulating PE files 
-and providing rewards that are based around bypassing AV.  
-An agent can be deployed that have already been written for the rich ``gym`` framework.  For example
-
-1. https://github.com/pfnet/chainerrl [recommended]
-2. https://github.com/matthiasplappert/keras-rl
-
-`CartPole-v0` example in chainerrl DQN describes Q-function:![img2](docs/images/chainerrl-Q-function.jpg)
+DQN Q-function:![img2](docs/images/chainerrl-Q-function.jpg)
  
 ## Gym-Malware Environment
 EvadeRL pits a reinforcement agent against the malware environment consisting of the following components:
@@ -68,8 +61,3 @@ Included as a default model is a [gradient boosted decision trees model] trained
 
 
 [gradient boosted decision trees model]: http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html
-
-## TODO
-
-1. Karesrl using GPU.
-2. Modify the agent training method.
