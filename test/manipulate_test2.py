@@ -37,8 +37,8 @@ for sha256 in file_list:
     index += 1
 
 # delete bad files
-for sha256 in bad_file_list:
-    print("delete file:{}".format(sha256))
+# for sha256 in bad_file_list:
+# print("delete file:{}".format(sha256))
     # interface.delete_file(sha256)
 
 # sort and print result list

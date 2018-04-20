@@ -6,8 +6,12 @@ bytez = interface.fetch_file("Backdoor.Win32.PcClient.sx")
 features = PEFeatureExtractor().extract(bytez)
 print(features.__len__())
 
+zero_count = 0
 for item in features:
-    print(item)
+    if (item == 0):
+        zero_count = zero_count + 1
+print(2350 - zero_count)
+
 
 # bytez = interface.fetch_file("VirusShare_0b3c009aa4e461a00c0b3755976b485e")
 # # print(bytez)

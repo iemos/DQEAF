@@ -70,9 +70,11 @@ class DQN():
         self.y_input = tf.placeholder("float", [None])
         Q_action = tf.reduce_sum(tf.multiply(self.Q_value, self.action_input), reduction_indices=1)
         self.cost = tf.reduce_mean(tf.square(self.y_input - Q_action))
+
         tf.summary.scalar("loss", self.cost)
         global merged_summary_op
         merged_summary_op = tf.summary.merge_all()
+
         self.optimizer = tf.train.AdamOptimizer(0.0001).minimize(self.cost)
 
     def perceive(self, state, action, reward, next_state, done):  # 感知存储信息
@@ -170,7 +172,7 @@ def main():
             for i in range(TEST):
                 state = env.reset()
                 for j in range(STEP):
-                    env.render()
+                    # env.render()
                     action = agent.action(state)  # direct action for test
                     state, reward, done, _ = env.step(action)
                     total_reward += reward
