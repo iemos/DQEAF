@@ -31,7 +31,7 @@ test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 training_start_time = datetime.datetime.now()
 
 # allow graduation_agent to see scores
-train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
+# train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
 
 # black blox
 train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
@@ -44,7 +44,7 @@ with open(test_result, 'a+') as f:
     f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
 
 # test
-for i in range(5):
+for i in range(3):
     with open(test_result, 'a+') as f:
         result1, result2, result3 = test_models(model, score_model, agent_method)
         f.write("{}:\n".format(i))
