@@ -12,8 +12,10 @@ import multiprocessing
 import os
 import random
 import signal
-import string
+import struct  # byte manipulations
+import subprocess
 import sys
+import tempfile
 
 import lief  # pip install https://github.com/lief-project/LIEF/releases/download/0.7.0/linux_lief-0.7.0_py3.6.tar.gz
 
@@ -68,31 +70,43 @@ class MalwareManipulator(object):
         # upper=255 would append with any character
         return self.bytez + bytes([random.randint(0, upper) for _ in range(L)])
 
-    # 生成随机的import name
-    def generate_random_import_libname(self, minlength=5, maxlength=8):
-        length = random.randint(minlength, maxlength)
-        letters = string.ascii_letters + string.digits
-        suffix = random.choice(['.dll', '.exe'])
-        return ''.join([random.choice(letters) for _ in range(length)]) + suffix
+    def has_random_lib(self, imports, lowerlibname):
+        for im in imports:
+            if im.name.lower() == lowerlibname:
+                return True
 
-    # 生成随机函数名
-    def generate_random_name(self, minlength=5, maxlength=8):
-        length = random.randint(minlength, maxlength)
-        letters = string.ascii_letters + string.digits
-        return ''.join([random.choice(letters) for _ in range(length)])
+        return False
 
-    # add a function to the import address table that is random name
-    def imports_append2(self, seed=None):
+    # add a function to the import address table that is never used
+    def imports_append(self, seed=None):
         # add (unused) imports
         random.seed(seed)
         binary = lief.PE.parse(self.bytez)
+
+        importslist = binary.imports
         # draw a library at random
-        libname = self.generate_random_import_libname()
-        funcname = self.generate_random_name()
+        libname = random.choice(list(COMMON_IMPORTS.keys()))
+        funcname = random.choice(list(COMMON_IMPORTS[libname]))
         lowerlibname = libname.lower()
-        # append this lib in the imports
-        lib = binary.add_library(lowerlibname)
-        lib.add_entry(funcname)
+
+        count_limit = 0
+
+        while self.has_random_lib(importslist, lowerlibname):
+            # draw a library at random
+            libname = random.choice(list(COMMON_IMPORTS.keys()))
+            funcname = random.choice(list(COMMON_IMPORTS[libname]))
+            lowerlibname = libname.lower()
+            count_limit += 1
+            if count_limit > 10:
+                break
+
+        # add a new library
+        lib = binary.add_library(libname)
+
+        # get current names
+        names = set([e.name for e in lib.entries])
+        if not funcname in names:
+            lib.add_entry(funcname)
 
         self.bytez = self.__binary_to_bytez(binary, imports=True)
 
@@ -107,7 +121,6 @@ class MalwareManipulator(object):
         libname = random.choice(list(COMMON_IMPORTS.keys()))
         funcname = random.choice(list(COMMON_IMPORTS[libname]))
         lowerlibname = libname.lower()
-
         # find this lib in the imports, if it exists
         lib = None
         for im in binary.imports:
@@ -126,12 +139,25 @@ class MalwareManipulator(object):
 
         return self.bytez
 
+    # manipulate existing section names
+    def section_rename(self, seed=None):
+        # rename a random section
+        random.seed(seed)
+        binary = lief.PE.parse(self.bytez)
+        targeted_section = random.choice(binary.sections)
+        targeted_section.name = random.choice(COMMON_SECTION_NAMES)[:7]  # current version of lief not allowing 8 chars?
+
+        self.bytez = self.__binary_to_bytez(binary)
+
+        return self.bytez
+
     # create a new(unused) sections
     def section_add(self, seed=None):
         random.seed(seed)
         binary = lief.PE.parse(self.bytez)
         # 建立一个section
-        new_section = lief.PE.Section(self.generate_random_name())
+        new_section = lief.PE.Section(
+            "".join(chr(random.randrange(ord('.'), ord('z'))) for _ in range(6)))
 
         # fill with random content
         upper = random.randrange(256)
@@ -156,6 +182,123 @@ class MalwareManipulator(object):
                            ]))
 
         self.bytez = self.__binary_to_bytez(binary)
+        return self.bytez
+
+    # append bytes to extra space at the end of sections
+    def section_append(self, seed=None):
+        # append to a section (changes size and entropy)
+        random.seed(seed)
+        binary = lief.PE.parse(self.bytez)
+        targeted_section = random.choice(binary.sections)
+        L = self.__random_length()
+        available_size = targeted_section.size - len(targeted_section.content)
+        print("available_size:{}".format(available_size))
+        if L > available_size:
+            L = available_size
+
+        upper = random.randrange(256)
+        targeted_section.content = targeted_section.content + \
+                                   [random.randint(0, upper) for _ in range(L)]
+
+        self.bytez = self.__binary_to_bytez(binary)
+        return self.bytez
+
+    # create a new entry point which immediately jumps to the original entry point
+    def create_new_entry(self, seed=None):
+        # create a new section with jump to old entry point, and change entry point
+        # DRAFT: this may have a few technical issues with it (not accounting for relocations),
+        # but is a proof of concept for functionality
+        random.seed(seed)
+
+        binary = lief.PE.parse(self.bytez)
+
+        # get entry point
+        entry_point = binary.optional_header.addressof_entrypoint
+
+        # get name of section
+        entryname = binary.section_from_rva(entry_point).name
+
+        # create a new section
+        new_section = lief.PE.Section(entryname + "".join(chr(random.randrange(
+            ord('.'), ord('z'))) for _ in range(3)))  # e.g., ".text" + 3 random characters
+        # push [old_entry_point]; ret
+        new_section.content = [
+                                  0x68] + list(struct.pack("<I", entry_point + 0x10000)) + [0xc3]
+        new_section.virtual_address = max(
+            [s.virtual_address + s.size for s in binary.sections])
+        # TO DO: account for base relocation (this is just a proof of concepts)
+
+        # add new section
+        binary.add_section(new_section, lief.PE.SECTION_TYPES.TEXT)
+
+        # redirect entry point
+        binary.optional_header.addressof_entrypoint = new_section.virtual_address
+
+        self.bytez = self.__binary_to_bytez(binary)
+        return self.bytez
+
+    def upx_pack(self, seed=None):
+        # tested with UPX 3.91
+        random.seed(seed)
+        tmpfilename = os.path.join(
+            tempfile._get_default_tempdir(), next(tempfile._get_candidate_names()))
+
+        # dump bytez to a temporary file
+        with open(tmpfilename, 'wb') as outfile:
+            outfile.write(self.bytez)
+
+        options = ['--force', '--overlay=copy']
+        compression_level = random.randint(1, 9)
+        options += ['-{}'.format(compression_level)]
+        # --exact
+        # compression levels -1 to -9
+        # --overlay=copy [default]
+
+        # optional things:
+        # --compress-exports=0/1
+        # --compress-icons=0/1/2/3
+        # --compress-resources=0/1
+        # --strip-relocs=0/1
+        options += ['--compress-exports={}'.format(random.randint(0, 1))]
+        options += ['--compress-icons={}'.format(random.randint(0, 3))]
+        options += ['--compress-resources={}'.format(random.randint(0, 1))]
+        options += ['--strip-relocs={}'.format(random.randint(0, 1))]
+
+        with open(os.devnull, 'w') as DEVNULL:
+            retcode = subprocess.call(
+                ['upx'] + options + [tmpfilename, '-o', tmpfilename + '_packed'], stdout=DEVNULL, stderr=DEVNULL)
+
+        os.unlink(tmpfilename)
+
+        if retcode == 0:  # successfully packed
+
+            with open(tmpfilename + '_packed', 'rb') as infile:
+                self.bytez = infile.read()
+
+            os.unlink(tmpfilename + '_packed')
+
+        return self.bytez
+
+    def upx_unpack(self, seed=None):
+        # dump bytez to a temporary file
+        tmpfilename = os.path.join(
+            tempfile._get_default_tempdir(), next(tempfile._get_candidate_names()))
+
+        with open(tmpfilename, 'wb') as outfile:
+            outfile.write(self.bytez)
+
+        with open(os.devnull, 'w') as DEVNULL:
+            retcode = subprocess.call(
+                ['upx', tmpfilename, '-d', '-o', tmpfilename + '_unpacked'], stdout=DEVNULL, stderr=DEVNULL)
+
+        os.unlink(tmpfilename)
+
+        if retcode == 0:  # sucessfully unpacked
+            with open(tmpfilename + '_unpacked', 'rb') as result:
+                self.bytez = result.read()
+
+            os.unlink(tmpfilename + '_unpacked')
+
         return self.bytez
 
     # manipulate (break) signature
@@ -188,15 +331,54 @@ class MalwareManipulator(object):
         # if no signature found, self.bytez is unmodified
         return self.bytez
 
+    # modify (break) header checksum
+    def break_optional_header_checksum(self, seed=None):
+        binary = lief.PE.parse(self.bytez)
+        binary.optional_header.checksum = 0
+        self.bytez = self.__binary_to_bytez(binary)
+        return self.bytez
+
+        # def exports_append(self,seed=None):
+        # TODO: when LIEF has a way to create this
+        #     random.seed(seed)
+        #     binary = lief.PE.parse( self.bytez )
+
+        #     if not binary.has_exports:
+        #         return self.bytez
+        #         # TO DO: add a lief.PE.DATA_DIRECTORY.EXPORT_TABLE to the data directory
+
+        #     # find the data directory
+        #     for i,e in enumerate(binary.data_directories):
+        #         if e.type == lief.PE.DATA_DIRECTORY.EXPORT_TABLE:
+        #             break
+
+        # def exports_reorder(self,seed=None):
+        #   # reorder exports
+        #   pass
+
+
+##############################
+def identity(bytez, seed=None):
+    return bytez
+
 
 ######################
 # explicitly list so that these may be used externally
 ACTION_TABLE = {
     'overlay_append': 'overlay_append',
+    'imports_append': 'imports_append',
     'imports_append_org': 'imports_append_org',
     'section_add': 'section_add',
+    'section_rename': 'section_rename',
+    'create_new_entry': 'create_new_entry',
     'remove_signature': 'remove_signature',
-    # 'remove_debug': 'remove_debug',
+    'remove_debug': 'remove_debug',
+    'upx_pack': 'upx_pack',  # 加壳、脱壳可能对连续的action有影响
+    'upx_unpack': 'upx_unpack',
+    'break_optional_header_checksum': 'break_optional_header_checksum'
+    # 'do_nothing': identity,
+    # 'section_append': 'section_append',           # 样本基本上都不能添加成功
+    # 'exports_append' : 'exports_append',        # 需要自己实现
 }
 
 
@@ -254,6 +436,7 @@ def modify_without_breaking(bytez, actions=[], seed=None):
     import hashlib
     m = hashlib.sha256()
     m.update(bytez)
+    print("new hash: {}".format(m.hexdigest()))
     return bytez
 
 
@@ -286,6 +469,23 @@ def test_imports_append(bytez):
         # assert len(binary.imported_functions) != len(binary2.imported_functions), "no new imported functions"
 
 
+def test_section_rename(bytez):
+    binary = lief.PE.parse(bytez)
+    # SUCCEEDS
+    manip = MalwareManipulator(bytez)
+    bytez2 = manip.section_rename(bytez)
+    binary2 = lief.PE.parse(bytez2)
+    oldsections = [s.name for s in binary.sections]
+    newsections = [s.name for s in binary2.sections]
+    # print(oldsections)
+    # print(newsections)
+    if " ".join(newsections) == " ".join(oldsections):
+        return 0
+    else:
+        return 1
+        # assert " ".join(newsections) != " ".join(oldsections), "no modified sections"
+
+
 def test_section_add(bytez):
     binary = lief.PE.parse(bytez)
     manip = MalwareManipulator(bytez)
@@ -300,6 +500,37 @@ def test_section_add(bytez):
     else:
         return 1
         # assert len(newsections) != len(oldsections), "no new sections"
+
+
+def test_section_append(bytez):
+    binary = lief.PE.parse(bytez)
+    # FAILS if there's insufficient room to add to the section 
+    manip = MalwareManipulator(bytez)
+    bytez2 = manip.section_append(bytez)
+    binary2 = lief.PE.parse(bytez2)
+    oldsections = [len(s.content) for s in binary.sections]
+    newsections = [len(s.content) for s in binary2.sections]
+    print(oldsections)
+    print(newsections)
+    if sum(newsections) == sum(oldsections):
+        return 0
+    else:
+        return 1
+        # assert sum(newsections) != sum(oldsections), "no appended section"
+
+
+def test_create_new_entry(bytez):
+    binary = lief.PE.parse(bytez)
+    manip = MalwareManipulator(bytez)
+    bytez2 = manip.create_new_entry(bytez)
+    binary2 = lief.PE.parse(bytez2)
+    # print(binary.entrypoint)
+    # print(binary2.entrypoint)
+    if binary.entrypoint == binary2.entrypoint:
+        return 0
+    else:
+        return 1
+        # assert binary.entrypoint != binary2.entrypoint, "no new entry point"
 
 
 def test_remove_signature(bytez):
@@ -324,3 +555,15 @@ def test_remove_debug(bytez):
     else:
         return 1
         # assert binary2.has_debug == False, "failed to remove debug"
+
+
+def test_break_optional_header_checksum(bytez):
+    binary = lief.PE.parse(bytez)
+    manip = MalwareManipulator(bytez)
+    bytez2 = manip.break_optional_header_checksum(bytez)
+    binary2 = lief.PE.parse(bytez2)
+    if binary2.optional_header.checksum != 0:
+        return 0
+    else:
+        return 1
+        # assert binary2.optional_header.checksum == 0, "checksum not zero :("
