@@ -81,6 +81,10 @@ class MalwareManipulator(object):
         letters = string.ascii_letters + string.digits
         return ''.join([random.choice(letters) for _ in range(length)])
 
+    # 生成随机函数名
+    def generate_random_name2(self, minlength=6):
+        return "".join(chr(random.randrange(ord('.'), ord('z'))) for _ in range(6))
+
     # add a function to the import address table that is random name
     def imports_append2(self, seed=None):
         # add (unused) imports
@@ -107,7 +111,6 @@ class MalwareManipulator(object):
         libname = random.choice(list(COMMON_IMPORTS.keys()))
         funcname = random.choice(list(COMMON_IMPORTS[libname]))
         lowerlibname = libname.lower()
-
         # find this lib in the imports, if it exists
         lib = None
         for im in binary.imports:

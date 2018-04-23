@@ -1,3 +1,5 @@
-from gym_malware.envs.controls import manipulate2 as manipulate
+from graduation.tools.action import MalwareManipulator
 
-print(manipulate.ACTION_TABLE.keys())
+manip = MalwareManipulator(None)
+print(manip.generate_random_name())
+print(manip.generate_random_name2())

@@ -19,6 +19,7 @@ class QFunction(chainer.Chain):
         net = []
         inpdim = obs_size
         for i, n_hid in enumerate(n_hidden_channels):
+            # [2350, 1024]
             net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
             net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
             net += [('_act{}'.format(i), F.relu)]
@@ -54,7 +55,7 @@ def create_ddqn_agent(env):
     n_actions = env.action_space.n
 
     q_func = QFunction(obs_dim, n_actions)
-    q_func.to_gpu(0)
+    # q_func.to_gpu(0)
 
     optimizer = chainer.optimizers.Adam(eps=1e-2)
     optimizer.setup(q_func)
