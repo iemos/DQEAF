@@ -2,8 +2,8 @@ import random
 from collections import deque
 
 import gym
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 # Hyper Parameters for DQN
 GAMMA = 0.9  # discount factor for target Q
@@ -11,6 +11,7 @@ INITIAL_EPSILON = 0.5  # starting value of epsilon
 FINAL_EPSILON = 0.01  # final value of epsilon
 REPLAY_SIZE = 10000  # experience replay buffer size
 BATCH_SIZE = 32  # size of minibatch
+
 
 class DQN():
     # DQN Agent
@@ -147,6 +148,7 @@ EPISODE = 10000  # Episode limitation
 STEP = 300  # Step limitation in an episode
 TEST = 10  # The number of experiment test every 100 episode
 
+
 def main():
     # initialize OpenAI Gym env and dqn agent
     env = gym.make(ENV_NAME)
@@ -160,7 +162,6 @@ def main():
             action = agent.egreedy_action(state)  # e-greedy action for train
             next_state, reward, done, _ = env.step(action)
             # Define reward for agent
-            reward_agent = -1 if done else 0.1
             agent.perceive(state, action, reward, next_state, done)
             state = next_state
             if done:
@@ -182,6 +183,7 @@ def main():
             print('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
             if ave_reward >= 200:
                 break
+
 
 if __name__ == '__main__':
     main()

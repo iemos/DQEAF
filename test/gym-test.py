@@ -75,7 +75,7 @@ def trainingAgent(agent, env):
         done = False
         R = 0  # return (sum of rewards)
         t = 0  # time step
-        while not done and t < max_episode_len:
+        while not done:
             # Uncomment to watch the behaviour
             # env.render()
             action = agent.act_and_train(obs, reward)
@@ -127,7 +127,7 @@ for i_episode in range(10):
     observation = env.reset()
     R = 0
     for t in range(200):
-        env.render()
+        # env.render()
         action = agent.act(observation)
         observation, reward, done, info = env.step(action)
         R += reward

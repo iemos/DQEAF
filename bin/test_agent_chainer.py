@@ -77,17 +77,18 @@ def test_models(model, score_model, agent_method):
     # agent.load(model)
     success, _ = evaluate(agent_policy(agent))
 
-    env_score = gym.make('malware-score-test-v0')
-    agent_score = agent_method(env_score)
-    last_model_dir = get_latest_model_dir_from(score_model)
-    agent_score.load(last_model_dir)
-    # agent_score.load(score_model)
-    score_success, _ = evaluate(agent_policy(agent_score))
-    random_result = "Success rate of random chance: {}\n".format(len(random_success) / total)
+    # env_score = gym.make('malware-score-test-v0')
+    # agent_score = agent_method(env_score)
+    # last_model_dir = get_latest_model_dir_from(score_model)
+    # agent_score.load(last_model_dir)
+    # # agent_score.load(score_model)
+    # score_success, _ = evaluate(agent_policy(agent_score))
+    random_result = "{}({})".format(len(random_success) / total, random_success)
     print(random_result)
-    blackbox_result = "Success rate (black box): {}\n".format(len(success) / total)
+    blackbox_result = "{}({})".format(len(success) / total, success)
     print(blackbox_result)
-    score_result = "Success rate (score): {}\n".format(len(score_success) / total)
-    print(score_result)
+    # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
+    # print(score_result)
     # return random_result, '', ''
-    return random_result, blackbox_result, score_result
+    return random_result, blackbox_result, ''
+    # return random_result, blackbox_result, score_result

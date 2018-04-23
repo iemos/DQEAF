@@ -9,7 +9,7 @@ from bin.train_agent_chainer2 import *
 model_dir = "models2/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
-parser.add_argument('--model-name', type=str, default='201804210243')
+parser.add_argument('--model-name', type=str, default='201804221618')
 parser.add_argument('--rounds', type=int, default=10000)
 args = parser.parse_args()
 
