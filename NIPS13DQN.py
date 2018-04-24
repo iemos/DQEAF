@@ -149,7 +149,8 @@ ENV_NAME = 'malware-v0'
 ENV_TEST_NAME = 'malware-test-v0'
 EPISODE = 1000  # Episode limitation
 STEP = 100  # Step limitation in an episode
-TEST = 200  # The number of experiment test every 100 episode
+TEST = 10  # The number of experiment test every 100 episode
+TEST_SAMPLE_COUNT = 200
 
 
 def main():
@@ -173,18 +174,21 @@ def main():
 
     env_test = gym.make(ENV_TEST_NAME)
     # Testing...
-    total_reward = 0
-    for i in range(TEST):
-        state = env.reset()
-        done = False
-        while not done:
-            # env.render()
-            action = agent.action(state)  # direct action for test
-            state, reward, done, _ = env.step(action)
-            total_reward += reward
+    for _ in range(TEST):
+        total_reward = 0
+        for i in range(TEST_SAMPLE_COUNT):
+            state = env_test.reset()
+            done = False
+            while not done:
+                # env.render()
+                action = agent.action(state)  # direct action for test
+                state, reward, done, _ = env_test.step(action)
+                total_reward += reward
 
-    ave_reward = total_reward / TEST
-    print('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
+        ave_reward = total_reward / TEST_SAMPLE_COUNT
+        print('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
+        with open('NIS13DQN.txt', 'a+') as f:
+            f.write('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
 
 
 if __name__ == '__main__':
