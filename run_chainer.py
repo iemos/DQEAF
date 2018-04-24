@@ -35,6 +35,8 @@ test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 
 # start time
 training_start_time = datetime.datetime.now()
+with open(test_result, 'a+') as f:
+    f.write("training started: {}\n".format(training_start_time))
 
 # allow graduation_agent to see scores
 # train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
@@ -44,9 +46,8 @@ train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_
 
 training_end_time = datetime.datetime.now()
 # 训练时间，分钟数
-training_elapse = round((training_end_time - training_start_time).seconds / 60)
 with open(test_result, 'a+') as f:
-    f.write("training costs {} minutes\n".format(training_elapse))
+    f.write("training end {}\n".format(training_end_time))
     f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
 
 # test
