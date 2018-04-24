@@ -39,8 +39,7 @@ class DQN():
             print("Successfully loaded:", checkpoint.model_checkpoint_path)
 
         else:
-            print("Could not find old network weights"
-                  )
+            print("Could not find old network weights")
 
         global summary_writer
         summary_writer = tf.summary.FileWriter('logs', graph=self.session.graph)
@@ -73,6 +72,7 @@ class DQN():
         self.cost = tf.reduce_mean(tf.square(self.y_input - Q_action))
 
         tf.summary.scalar("loss", self.cost)
+
         global merged_summary_op
         merged_summary_op = tf.summary.merge_all()
 
