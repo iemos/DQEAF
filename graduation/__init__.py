@@ -3,10 +3,12 @@ from gym.envs.registration import register
 # get samples for environment
 from graduation.tools import interface
 
-sha256 = interface.get_available_sha256()
 # create a holdout set
 from sklearn.model_selection import train_test_split
 import numpy as np
+
+# sha256保存了所有样本名的数组
+sha256 = interface.get_available_sha256()
 
 np.random.seed(123)
 sha256_train, sha256_holdout = train_test_split(sha256, test_size=200)
