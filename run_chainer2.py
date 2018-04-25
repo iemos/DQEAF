@@ -30,6 +30,8 @@ test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 
 # start time
 training_start_time = datetime.datetime.now()
+with open(test_result, 'a+') as f:
+    f.write("training started: {}\n".format(training_start_time))
 
 # allow graduation_agent to see scores
 # train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
@@ -38,17 +40,15 @@ training_start_time = datetime.datetime.now()
 train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
 
 training_end_time = datetime.datetime.now()
-# 训练时间，分钟数
-training_elapse = round((training_end_time - training_start_time).seconds / 60)
 with open(test_result, 'a+') as f:
-    f.write("训练共耗时{}分钟\n".format(training_elapse))
-    f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
+    f.write("training end {}\n".format(training_end_time))
+    f.write("action:")
+    for key in manipulate.ACTION_TABLE:
+        f.write(key)
+        f.write(',')
 
 # test
 for i in range(3):
     with open(test_result, 'a+') as f:
         result1, result2, result3 = test_models(model, score_model, agent_method)
-        f.write("{}:\n".format(i))
-        f.write("{}".format(result1))
-        f.write("{}".format(result2))
-        f.write("{}".format(result3))
+        f.write("{}:{}, {}, {}\n".format(i, result1, result2, result3))

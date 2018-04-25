@@ -161,6 +161,40 @@ class MalwareManipulator(object):
         self.bytez = self.__binary_to_bytez(binary)
         return self.bytez
 
+        # create a new(unused) sections
+
+    def section_add_org(self, seed=None):
+        random.seed(seed)
+        binary = lief.PE.parse(self.bytez)
+        # 建立一个section
+        new_section = lief.PE.Section(
+            "".join(chr(random.randrange(ord('.'), ord('z'))) for _ in range(6)))
+
+        # fill with random content
+        upper = random.randrange(256)
+        L = self.__random_length()
+        new_section.content = [random.randint(0, upper) for _ in range(L)]
+
+        new_section.virtual_address = max(
+            [s.virtual_address + s.size for s in binary.sections])
+
+        # add a new empty section
+        binary.add_section(new_section,
+                           random.choice([
+                               lief.PE.SECTION_TYPES.BSS,
+                               lief.PE.SECTION_TYPES.DATA,
+                               lief.PE.SECTION_TYPES.EXPORT,
+                               lief.PE.SECTION_TYPES.IDATA,
+                               lief.PE.SECTION_TYPES.RELOCATION,
+                               lief.PE.SECTION_TYPES.RESOURCE,
+                               lief.PE.SECTION_TYPES.TEXT,
+                               lief.PE.SECTION_TYPES.TLS_,
+                               lief.PE.SECTION_TYPES.UNKNOWN,
+                           ]))
+
+        self.bytez = self.__binary_to_bytez(binary)
+        return self.bytez
+
     # manipulate (break) signature
     def remove_signature(self, seed=None):
         random.seed(seed)
@@ -197,7 +231,7 @@ class MalwareManipulator(object):
 ACTION_TABLE = {
     'overlay_append': 'overlay_append',
     'imports_append_org': 'imports_append_org',
-    'section_add': 'section_add',
+    'section_add_org': 'section_add_org',
     'remove_signature': 'remove_signature',
     # 'remove_debug': 'remove_debug',
 }
