@@ -46,11 +46,12 @@ train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
-    f.write("training end {}\n".format(training_end_time))
+    f.write("training end: {}\n".format(training_end_time))
     f.write("action:")
     for key in manipulate.ACTION_TABLE:
         f.write(key)
         f.write(',')
+    f.write("\n")
 
 # test
 for i in range(3):
