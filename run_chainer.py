@@ -1,5 +1,5 @@
-# encoding utf-8
 #! /usr/bin/python
+
 import argparse
 import datetime
 
@@ -18,7 +18,7 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=1000)
+parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 args = parser.parse_args()
 
@@ -45,10 +45,12 @@ with open(test_result, 'a+') as f:
 train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
 
 training_end_time = datetime.datetime.now()
-# 训练时间，分钟数
 with open(test_result, 'a+') as f:
     f.write("training end {}\n".format(training_end_time))
-    f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
+    f.write("action:")
+    for key in manipulate.ACTION_TABLE:
+        f.write(key)
+        f.write(',')
 
 # test
 for i in range(3):

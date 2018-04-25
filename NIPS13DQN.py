@@ -147,7 +147,7 @@ class DQN():
 # ENV_NAME = 'CartPole-v0'
 ENV_NAME = 'malware-v0'
 ENV_TEST_NAME = 'malware-test-v0'
-EPISODE = 1000  # Episode limitation
+EPISODE = 5000  # Episode limitation
 STEP = 100  # Step limitation in an episode
 TEST = 10  # The number of experiment test every 100 episode
 TEST_SAMPLE_COUNT = 200
@@ -172,9 +172,11 @@ def main():
             if done:
                 break
 
-    env_test = gym.make(ENV_TEST_NAME)
     # Testing...
-    for _ in range(TEST):
+    # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
+    # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
+    env_test = gym.make(ENV_TEST_NAME)
+    for tt in range(TEST):
         total_reward = 0
         for i in range(TEST_SAMPLE_COUNT):
             state = env_test.reset()
@@ -183,12 +185,14 @@ def main():
                 # env.render()
                 action = agent.action(state)  # direct action for test
                 state, reward, done, _ = env_test.step(action)
+                # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                 total_reward += reward
 
-        ave_reward = total_reward / TEST_SAMPLE_COUNT
-        print('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
+        ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
+
         with open('NIS13DQN.txt', 'a+') as f:
-            f.write('episode: ', episode, 'Evaluation Average Reward:', ave_reward)
+            f.write('episode:{} Evaluation Average Reward:{}\n'.format(tt, ave_reward))
+            print('episode:{} Evaluation Average Reward:{}'.format(tt, ave_reward))
 
 
 if __name__ == '__main__':
