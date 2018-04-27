@@ -6,17 +6,11 @@ from bin.test_agent_pca_chainer3 import test_models
 from bin.train_agent_pca_chainer3 import *
 from gym_malware.envs.controls import manipulate2 as manipulate
 
-# 用于快速调用chainerrl的训练方法，参数如下：
-# python run_chainer.py --model-name name --rounds rounds --agent dqn(or acer)
-# 1. 保存的模型名称
-# 2. 训练的次数
-# 3. 使用的创建agent方法
-
 model_dir = "models3/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=1)
 args = parser.parse_args()
 
 model_saved_name = args.model_name
