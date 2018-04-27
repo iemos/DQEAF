@@ -9,13 +9,8 @@ file_list = interface.get_available_sha256()
 action_test_dict = {
     "test_overlay_append": 0,
     "test_imports_append": 0,
-    "test_section_rename": 0,
     "test_section_add": 0,
-    "test_create_new_entry": 0,
-    "test_remove_signature": 0,
-    "test_remove_debug": 0,
-    "test_break_optional_header_checksum": 0
-    # "test_section_append": 0
+    "test_remove_signature": 0
 }
 bad_file_list = []
 
