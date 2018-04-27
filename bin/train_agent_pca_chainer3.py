@@ -100,7 +100,7 @@ def create_ddqn_agent(env):
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
     # ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
-    # PCA_on_training_model()
+    PCA_on_training_model()
     ENV_NAME = 'malware-pca-v0'
     env = gym.make(ENV_NAME)
     np.random.seed(123)
