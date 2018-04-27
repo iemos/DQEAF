@@ -10,7 +10,7 @@ model_dir = "models3/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=1)
 args = parser.parse_args()
 
 model_saved_name = args.model_name
