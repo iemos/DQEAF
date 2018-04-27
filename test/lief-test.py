@@ -10,10 +10,9 @@ from gym_malware.envs.utils import interface
 
 # 从bytez字节parse，该方法只能使用lief 0.7版本
 # Mac系统下使用0.8要报错，原因未知
-binary1 = lief.PE.parse(interface.fetch_file("Backdoor.Win32.PcClient.geq"))
+binary = lief.PE.parse(interface.fetch_file("Backdoor.Win32.PcClient.geq"))
 # binary1 = lief.PE.parse(interface.fetch_file("Backdoor.Win32.PcClient.gdv"))
-print(binary1.has_relocations)
-print(lief.PE.DATA_DIRECTORY.SECURITY)
+print(binary.has_relocations)
 # print(binary1.optional_header.checksum)
 
 ######################
