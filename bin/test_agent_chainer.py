@@ -41,6 +41,8 @@ def get_latest_model_dir_from(basedir):
     dirs = os.listdir(basedir)
     lastmodel = -1
     for d in dirs:
+        # 假如没有合适的目录名，就替换下_finish
+        d = d.replace("_finish", "")
         try:
             if int(d) > lastmodel:
                 lastmodel = int(d)

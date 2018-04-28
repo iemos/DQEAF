@@ -80,8 +80,10 @@ def trainingAgent(agent, env):
             # env.render()
             action = agent.act_and_train(obs, reward)
             obs, reward, done, _ = env.step(action)
+            print("reward{}".format(reward))
             R += reward
             t += 1
+        print("done")
         if i % 10 == 0:
             print('episode:', i,
                   'R:', R)
