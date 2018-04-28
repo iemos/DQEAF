@@ -77,6 +77,7 @@ def test_models(model, score_model, agent_method):
     env = gym.make('malware-pca-test-v0')
     agent = agent_method(env)
     last_model_dir = get_latest_model_dir_from(model)
+    print(last_model_dir)
     agent.load(last_model_dir)
     # agent.load(model)
     success, _ = evaluate(agent_policy(agent))
@@ -123,9 +124,8 @@ def load_PCA_model():
     return V, scale_, min_, pca_component
 
 
-def compute_observation(bytez, feature_min_, V, PCA_component, feature_scale_=(0, 1)):
+def compute_observation(bytez, feature_min_, V, PCA_component, feature_scale_):
     fe = pefeatures.PEFeatureExtractor()
-
     raw_features = fe.extract(bytez)
     scaled_features = scale_min_imp(raw_features, feature_scale_, feature_min_)
     observation = np.dot(scaled_features[np.newaxis, :], V.T[:, :PCA_component])
@@ -134,5 +134,5 @@ def compute_observation(bytez, feature_min_, V, PCA_component, feature_scale_=(0
 
 def get_ob(bytez):
     V, scale_, min_, pca_component = load_PCA_model()
-    ob = compute_observation(bytez, min_, V, pca_component)
+    ob = compute_observation(bytez, min_, V, pca_component, scale_)
     return ob
