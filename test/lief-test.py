@@ -1,19 +1,17 @@
 import lief
 
 from gym_malware.envs.utils import interface
-
-# 从文件名parse
-# file_path = interface.get_sample_real_path("Backdoor.Win32.Hupigon.zah")
-# binary = lief.parse(file_path)
-# print(binary)
-# print("-----------------------------")
+from gym_malware.envs.controls import manipulate2 as manipulate
 
 # 从bytez字节parse，该方法只能使用lief 0.7版本
 # Mac系统下使用0.8要报错，原因未知
-binary = lief.PE.parse(interface.fetch_file("Backdoor.Win32.PcClient.geq"))
-# binary1 = lief.PE.parse(interface.fetch_file("Backdoor.Win32.PcClient.gdv"))
-print(binary.has_relocations)
-# print(binary1.optional_header.checksum)
+byte = interface.fetch_file("Backdoor.Win32.PcClient.geq");
+binary = lief.PE.parse(byte)
+print(binary.imported_functions)
+
+man = manipulate.MalwareManipulator(byte)
+binary2 = lief.PE.parse(man.imports_append_org())
+print(binary2.imported_functions)
 
 ######################
 # for imported_library in binary.imports:
@@ -22,3 +20,4 @@ print(binary.has_relocations)
 #         if not func.is_ordinal:
 #             print(func.name)
 #         print(func.iat_address)
+
