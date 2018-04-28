@@ -9,7 +9,7 @@ from bin.train_agent_chainer2 import *
 model_dir = "models2/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
-parser.add_argument('--model-name', type=str, default='201804250222')
+parser.add_argument('--model-name', type=str, default='201804281150')
 parser.add_argument('--rounds', type=int, default=10000)
 args = parser.parse_args()
 
@@ -17,8 +17,8 @@ model_saved_name = args.model_name
 rounds = args.rounds
 agent_method = create_ddqn_agent
 
-score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
-model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
+score_model = "{}{}_score_{}/{}_finish".format(model_dir, model_saved_name, rounds, rounds)
+model = "{}{}_{}/{}_finish".format(model_dir, model_saved_name, rounds, rounds)
 test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 
 for i in range(3):

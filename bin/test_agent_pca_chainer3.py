@@ -36,24 +36,6 @@ def evaluate(action_function):
                 break
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
-
-# 获取保存的模型目录
-def get_latest_model_dir_from(basedir):
-    dirs = os.listdir(basedir)
-    lastmodel = -1
-    for d in dirs:
-        # 假如没有合适的目录名，就替换下_finish
-        d = d.replace("_finish", "")
-        try:
-            if int(d) > lastmodel:
-                lastmodel = int(d)
-        except ValueError:
-            continue
-
-    assert lastmodel >= 0, "No saved models!"
-    return os.path.join(basedir, str(lastmodel))
-
-
 # 测试模型，传入两种model的路径
 def test_models(model, score_model, agent_method):
     # baseline: choose actions at random
@@ -78,17 +60,12 @@ def test_models(model, score_model, agent_method):
     # env = gym.make('malware-test-v0')
     env = gym.make('malware-pca-test-v0')
     agent = agent_method(env)
-    last_model_dir = get_latest_model_dir_from(model)
-    print(last_model_dir)
-    agent.load(last_model_dir)
-    # agent.load(model)
+    agent.load(model)
     success, _ = evaluate(agent_policy(agent))
 
     # env_score = gym.make('malware-score-test-v0')
     # agent_score = agent_method(env_score)
-    # last_model_dir = get_latest_model_dir_from(score_model)
-    # agent_score.load(last_model_dir)
-    # # agent_score.load(score_model)
+    # agent_score.load(score_model)
     # score_success, _ = evaluate(agent_policy(agent_score))
     # random_result = "{}({}/{})".format(len(random_success) / total, len(random_success), total)
     # print(random_result)
