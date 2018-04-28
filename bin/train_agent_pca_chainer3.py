@@ -59,9 +59,7 @@ class QFunction(chainer.Chain):
 # 创建ddqn agent
 def create_ddqn_agent(env):
     obs_dim = env.observation_space.shape[1]
-    print("obs{}".format(obs_dim))
     n_actions = env.action_space.n
-    print("action{}".format(n_actions))
 
     q_func = QFunction(obs_dim, n_actions)
     # q_func.to_gpu(0)
