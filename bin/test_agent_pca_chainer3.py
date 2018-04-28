@@ -55,9 +55,10 @@ def get_latest_model_dir_from(basedir):
 # 测试模型，传入两种model的路径
 def test_models(model, score_model, agent_method):
     # baseline: choose actions at random
-    random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-    random_success, misclassified = evaluate(random_action)
-    total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+    # random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+    # random_success, misclassified = evaluate(random_action)
+    # total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+    total = 200
 
     fe = pefeatures.PEFeatureExtractor()
 
@@ -86,8 +87,8 @@ def test_models(model, score_model, agent_method):
     # agent_score.load(last_model_dir)
     # # agent_score.load(score_model)
     # score_success, _ = evaluate(agent_policy(agent_score))
-    random_result = "{}({}/{})".format(len(random_success) / total, len(random_success), total)
-    print(random_result)
+    # random_result = "{}({}/{})".format(len(random_success) / total, len(random_success), total)
+    # print(random_result)
     blackbox_result = "{}({}/{})".format(len(success) / total, len(success), total)
     print(blackbox_result)
     # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
