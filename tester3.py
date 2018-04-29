@@ -9,7 +9,7 @@ from gym_malware.envs.controls import manipulate2 as manipulate
 model_dir = "models3/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
-parser.add_argument('--model-name', type=str, default='201804281150')
+parser.add_argument('--model-name', type=str, default='201804290416')
 parser.add_argument('--rounds', type=int, default=5000)
 args = parser.parse_args()
 

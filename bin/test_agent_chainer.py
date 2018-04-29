@@ -10,6 +10,7 @@ ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
 import gym
 import gym_malware
+import os
 
 # 动作评估
 def evaluate(action_function):
@@ -35,7 +36,7 @@ def evaluate(action_function):
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
 # 测试模型，传入两种model的路径
-def test_models(model, score_model, agent_method):
+def test_models(model, score_model, agent_method, sub_model):
     # baseline: choose actions at random
     random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
     random_success, misclassified = evaluate(random_action)
@@ -55,7 +56,7 @@ def test_models(model, score_model, agent_method):
     # ddqn
     env = gym.make('malware-test-v0')
     agent = agent_method(env)
-    agent.load(model)
+    agent.load(os.path.join(model, sub_model))
     success, _ = evaluate(agent_policy(agent))
 
     # env_score = gym.make('malware-score-test-v0')

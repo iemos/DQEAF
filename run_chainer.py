@@ -14,11 +14,10 @@ from gym_malware.envs.controls import manipulate2 as manipulate
 # 2. 训练的次数
 # 3. 使用的创建agent方法
 
-model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=4000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 args = parser.parse_args()
 
@@ -29,9 +28,11 @@ if args.agent == "dqn":
 else:
     agent_method = create_acer_agent
 
+model_dir = "models/"
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
+sub_model = "/{}_finish".format(rounds)
 
 # start time
 training_start_time = datetime.datetime.now()
@@ -56,5 +57,5 @@ with open(test_result, 'a+') as f:
 # test
 for i in range(3):
     with open(test_result, 'a+') as f:
-        result1, result2, result3 = test_models(model, score_model, agent_method)
+        result1, result2, result3 = test_models(model, score_model, agent_method, sub_model)
         f.write("{}:{}, {}, {}\n".format(i, result1, result2, result3))
