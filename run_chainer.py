@@ -17,7 +17,7 @@ from gym_malware.envs.controls import manipulate2 as manipulate
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=4000)
+parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 args = parser.parse_args()
 
@@ -32,7 +32,7 @@ model_dir = "models/"
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
-sub_model = "/{}_finish".format(rounds)
+sub_model = "{}_finish".format(rounds)
 
 # start time
 training_start_time = datetime.datetime.now()

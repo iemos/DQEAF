@@ -27,7 +27,7 @@ model_dir = "models2/"
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
-sub_model = "/{}_finish".format(rounds)
+sub_model = "{}_finish".format(rounds)
 
 # start time
 training_start_time = datetime.datetime.now()
