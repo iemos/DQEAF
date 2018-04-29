@@ -39,12 +39,9 @@ def evaluate(action_function):
 # 测试模型，传入两种model的路径
 def test_models(model, score_model, agent_method, sub_model):
     # baseline: choose actions at random
-    # random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-    # random_success, misclassified = evaluate(random_action)
-    # total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
-    total = 200
-
-    fe = pefeatures.PEFeatureExtractor()
+    random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+    random_success, misclassified = evaluate(random_action)
+    total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
     def agent_policy(agent):
         def f(bytez):
@@ -67,17 +64,15 @@ def test_models(model, score_model, agent_method, sub_model):
     # agent_score = agent_method(env_score)
     # agent_score.load(score_model)
     # score_success, _ = evaluate(agent_policy(agent_score))
-    # random_result = "{}({}/{})".format(len(random_success) / total, len(random_success), total)
-    # print(random_result)
-    blackbox_result = "{}({}/{})".format(len(success) / total, len(success), total)
+    random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
+    print(random_result)
+    blackbox_result = "blackbox:{}({}/{})".format(len(success) / total, len(success), total)
     print(blackbox_result)
     # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
     # print(score_result)
     # return random_result, '', ''
     # return random_result, blackbox_result, score_result
-    # return random_result, blackbox_result, ''
-    return '', blackbox_result, ''
-
+    return random_result, blackbox_result, ''
 
 # read csv
 def readDictCSV(filename=""):
