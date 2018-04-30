@@ -4,7 +4,7 @@ from collections import deque
 import gym
 import numpy as np
 import tensorflow as tf
-import graduation
+import gym_malware
 
 # Hyper Parameters for DQN
 GAMMA = 0.9  # discount factor for target Q
