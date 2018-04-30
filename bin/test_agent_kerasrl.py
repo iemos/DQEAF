@@ -83,3 +83,4 @@ def test_models(model, score_model, test_random=False):
     # print(score_result)
     # return random_result, '', ''
     return random_result, blackbox_result, ''
+
