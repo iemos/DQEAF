@@ -37,11 +37,13 @@ def evaluate(action_function):
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
 # 测试模型，传入两种model的路径
-def test_models(model, score_model, agent_method, sub_model):
+def test_models(model, score_model, agent_method, sub_model, test_random=False):
+    total = 200
     # baseline: choose actions at random
-    random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-    random_success, misclassified = evaluate(random_action)
-    total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+    if test_random:
+        random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+        random_success, misclassified = evaluate(random_action)
+        total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
     def agent_policy(agent):
         def f(bytez):
@@ -64,7 +66,12 @@ def test_models(model, score_model, agent_method, sub_model):
     # agent_score = agent_method(env_score)
     # agent_score.load(score_model)
     # score_success, _ = evaluate(agent_policy(agent_score))
-    random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
+
+    if test_random:
+        random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
+    else:
+        random_result = "random:未测试"
+
     print(random_result)
     blackbox_result = "blackbox:{}({}/{})".format(len(success) / total, len(success), total)
     print(blackbox_result)
