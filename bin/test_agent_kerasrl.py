@@ -32,11 +32,12 @@ def evaluate(action_function):
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
 
-def test_models(model, score_model):
+def test_models(model, score_model, test_random=False):
     # baseline: choose actions at random
-    random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-    random_success, misclassified = evaluate(random_action)
-    total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+    if test_random:
+        random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+        random_success, misclassified = evaluate(random_action)
+        total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
     # option 1: Boltzmann sampling from Q-function network output
     softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
@@ -70,11 +71,15 @@ def test_models(model, score_model):
     # dqn_score_success, _ = evaluate(model_policy(dqn_score))
 
     # let's compare scores
-    with open("log_test_all.txt", 'a') as logfile:
-        logfile.write("Success rate (random chance): {}\n".format(len(random_success) / total))
-        logfile.write("Success rate (dqn): {}\n".format(len(dqn_success) / total))
-        # logfile.write("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))
+    if test_random:
+        random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
+    else:
+        random_result = "random:未测试"
 
-    print("Success rate of random chance: {}\n".format(len(random_success) / total))
-    print("Success rate (dqn): {}\n".format(len(dqn_success) / total))
-    # print("Success rate (dqn): {}\n".format(len(dqn_score_success) / total))
+    print(random_result)
+    blackbox_result = "blackbox:{}({}/{})".format(len(dqn_success) / total, len(dqn_success), total)
+    print(blackbox_result)
+    # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
+    # print(score_result)
+    # return random_result, '', ''
+    return random_result, blackbox_result, ''
