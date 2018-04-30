@@ -21,7 +21,7 @@ def createDictCSV(fileName="", dataDict={}):
 
 
 class QFunction(chainer.Chain):
-    def __init__(self, obs_size, n_actions, n_hidden_channels=[1024, 256]):
+    def __init__(self, obs_size, n_actions, n_hidden_channels=[256, 64]):
         super(QFunction, self).__init__()
         net = []
         inpdim = obs_size
@@ -98,7 +98,7 @@ def create_ddqn_agent(env):
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
     # ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
-    PCA_on_training_model()
+    # PCA_on_training_model()
     ENV_NAME = 'malware-pca-v0'
     env = gym.make(ENV_NAME)
     np.random.seed(123)
