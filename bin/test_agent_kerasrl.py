@@ -33,6 +33,7 @@ def evaluate(action_function):
 
 
 def test_models(model, score_model, test_random=False):
+    total = 200
     # baseline: choose actions at random
     if test_random:
         random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
