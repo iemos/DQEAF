@@ -71,13 +71,13 @@ def create_ddqn_agent(env):
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    explorer = chainerrl.explorers.Boltzmann()
-    # explorer = chainerrl.explorers.ConstantEpsilonGreedy(
-    #     epsilon=0.3, random_action_func=env.action_space.sample)
+    # explorer = chainerrl.explorers.Boltzmann()
+    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+        epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
-    replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=1000)
+    replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=10000)
 
     # Chainer only accepts numpy.float32 by default, make sure
     # a converter as a feature extractor function phi.
