@@ -10,7 +10,7 @@ scipy==0.19.1
 sklearn==0.0
 tensorflow==1.2.1
 theano==0.9.0
-chainer==2.0.1
-chainerrl==0.2.0
+chainer==3.4.0
+chainerrl==0.3.0
 https://github.com/lief-project/LIEF/releases/download/0.7.0/osx_lief-0.7.0_py3.6.tar.gz
 

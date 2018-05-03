@@ -75,7 +75,7 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
         test_env = gym.make(TEST_NAME)
 
         # evaluate the graduation_agent on a few episodes, drawing randomly from the test samples2
-        agent.test(test_env, nb_episodes=100, visualize=False)
+        agent.test(test_env, nb_episodes=100, visualize=True)
         history_test = test_env.history
 
     return agent, model, history_train, history_test

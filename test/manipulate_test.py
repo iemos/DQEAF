@@ -8,9 +8,9 @@ from gym_malware.envs.controls.manipulate2 import *
 file_list = interface.get_available_sha256()
 action_test_dict = {
     "test_overlay_append": 0,
-    # "test_imports_append": 0,
-    # "test_section_add": 0,
-    # "test_remove_signature": 0
+    "test_imports_append": 0,
+    "test_section_add": 0,
+    "test_remove_signature": 0
 }
 bad_file_list = []
 
@@ -38,7 +38,7 @@ for sha256 in file_list:
 # delete bad files
 for sha256 in bad_file_list:
     print("delete file:{}".format(sha256))
-    interface.delete_file(sha256)
+    # interface.delete_file(sha256)
 
 # sort and print result list
 print("total:{}".format(file_list.__len__()))
