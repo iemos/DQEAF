@@ -149,8 +149,8 @@ def load_PCA_model():
 def compute_observation(bytez, feature_min_, V, PCA_component, feature_scale_):
     fe = pefeatures.PEFeatureExtractor()
     raw_features = fe.extract(bytez)
-    scaled_features = scale_min_imp(raw_features, feature_scale_, feature_min_)
-    observation = np.dot(scaled_features[np.newaxis, :], V.T[:, :PCA_component])
+    # scaled_features = scale_min_imp(raw_features, feature_scale_, feature_min_)
+    observation = np.dot(raw_features[np.newaxis, :], V.T[:, :PCA_component])
     return observation
 
 
