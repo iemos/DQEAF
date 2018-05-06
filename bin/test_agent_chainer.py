@@ -35,15 +35,48 @@ def evaluate(action_function):
                 break
     return success, misclassified  # evasion accuracy is len(success) / len(sha256_holdout)
 
-# 测试模型，传入两种model的路径
-def test_models(model, score_model, agent_method, sub_model, test_random=False):
-    total = 200
-    # baseline: choose actions at random
-    if test_random:
-        random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-        random_success, misclassified = evaluate(random_action)
-        total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
+# 获取保存的模型目录
+def get_latest_model_dir_from(basedir):
+    dirs = os.listdir(basedir)
+    lastmodel = -1
+    for d in dirs:
+        try:
+            if int(d) > lastmodel:
+                lastmodel = int(d)
+        except ValueError:
+            continue
+
+    assert lastmodel >= 0, "No saved models!"
+    return os.path.join(basedir, str(lastmodel))
+
+
+# 获取保存的模型目录，返回一个list，遇到1000_finish的情况，需要把_finish去掉
+def get_model_dir_list(basedir):
+    model_list = set()
+    try:
+        dirs = os.listdir(basedir)
+    except:
+        print("No saved models!")
+        return model_list
+
+    for d in dirs:
+        try:
+            if d != "scores.txt":
+                model_list.add(os.path.join(basedir, d))
+        except ValueError:
+            continue
+
+    return model_list
+
+
+# 测试模型，传入两种model的路径
+def test_models(model, score_model, agent_method, test_result):
+    # baseline: choose actions at random
+    # random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+    # random_success, misclassified = evaluate(random_action)
+    # total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+    total = len(sha256_holdout)
     fe = pefeatures.PEFeatureExtractor()
 
     def agent_policy(agent):
@@ -58,24 +91,27 @@ def test_models(model, score_model, agent_method, sub_model, test_random=False):
     # ddqn
     env = gym.make('malware-test-v0')
     agent = agent_method(env)
-    agent.load(os.path.join(model, sub_model))
-    success, _ = evaluate(agent_policy(agent))
+    model_list = get_model_dir_list(model)
+    for mm in model_list:
+        agent.load(mm)
+        success, _ = evaluate(agent_policy(agent))
+        blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
+        with open(test_result, 'a+') as f:
+            # 记录black各个model目录的结果
+            f.write("{}->{}\n".format(mm, blackbox_result))
 
-    # env_score = gym.make('malware-score-test-v0')
-    # agent_score = agent_method(env_score)
-    # agent_score.load(score_model)
-    # score_success, _ = evaluate(agent_policy(agent_score))
+    with open(test_result, 'a+') as f:
+        f.write("==========================\n")
 
-    if test_random:
-        random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
-    else:
-        random_result = "random:untested"
+    env_score = gym.make('malware-score-test-v0')
+    agent_score = agent_method(env_score)
+    score_model_list = get_model_dir_list(score_model)
+    for smm in score_model_list:
+        agent_score.load(smm)
+        score_success, _ = evaluate(agent_policy(agent_score))
+        score_result = "score: {}({}/{})".format(len(score_success) / total, len(score_success), total)
+        with open(test_result, 'a+') as f:
+            f.write("{}->{}\n".format(smm, score_result))
 
-    print(random_result)
-    blackbox_result = "blackbox:{}({}/{})".format(len(success) / total, len(success), total)
-    print(blackbox_result)
-    # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
-    # print(score_result)
-    # return random_result, '', ''
-    return random_result, blackbox_result, ''
-    # return random_result, blackbox_result, score_result
+            # random_result = "Success rate of random chance: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+            # print(random_result)

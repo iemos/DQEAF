@@ -71,13 +71,13 @@ def create_ddqn_agent(env):
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    # explorer = chainerrl.explorers.Boltzmann()
-    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
-        epsilon=0.3, random_action_func=env.action_space.sample)
+    explorer = chainerrl.explorers.Boltzmann()
+    # explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+    #     epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
-    replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=10000)
+    replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=1000)
 
     # Chainer only accepts numpy.float32 by default, make sure
     # a converter as a feature extractor function phi.
@@ -97,9 +97,9 @@ def create_ddqn_agent(env):
 
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
-    # ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
+    ENV_NAME = 'malware-pca-score-v0' if use_score else 'malware-pca-v0'
     # PCA_on_training_model()
-    ENV_NAME = 'malware-pca-v0'
+    # ENV_NAME = 'malware-pca-v0'
     env = gym.make(ENV_NAME)
     np.random.seed(123)
     env.seed(123)
