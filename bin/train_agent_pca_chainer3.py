@@ -58,7 +58,7 @@ class QFunction(chainer.Chain):
 
 # 创建ddqn agent
 def create_ddqn_agent(env):
-    obs_dim = env.observation_space.shape[1]
+    obs_dim = env.observation_space.shape[0]
     n_actions = env.action_space.n
 
     q_func = QFunction(obs_dim, n_actions)
