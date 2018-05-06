@@ -70,7 +70,7 @@ def test_models(model, score_model, agent_method, sub_model, test_random=False):
     if test_random:
         random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
     else:
-        random_result = "random:未测试"
+        random_result = "random:untested"
 
     print(random_result)
     blackbox_result = "blackbox:{}({}/{})".format(len(success) / total, len(success), total)

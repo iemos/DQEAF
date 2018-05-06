@@ -111,12 +111,12 @@ class randomAgent():
 env = gym.make('CartPole-v0')
 
 # 随机的方法创建智能体
-# agent = randomAgent(env.action_space)
+agent = randomAgent(env.action_space)
 
 # 强化学习的方法创建智能体
-agent = createAgentDQN(env)
+# agent = createAgentDQN(env)
 # 现场训练模型
-trainingAgent(agent, env)
+# trainingAgent(agent, env)
 # 加载训练好的模型
 # agent.load("cart")
 
