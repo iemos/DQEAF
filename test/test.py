@@ -1,5 +1,9 @@
-from graduation.tools.action import MalwareManipulator
+import numpy as np
 
-manip = MalwareManipulator(None)
-print(manip.generate_random_name())
-print(manip.generate_random_name2())
+a = [[1, 2, 3, 4]]
+print(np.shape(a))
+# (1,4)
+
+a = [[1, 2, 3, 4]]
+print(np.shape(a[0]))
+# (4,)
