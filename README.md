@@ -43,3 +43,6 @@ Included as a default model is a [gradient boosted decision trees model] trained
 
 ### OpenAI framework malware environment
 We had redefined the environment based on the `gym-malware` previous work. ^_^
+
+## TODO
+1. 使用白师兄的n-grams
