@@ -46,3 +46,4 @@ We had redefined the environment based on the `gym-malware` previous work. ^_^
 
 ## TODO
 1. 使用白师兄的n-grams
+2. 使用tensorflow训练
