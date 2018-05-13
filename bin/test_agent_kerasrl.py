@@ -10,6 +10,7 @@ from gym_malware.envs.utils import interface, pefeatures
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
 
+# 动作评估
 def evaluate(action_function):
     success = []
     misclassified = []
@@ -25,7 +26,7 @@ def evaluate(action_function):
             print(action)
             success_dict[sha256].append(action)
             bytez = manipulate.modify_without_breaking(bytez, [action])
-            new_label = interface.get_label_local(bytez)  # test against local classifier
+            new_label = interface.get_label_local(bytez)
             if new_label == 0.0:
                 success.append(success_dict)
                 break
@@ -56,7 +57,7 @@ def test_models(model, score_model, test_random=False):
             # first, get features from bytez
             feats = fe.extract(bytez)
             q_values = model.predict(feats.reshape(shp))[0]
-            action_index = boltzmann_action(q_values)  # alternative: best_action
+            action_index = best_action(q_values)  # alternative: best_action
             return ACTION_LOOKUP[action_index]
 
         return f
@@ -75,7 +76,7 @@ def test_models(model, score_model, test_random=False):
     if test_random:
         random_result = "random:{}({}/{})".format(len(random_success) / total, len(random_success), total)
     else:
-        random_result = "random:未测试"
+        random_result = "random:untested"
 
     print(random_result)
     blackbox_result = "blackbox:{}({}/{})".format(len(dqn_success) / total, len(dqn_success), total)

@@ -17,7 +17,7 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=2000)
+parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 args = parser.parse_args()
 
@@ -49,5 +49,5 @@ with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
 
 # test
-for i in range(1):
+for i in range(2):
     test_models(model, score_model, agent_method, test_result)

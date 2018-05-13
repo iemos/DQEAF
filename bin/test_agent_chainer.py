@@ -24,7 +24,6 @@ def evaluate(action_function):
             misclassified.append(sha256)
             continue  # already misclassified, move along
         for _ in range(MAXTURNS):
-            # action_function代表一个RL中的智能体agent，输入样本，返回采用哪个action
             action = action_function(bytez)
             print(action)
             success_dict[sha256].append(action)
