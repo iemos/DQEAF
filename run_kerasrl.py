@@ -1,21 +1,20 @@
 import argparse
 import datetime
 
-import pickle
-
 from bin.test_agent_kerasrl import test_models
 from bin.train_agent_kerasrl import train_dqn_model
 from gym_malware.envs.controls import manipulate2 as manipulate
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=5000)
 args = parser.parse_args()
 
 rounds = args.rounds
 
-model_name = 'models/kerasrl_{}_{}.h5'.format(timestamp, rounds)
-test_result = "models/kerasrl_{}_{}.txt".format(timestamp, rounds)
+model_name = 'kerasrl/{}_{}.h5'.format(timestamp, rounds)
+model_score_name = 'kerasrl/score_{}_{}.h5'.format(timestamp, rounds)
+test_result = "kerasrl/{}_{}.txt".format(timestamp, rounds)
 
 # start time
 training_start_time = datetime.datetime.now()
@@ -23,20 +22,20 @@ with open(test_result, 'a+') as f:
     f.write("training started: {}\n".format(training_start_time))
 
 # black blox
-agent1, model1, history_train1, history_test1 = train_dqn_model([1024, 256], rounds=rounds, run_test=True,
-                                                                use_score=False)  # black blox
+
+_, model1, _, _ = train_dqn_model([1024, 256], rounds=rounds)  # black box
 model1.save(model_name, overwrite=True)
+
 # with open('history_blackbox_{}_{}.pickle'.format(timestamp, rounds), 'wb') as f:
 #     pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
+
+_, model2, _, _ = train_dqn_model([1024, 256], rounds=rounds, use_score=True)  # score
+model2.save(model_score_name, overwrite=True)
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
     f.write("training end: {}\n".format(training_end_time))
-    f.write("action:")
-    for key in manipulate.ACTION_TABLE:
-        f.write(key)
-        f.write(',')
-    f.write("\n")
+    f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
 
 # test
 for i in range(1):
