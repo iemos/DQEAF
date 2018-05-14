@@ -8,18 +8,19 @@ from bin.train_agent_kerasrl import train_dqn_model
 from gym_malware.envs.controls import manipulate2 as manipulate
 
 # timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
-timestamp = '201805130852'
+timestamp = '201805132111'
 parser = argparse.ArgumentParser()
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=5000)
 args = parser.parse_args()
 
 rounds = args.rounds
 
-model_name = 'models/kerasrl_{}_{}.h5'.format(timestamp, rounds)
-test_result = "models/kerasrl_{}_{}.txt".format(timestamp, rounds)
+model_name = 'kerasrl/{}_{}.h5'.format(timestamp, rounds)
+model_score_name = 'kerasrl/score_{}_{}.h5'.format(timestamp, rounds)
+test_result = "kerasrl/{}_{}.txt".format(timestamp, rounds)
 
 # test
 for i in range(1):
     with open(test_result, 'a+') as f:
-        result1, result2, result3 = test_models(model_name, '')
+        result1, result2, result3 = test_models(model_name, model_score_name, True)
         f.write("{}:{}, {}, {}\n".format(i, result1, result2, result3))
