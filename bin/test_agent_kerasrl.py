@@ -1,3 +1,4 @@
+import csv
 from collections import defaultdict
 
 import numpy as np
@@ -55,7 +56,8 @@ def test_models(model, score_model, test_random=False):
 
         def f(bytez):
             # first, get features from bytez
-            feats = fe.extract(bytez)
+            # feats = fe.extract(bytez)
+            feats = get_ob(bytez)
             q_values = model.predict(feats.reshape(shp))[0]
             action_index = best_action(q_values)  # alternative: best_action
             return ACTION_LOOKUP[action_index]
@@ -68,9 +70,9 @@ def test_models(model, score_model, test_random=False):
     # dqn = load_model('models/dqn.h5')
     dqn_success, _ = evaluate(model_policy(dqn))
 
-    # dqn_score = load_model(score_model)
+    dqn_score = load_model(score_model)
     # dqn_score = load_model('models/dqn_score.h5')
-    # dqn_score_success, _ = evaluate(model_policy(dqn_score))
+    score_success, _ = evaluate(model_policy(dqn_score))
 
     # let's compare scores
     if test_random:
@@ -81,8 +83,45 @@ def test_models(model, score_model, test_random=False):
     print(random_result)
     blackbox_result = "blackbox:{}({}/{})".format(len(dqn_success) / total, len(dqn_success), total)
     print(blackbox_result)
-    # score_result = "Success rate (score): {}\n".format(len(score_success) / total)
-    # print(score_result)
-    # return random_result, '', ''
-    return random_result, blackbox_result, ''
+    score_result = "score:{}({}/{})".format(len(score_success) / total, len(score_success), total)
+    print(score_result)
+    return random_result, blackbox_result, score_result
 
+
+# read csv
+def readDictCSV(filename=""):
+    with open(filename, 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        mydict = dict(reader)
+    return mydict
+
+
+# scale features
+def scale_min_imp(X, scale_, min_):
+    X *= scale_
+    X += min_
+    return X
+
+
+# load PCA model
+def load_PCA_model():
+    V = np.load("pca_models/V.npy")
+    scale_ = np.load("pca_models/scale.npy")
+    min_ = np.load("pca_models/min.npy")
+    dic_elements = readDictCSV("pca_models/dic_elements.csv")
+    pca_component = int(dic_elements['n_component'])
+    return V, scale_, min_, pca_component
+
+
+def compute_observation(bytez, feature_min_, V, PCA_component, feature_scale_):
+    fe = pefeatures.PEFeatureExtractor()
+    raw_features = fe.extract(bytez)
+    # scaled_features = scale_min_imp(raw_features, feature_scale_, feature_min_)
+    observation = np.dot(raw_features[np.newaxis, :], V.T[:, :PCA_component])
+    return observation
+
+
+def get_ob(bytez):
+    V, scale_, min_, pca_component = load_PCA_model()
+    ob = compute_observation(bytez, min_, V, pca_component, scale_)
+    return ob
