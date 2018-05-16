@@ -36,7 +36,6 @@ test_result = "{}{}_test_result.txt".format(model_dir, model_saved_name)
 training_start_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
     f.write("start->{}\n".format(training_start_time))
-    f.write("action：{}\n".format(manipulate.ACTION_TABLE.keys()))
 
 # allow graduation_agent to see scores
 train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
