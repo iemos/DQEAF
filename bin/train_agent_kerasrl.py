@@ -104,7 +104,8 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
 
 
 def train_dqn_model_EpsGreedy_Policy(layers, rounds=10000, run_test=False, use_score=False):
-    ENV_NAME = 'malware-pca-score-v0' if use_score else 'malware-pca-v0'
+    ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
+    # ENV_NAME = 'malware-pca-score-v0' if use_score else 'malware-pca-v0'
     env = gym.make(ENV_NAME)
     env.seed(123)
     nb_actions = env.action_space.n
