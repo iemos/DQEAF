@@ -72,10 +72,9 @@ def get_model_dir_list(basedir):
 # 测试模型，传入两种model的路径
 def test_models(model, score_model, agent_method, test_result):
     # baseline: choose actions at random
-    # random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
-    # random_success, misclassified = evaluate(random_action)
-    # total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
-    total = len(sha256_holdout)
+    random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+    random_success, misclassified = evaluate(random_action)
+    total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
     fe = pefeatures.PEFeatureExtractor()
 
     def agent_policy(agent):
@@ -86,6 +85,12 @@ def test_models(model, score_model, agent_method, test_result):
             return ACTION_LOOKUP[action_index]
 
         return f
+
+    # random
+    with open(test_result, 'a+') as f:
+        random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+        f.write(random_result)
+        f.write("==========================\n")
 
     # ddqn
     env = gym.make('malware-test-v0')
@@ -111,6 +116,3 @@ def test_models(model, score_model, agent_method, test_result):
         score_result = "score: {}({}/{})".format(len(score_success) / total, len(score_success), total)
         with open(test_result, 'a+') as f:
             f.write("{}->{}\n".format(smm, score_result))
-
-            # random_result = "Success rate of random chance: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
-            # print(random_result)
