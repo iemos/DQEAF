@@ -56,7 +56,7 @@ def test_models(model, score_model, test_random=False):
 
         def f(bytez):
             # first, get features from bytez
-            feats = fe.extract(bytez)
+            feats = fe.extract2(bytez)
             # feats = get_ob(bytez)
             q_values = model.predict(feats.reshape(shp))[0]
             action_index = best_action(q_values)  # alternative: best_action
