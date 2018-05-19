@@ -70,7 +70,7 @@ def get_model_dir_list(basedir):
 
 
 # 测试模型，传入两种model的路径
-def test_models(model, score_model, agent_method, test_result):
+def test_models(model, score_model, agent_method, test_result, test_random=True):
     # baseline: choose actions at random
     random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
     random_success, misclassified = evaluate(random_action)
@@ -80,17 +80,18 @@ def test_models(model, score_model, agent_method, test_result):
     def agent_policy(agent):
         def f(bytez):
             # first, get features from bytez
-            feats = fe.extract(bytez)
+            feats = fe.extract2(bytez)
             action_index = agent.act(feats)
             return ACTION_LOOKUP[action_index]
 
         return f
 
     # random
-    with open(test_result, 'a+') as f:
-        random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
-        f.write(random_result)
-        f.write("==========================\n")
+    if test_random:
+        with open(test_result, 'a+') as f:
+            random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+            f.write(random_result)
+            f.write("==========================\n")
 
     # ddqn
     env = gym.make('malware-test-v0')

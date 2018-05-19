@@ -1,9 +1,5 @@
-import numpy as np
+from gym_malware.envs.utils import interface
+from gym_malware.envs.utils.threedict import isPE
 
-a = [[1, 2, 3, 4]]
-print(np.shape(a))
-# (1,4)
-
-a = [[1, 2, 3, 4]]
-print(np.shape(a[0]))
-# (4,)
+filename = interface.get_sample_real_path("Backdoor.Win32.Hupigon.zay")
+print(isPE(filename))
