@@ -80,8 +80,6 @@ def trainingAgent(agent, env):
             # env.render()
             action = agent.act_and_train(obs, reward)
             obs, reward, done, _ = env.step(action)
-            print("obs{}".format(obs))
-            print("reward{}".format(reward))
             R += reward
             t += 1
         print("done")
@@ -121,16 +119,12 @@ trainingAgent(agent, env)
 # 加载训练好的模型
 # agent.load("cart")
 
-
-
-
-
 # 循环运行10次游戏，对agent进行测试
 for i_episode in range(10):
     observation = env.reset()
     R = 0
     for t in range(200):
-        # env.render()
+        env.render()
         action = agent.act(observation)
         observation, reward, done, info = env.step(action)
         R += reward

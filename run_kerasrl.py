@@ -21,7 +21,6 @@ with open(test_result, 'a+') as f:
     f.write("training started: {}\n".format(training_start_time))
 
 # black blox
-
 _, model1, _, _ = train_dqn_model_EpsGreedy_Policy([256, 256, 256], rounds=rounds)  # black box
 model1.save(model_name, overwrite=True)
 

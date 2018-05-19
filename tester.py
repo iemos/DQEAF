@@ -9,8 +9,8 @@ from bin.train_agent_chainer import *
 model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
-parser.add_argument('--model-name', type=str, default='201805031334')
-parser.add_argument('--rounds', type=int, default=6000)
+parser.add_argument('--model-name', type=str, default='201805182320')
+parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 args = parser.parse_args()
 
