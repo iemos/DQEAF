@@ -14,3 +14,4 @@ chainer==3.4.0
 chainerrl==0.3.0
 https://github.com/lief-project/LIEF/releases/download/0.7.0/osx_lief-0.7.0_py3.6.tar.gz
 
+# https://github.com/lief-project/LIEF/releases/download/0.7.0/windows_x64_lief-0.7.0_py3.6.zip
