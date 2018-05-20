@@ -17,8 +17,10 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=5000)
+parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
+parser.add_argument('--score', type=bool, default=False)
+parser.add_argument('--random', type=bool, default=False)
 args = parser.parse_args()
 
 model_saved_name = args.model_name
@@ -27,6 +29,8 @@ if args.agent == "dqn":
     agent_method = create_ddqn_agent
 else:
     agent_method = create_acer_agent
+test_score = args.score
+test_random = args.random
 
 score_model = "{}{}_score_{}".format(model_dir, model_saved_name, rounds)
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
@@ -38,9 +42,10 @@ with open(test_result, 'a+') as f:
     f.write("start->{}\n".format(training_start_time))
 
 # allow graduation_agent to see scores
-train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
+if test_score:
+    train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
 
-# black blox
+# black box
 train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
 
 training_end_time = datetime.datetime.now()
@@ -49,4 +54,5 @@ with open(test_result, 'a+') as f:
 
 # test
 for i in range(1):
-    test_models(model, score_model, agent_method, test_result)
+    test_models(model, score_model, agent_method, test_result,
+                test_score=test_score, test_random=test_random)

@@ -73,7 +73,7 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
 
     # memory can help a model during training
     # for this, we only consider a single malware sample (window_length=1) for each "experience"
-    memory = SequentialMemory(limit=32, ignore_episode_boundaries=False, window_length=window_length)
+    memory = SequentialMemory(limit=1000, ignore_episode_boundaries=False, window_length=window_length)
 
     # DQN graduation_agent as described in Mnih (2013) and Mnih (2015).
     # http://arxiv.org/pdf/1312.5602.pdf
@@ -83,7 +83,7 @@ def train_dqn_model(layers, rounds=10000, run_test=False, use_score=False):
                      target_model_update=1e-2, policy=policy, batch_size=16)
 
     # keras-rl allows one to use and built-in keras optimizer
-    agent.compile(RMSprop(lr=1e-3), metrics=['mae'])
+    agent.compile(RMSprop(lr=1e-2), metrics=['mae'])
 
     # play the game. learn something!
     agent.fit(env, nb_steps=rounds, visualize=False, verbose=2)
@@ -121,7 +121,7 @@ def train_dqn_model_EpsGreedy_Policy(layers, rounds=10000, run_test=False, use_s
 
     # memory can help a model during training
     # for this, we only consider a single malware sample (window_length=1) for each "experience"
-    memory = SequentialMemory(limit=32, ignore_episode_boundaries=False, window_length=window_length)
+    memory = SequentialMemory(limit=1000, ignore_episode_boundaries=False, window_length=window_length)
 
     # DQN graduation_agent as described in Mnih (2013) and Mnih (2015).
     # http://arxiv.org/pdf/1312.5602.pdf
@@ -131,7 +131,7 @@ def train_dqn_model_EpsGreedy_Policy(layers, rounds=10000, run_test=False, use_s
                      target_model_update=1e-2, policy=policy, batch_size=16)
 
     # keras-rl allows one to use and built-in keras optimizer
-    agent.compile(RMSprop(lr=1e-3), metrics=['mae'])
+    agent.compile(RMSprop(lr=1e-2), metrics=['mae'])
 
     # play the game. learn something!
     agent.fit(env, nb_steps=rounds, visualize=False, verbose=2)

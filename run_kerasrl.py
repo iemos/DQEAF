@@ -21,13 +21,13 @@ with open(test_result, 'a+') as f:
     f.write("training started: {}\n".format(training_start_time))
 
 # black blox
-_, model1, _, _ = train_dqn_model_EpsGreedy_Policy([256, 256, 256], rounds=rounds)  # black box
+_, model1, _, _ = train_dqn_model_EpsGreedy_Policy([256, 64, 16], rounds=rounds)  # black box
 model1.save(model_name, overwrite=True)
 
 # with open('history_blackbox_{}_{}.pickle'.format(timestamp, rounds), 'wb') as f:
 #     pickle.dump(history_test1, f, pickle.HIGHEST_PROTOCOL)
 
-_, model2, _, _ = train_dqn_model_EpsGreedy_Policy([256, 256, 256], rounds=rounds, use_score=True)  # score
+_, model2, _, _ = train_dqn_model_EpsGreedy_Policy([256, 64, 16], rounds=rounds, use_score=True)  # score
 model2.save(model_score_name, overwrite=True)
 
 training_end_time = datetime.datetime.now()
