@@ -9,8 +9,8 @@ from gym_malware.envs.utils import interface, pefeatures
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
 import gym
-import gym_malware
 import os
+
 
 # 动作评估
 def evaluate(action_function):
@@ -85,6 +85,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
             f.write("==========================\n")
 
     fe = pefeatures.PEFeatureExtractor()
+
     def agent_policy(agent):
         def f(bytez):
             # first, get features from bytez
@@ -120,3 +121,55 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
             score_result = "score: {}({}/{})".format(len(score_success) / total, len(score_success), total)
             with open(test_result, 'a+') as f:
                 f.write("{}->{}\n".format(smm, score_result))
+
+
+# 测试模型，传入两种model的路径
+def test_models2(model, score_model, agent_method, test_result, test_random=True, test_score=True):
+    total = len(sha256_holdout)
+
+    # baseline: choose actions at random
+    if test_random:
+        random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+        random_success, misclassified = evaluate(random_action)
+        total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+
+        with open(test_result, 'a+') as f:
+            random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+            f.write(random_result)
+            f.write("==========================\n")
+
+    fe = pefeatures.PEFeatureExtractor()
+
+    def agent_policy(agent):
+        def f(bytez):
+            # first, get features from bytez
+            feats = fe.extract2(bytez)
+            action_index = agent.act(feats)
+            return ACTION_LOOKUP[action_index]
+
+        return f
+
+    # ddqn
+    env = gym.make('malware-test-v0')
+    agent = agent_method(env)
+    mm = get_latest_model_dir_from(model)
+    agent.load(mm)
+    success, _ = evaluate(agent_policy(agent))
+    blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
+    with open(test_result, 'a+') as f:
+        # 记录black各个model目录的结果
+        f.write("{}->{}\n".format(mm, blackbox_result))
+
+    with open(test_result, 'a+') as f:
+        f.write("==========================\n")
+
+    # score
+    if test_score:
+        env_score = gym.make('malware-score-test-v0')
+        agent_score = agent_method(env_score)
+        smm = get_latest_model_dir_from(score_model)
+        agent_score.load(smm)
+        score_success, _ = evaluate(agent_policy(agent_score))
+        score_result = "score: {}({}/{})".format(len(score_success) / total, len(score_success), total)
+        with open(test_result, 'a+') as f:
+            f.write("{}->{}\n".format(smm, score_result))
