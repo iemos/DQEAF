@@ -27,6 +27,7 @@ for sha256 in file_list:
     bytez = interface.fetch_file(sha256)
 
     index = index + 1
+    print(extractor.extract2(bytez))
     print(extractor.extract2(bytez).shape)
     if index > 2:
         break
