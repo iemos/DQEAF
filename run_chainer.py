@@ -2,7 +2,7 @@
 import argparse
 import datetime
 
-from bin.test_agent_chainer import test_models
+from bin.test_agent_chainer import test_models, test_models2
 from bin.train_agent_chainer import *
 from gym_malware.envs.controls import manipulate2 as manipulate
 
@@ -20,7 +20,7 @@ parser.add_argument('--model-name', type=str, default=timestamp)
 parser.add_argument('--rounds', type=int, default=10000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 parser.add_argument('--score', type=bool, default=False)
-parser.add_argument('--random', type=bool, default=False)
+parser.add_argument('--random', type=bool, default=True)
 args = parser.parse_args()
 
 model_saved_name = args.model_name
@@ -53,6 +53,8 @@ with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
 
 # test
-for i in range(1):
-    test_models(model, score_model, agent_method, test_result,
+for i in range(2):
+    test_models2(model, score_model, agent_method, test_result,
                 test_score=test_score, test_random=test_random)
+    # test_models(model, score_model, agent_method, test_result,
+    #             test_score=test_score, test_random=test_random)
