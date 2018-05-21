@@ -187,4 +187,4 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         eval_n_runs=100,  # 100 episodes are sampled for each evaluation
         outdir=name)  # Save everything to 'result' directory
 
-    return agent
+    return env
