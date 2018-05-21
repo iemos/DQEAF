@@ -124,7 +124,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
 
 
 # 测试模型，传入两种model的路径
-def test_models2(model, score_model, agent_method, test_result, test_random=True, test_score=True):
+def test_models2(model, score_model, agent_method, test_result, test_random=True, test_score=True, rounds=10000):
     total = len(sha256_holdout)
 
     # baseline: choose actions at random
@@ -152,7 +152,7 @@ def test_models2(model, score_model, agent_method, test_result, test_random=True
     # ddqn
     env = gym.make('malware-test-v0')
     agent = agent_method(env)
-    mm = get_latest_model_dir_from(model)
+    mm = os.path.join(model, "{}_finish".format(rounds))
     agent.load(mm)
     success, _ = evaluate(agent_policy(agent))
     blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)

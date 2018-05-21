@@ -55,6 +55,6 @@ with open(test_result, 'a+') as f:
 # test
 for i in range(2):
     test_models2(model, score_model, agent_method, test_result,
-                test_score=test_score, test_random=test_random)
+                 test_score=test_score, test_random=test_random, rounds=rounds)
     # test_models(model, score_model, agent_method, test_result,
     #             test_score=test_score, test_random=test_random)
