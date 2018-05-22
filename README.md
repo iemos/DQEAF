@@ -45,5 +45,4 @@ Included as a default model is a [gradient boosted decision trees model] trained
 We had redefined the environment based on the `gym-malware` previous work. ^_^
 
 ## TODO
-1. 使用白师兄的n-grams
-2. 使用tensorflow训练
+1. It's too hard……Why?
