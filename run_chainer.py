@@ -17,7 +17,7 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=10000)
+parser.add_argument('--rounds', type=int, default=7000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 parser.add_argument('--score', type=bool, default=False)
 parser.add_argument('--random', type=bool, default=True)
@@ -47,10 +47,10 @@ if test_score:
 
 # black box
 env = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
-with open(test_result, 'a+') as f:
+with open(test_result, 'a+', encoding='utf-8') as f:
     f.write("total_turn->{}\n".format(env.total_turn))
     f.write("episode->{}\n".format(env.episode))
-    f.write("{}\n".format(env.total_ture / env.episode))
+    f.write("{}\n".format(env.total_turn / env.episode))
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
