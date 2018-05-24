@@ -11,3 +11,5 @@ def oneDimNormalization(data):
 
 arr = np.array([2, 4, 6])
 print(oneDimNormalization(arr))
+
+print("11", "22")
