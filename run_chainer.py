@@ -48,16 +48,14 @@ if test_score:
 # black box
 env = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
 with open(test_result, 'a+', encoding='utf-8') as f:
-    f.write("total_turn->{}\n".format(env.total_turn))
-    f.write("episode->{}\n".format(env.episode))
-    f.write("{}\n".format(env.total_turn / env.episode))
+    f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
 
 # test
-for i in range(2):
+for i in range(1):
     test_models2(model, score_model, agent_method, test_result,
                  test_score=test_score, test_random=test_random, rounds=rounds)
     # test_models(model, score_model, agent_method, test_result,
