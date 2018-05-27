@@ -89,7 +89,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
     def agent_policy(agent):
         def f(bytez):
             # first, get features from bytez
-            feats = fe.extract2(bytez)
+            feats = fe.extract(bytez)
             action_index = agent.act(feats)
             return ACTION_LOOKUP[action_index]
 
@@ -143,7 +143,7 @@ def test_models2(model, score_model, agent_method, test_result, test_random=True
     def agent_policy(agent):
         def f(bytez):
             # first, get features from bytez
-            feats = fe.extract2(bytez)
+            feats = fe.extract(bytez)
             action_index = agent.act(feats)
             return ACTION_LOOKUP[action_index]
 
