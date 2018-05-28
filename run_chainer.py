@@ -17,7 +17,7 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-name', type=str, default=timestamp)
-parser.add_argument('--rounds', type=int, default=7000)
+parser.add_argument('--rounds', type=int, default=8000)
 parser.add_argument('--agent', choices=['dqn', 'acer'], default='dqn')
 parser.add_argument('--score', type=bool, default=False)
 parser.add_argument('--random', type=bool, default=True)
