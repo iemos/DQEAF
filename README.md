@@ -45,7 +45,5 @@ Included as a default model is a [gradient boosted decision trees model] trained
 We had redefined the environment based on the `gym-malware` previous work. ^_^
 
 ## TODO
-1. Action修改：
-  * 按照分类器重新设计action
-  * 尽量去掉action随机性
+1. Action修改：按照分类器重新设计action，尽量去掉action随机性
 1. 修改dqn模型，Prioritize Experience Replay?
