@@ -9,6 +9,7 @@ gym: 0.8.0
 """
 
 import datetime
+import os
 from collections import defaultdict
 
 import gym
@@ -137,6 +138,9 @@ def test_models(RL, test_result, test_random=True):
     with open(test_result, 'a+') as f:
         f.write("==========================\n")
 
+
+if not os.path.exists("Model"):
+    os.makedirs("Model")
 
 test_result = "{}{}_test_result.txt".format("Model/", "1")
 
