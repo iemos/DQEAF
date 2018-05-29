@@ -22,7 +22,7 @@ from gym_malware.envs.controls import manipulate2 as manipulate
 from gym_malware.envs.utils import interface, pefeatures
 from new_dir.RL_brain import DQNPrioritizedReplay
 
-TRAIN_EPISODE = 10000
+TRAIN_EPISODE = 1000
 env = gym.make('malware-v0')
 env = env.unwrapped
 env.seed(21)
