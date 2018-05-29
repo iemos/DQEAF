@@ -100,7 +100,7 @@ def evaluate(action_function):
 
 
 # 测试模型
-def test_models(RL, test_result, test_random=True):
+def tt_models(RL, test_result, test_random=True):
     total = len(sha256_holdout)
 
     # baseline: choose actions at random
@@ -164,7 +164,7 @@ with open(test_result, 'a+') as f:
 
 # model_file=tf.train.latest_checkpoint('ckpt/')
 saver.restore(sess, "Model/model.ckpt")
-test_models(RL_prio, test_result)
+tt_models(RL_prio, test_result)
 
 # compare based on first success
 # plt.plot(his_natural[0, :], his_natural[1, :] - his_natural[1, 0], c='b', label='natural DQN')
