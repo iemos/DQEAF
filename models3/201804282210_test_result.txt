@@ -1,0 +1,3 @@
+training started: 2018-04-28 22:10:28.922020
+training end: 2018-04-28 22:10:30.147147
+action:overlay_append,imports_append_org,section_add,remove_signature,
