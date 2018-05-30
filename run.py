@@ -154,9 +154,7 @@ his_prio = train(RL_prio)
 
 saver.save(sess, "Model/model.ckpt")
 with open(test_result, 'a+', encoding='utf-8') as f:
-    f.write("total_turn->{}\n".format(env.total_turn))
-    f.write("episode->{}\n".format(env.episode))
-    f.write("{}\n".format(env.total_turn / env.episode))
+    f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
