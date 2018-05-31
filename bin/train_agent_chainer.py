@@ -54,10 +54,10 @@ def create_ddqn_agent(env):
     n_actions = env.action_space.n
 
     q_func = QFunction(obs_dim, n_actions)
-    q_func.to_gpu(0)
+    # q_func.to_gpu(0)
 
     optimizer = chainer.optimizers.Adam(eps=1e-2)
-    # optimizer.setup(q_func)
+    optimizer.setup(q_func)
 
     # Set the discount factor that discounts future rewards.
     gamma = 0.95
