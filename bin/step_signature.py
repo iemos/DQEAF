@@ -26,7 +26,6 @@ class StepSignature(object):
         '''Iterative plot
         example: ss.plot(i, dict(a=i*i, b=51-3*i))
         '''
-        print(sig)
         X = np.array([[step] * len(sig.keys())])
         Y = np.array([[sig[k] for k in sig.keys()]])
         self.opts['legend'] = list(sig.keys())
@@ -35,10 +34,9 @@ class StepSignature(object):
         else:
             vis.line(Y=Y, X=X, win=self.win, update='append', opts=self.opts)
 
-
-__all__ = ['StepSignature']
-
-if __name__ == "__main__":
-    ss = StepSignature('hello')
-    for i in range(4):
-        ss.plot(i, dict(a=i * i, b=51 - 3 * i))
+# __all__ = ['StepSignature']
+#
+# if __name__ == "__main__":
+#     ss = StepSignature('hello')
+#     for i in range(4):
+#         ss.plot(i, dict(a=i * i, b=51 - 3 * i))
