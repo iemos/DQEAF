@@ -96,7 +96,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
         return f
 
     # ddqn
-    env = gym.make('malware-test-v0')
+    env = gym.make('malware-v0')
     agent = agent_method(env)
     model_list = get_model_dir_list(model)
     for mm in model_list:
@@ -112,7 +112,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
 
     # score
     if test_score:
-        env_score = gym.make('malware-score-test-v0')
+        env_score = gym.make('malware-score-v0')
         agent_score = agent_method(env_score)
         score_model_list = get_model_dir_list(score_model)
         for smm in score_model_list:
@@ -150,7 +150,7 @@ def test_models2(model, score_model, agent_method, test_result, test_random=True
         return f
 
     # ddqn
-    env = gym.make('malware-test-v0')
+    env = gym.make('malware-v0')
     agent = agent_method(env)
     mm = os.path.join(model, "{}_finish".format(rounds))
     agent.load(mm)
@@ -165,7 +165,7 @@ def test_models2(model, score_model, agent_method, test_result, test_random=True
 
     # score
     if test_score:
-        env_score = gym.make('malware-score-test-v0')
+        env_score = gym.make('malware-score-v0')
         agent_score = agent_method(env_score)
         smm = get_latest_model_dir_from(score_model)
         agent_score.load(smm)

@@ -12,8 +12,6 @@ from chainerrl.initializers import LeCunNormal
 from chainerrl.optimizers import rmsprop_async
 from chainerrl.replay_buffer import EpisodicReplayBuffer
 
-from bin.step_signature import StepSignature
-
 
 class QFunction(chainer.Chain):
     def __init__(self, obs_size, n_actions, n_hidden_channels=[1024, 256]):
@@ -59,7 +57,7 @@ def create_ddqn_agent(env):
     q_func.to_gpu(0)
 
     optimizer = chainer.optimizers.Adam(eps=1e-2)
-    optimizer.setup(q_func)
+    # optimizer.setup(q_func)
 
     # Set the discount factor that discounts future rewards.
     gamma = 0.95
@@ -132,16 +130,19 @@ def create_acer_agent(env):
     return agent
 
 
-ss = StepSignature('hello')
-
+# ss = StepSignature('hello')
 
 def print_loss(env, agent, t):
-    if t % 10 == 0:
-        stat = agent.get_statistics()
-        d = {}
-        d[stat[0][0]] = stat[0][1]
-        d[stat[1][0]] = stat[1][1]
-        ss.plot(t, d)
+    print(t)
+    stat = agent.get_statistics()
+    print(stat)
+    # if t % 10 == 0:
+    #     stat = agent.get_statistics()
+    #     d = {}
+    #     d[stat[0][0]] = stat[0][1]
+    #     d[stat[1][0]] = stat[1][1]
+    #     ss.plot(t, d)
+
 
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
@@ -198,7 +199,7 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         max_episode_len=env.maxturns,  # Maximum length of each episodes
         eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=100,  # 100 episodes are sampled for each evaluation
-        outdir=name)  # ,    # Save everything to 'result' directory
-    # step_hooks=[print_loss])
+        outdir=name,  # Save everything to 'result' directory
+        step_hooks=[print_loss])
 
     return env
