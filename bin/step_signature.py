@@ -1,7 +1,7 @@
 import numpy as np
 import visdom
 
-vis = visdom.Visdom()
+vis = visdom.Visdom(port=8888)
 assert vis.check_connection(), "Fail to connect to Visdom backend!"
 
 
