@@ -12,6 +12,8 @@ from chainerrl.initializers import LeCunNormal
 from chainerrl.optimizers import rmsprop_async
 from chainerrl.replay_buffer import EpisodicReplayBuffer
 
+from bin.step_signature import StepSignature
+
 
 class QFunction(chainer.Chain):
     def __init__(self, obs_size, n_actions, n_hidden_channels=[1024, 256]):
@@ -130,18 +132,24 @@ def create_acer_agent(env):
     return agent
 
 
-# ss = StepSignature('hello')
+average_q = StepSignature('Average Q Function')
+average_loss = StepSignature('Average Loss')
 
-def print_loss(env, agent, t):
-    print(t)
-    stat = agent.get_statistics()
-    print(stat)
-    # if t % 10 == 0:
-    #     stat = agent.get_statistics()
-    #     d = {}
-    #     d[stat[0][0]] = stat[0][1]
-    #     d[stat[1][0]] = stat[1][1]
-    #     ss.plot(t, d)
+
+def plot_average_q(env, agent, t):
+    if t % 10 == 0:
+        stat = agent.get_statistics()
+        d = {}
+        d[stat[0][0]] = stat[0][1]
+        average_q.plot(t, d)
+
+
+def plot_average_loss(env, agent, t):
+    if t % 10 == 0:
+        stat = agent.get_statistics()
+        d = {}
+        d[stat[1][0]] = stat[1][1]
+        average_loss.plot(t, d)
 
 
 # 开始训练
@@ -197,9 +205,9 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         agent, env,
         steps=rounds,  # Train the graduation_agent for this many rounds steps
         max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
+        eval_interval=10000,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=100,  # 100 episodes are sampled for each evaluation
         outdir=name,  # Save everything to 'result' directory
-        step_hooks=[print_loss])
+        step_hooks=[plot_average_q, plot_average_loss])
 
     return env
