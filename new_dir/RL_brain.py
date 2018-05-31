@@ -185,18 +185,25 @@ class DQNPrioritizedReplay:
     def _build_net(self):
         def build_layers(s, c_names, n_l1, w_initializer, b_initializer, trainable):
             with tf.variable_scope('l1'):
-                w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names,
+                w1 = tf.get_variable('w1', [self.n_features, n_l1[0]], initializer=w_initializer, collections=c_names,
                                      trainable=trainable)
-                b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names,
+                b1 = tf.get_variable('b1', [1, n_l1[0]], initializer=b_initializer, collections=c_names,
                                      trainable=trainable)
                 l1 = tf.nn.relu(tf.matmul(s, w1) + b1)
 
             with tf.variable_scope('l2'):
-                w2 = tf.get_variable('w2', [n_l1, self.n_actions], initializer=w_initializer, collections=c_names,
+                w2 = tf.get_variable('w2', [n_l1[0], n_l1[1]], initializer=w_initializer, collections=c_names,
                                      trainable=trainable)
-                b2 = tf.get_variable('b2', [1, self.n_actions], initializer=b_initializer, collections=c_names,
+                b2 = tf.get_variable('b2', [1, n_l1[1]], initializer=b_initializer, collections=c_names,
                                      trainable=trainable)
-                out = tf.matmul(l1, w2) + b2
+                l2 = tf.nn.relu(tf.matmul(l1, w2) + b2)
+
+            with tf.variable_scope('l3'):
+                w3 = tf.get_variable('w3', [n_l1[1], self.n_actions], initializer=w_initializer, collections=c_names,
+                                     trainable=trainable)
+                b3 = tf.get_variable('b3', [1, self.n_actions], initializer=b_initializer, collections=c_names,
+                                     trainable=trainable)
+                out = tf.matmul(l2, w3) + b3
             return out
 
         # ------------------ build evaluate_net ------------------
@@ -206,7 +213,7 @@ class DQNPrioritizedReplay:
             self.ISWeights = tf.placeholder(tf.float32, [None, 1], name='IS_weights')
         with tf.variable_scope('eval_net'):
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 20, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], [1024, 256], \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             self.q_eval = build_layers(self.s, c_names, n_l1, w_initializer, b_initializer, True)
