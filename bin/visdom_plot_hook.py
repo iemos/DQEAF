@@ -20,7 +20,7 @@ class VisdomPlotHook(StepHook):
 
     """
 
-    def __init__(self, title, plot_index=0, xlabel='x', ylabel='y',
+    def __init__(self, title, plot_index=0, xlabel='step', ylabel='values',
                  figsize=(600, 400), margin=(40, 40, 30, 30), fillarea=False):
         self.win = None
         self.opts = dict(
@@ -31,10 +31,11 @@ class VisdomPlotHook(StepHook):
             xlabel=xlabel,
             ylabel=ylabel,
             title=title,
-            marginleft=margin[0],
-            marginright=margin[1],
-            margintop=margin[2],
-            marginbottom=margin[3])
+            # marginleft=margin[0],
+            # marginright=margin[1],
+            # margintop=margin[2],
+            # marginbottom=margin[3]
+        )
 
         self.plot_index = plot_index
         self.vis = visdom.Visdom(port=8888)

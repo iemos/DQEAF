@@ -25,7 +25,7 @@ rounds = args.rounds
 agent_method = create_ddqn_agent
 
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
-test_result = "{}{}_{}/result.txt".format(model_dir, model_saved_name, rounds)
+test_result = "{}{}_{}/scores.txt".format(model_dir, model_saved_name, rounds)
 
 if not os.path.exists(model):
     os.makedirs(model)

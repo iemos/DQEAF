@@ -8,7 +8,6 @@ from chainerrl import links
 from chainerrl.action_value import DiscreteActionValue
 from chainerrl.agents import acer
 from chainerrl.distribution import SoftmaxDistribution
-from chainerrl.experiments import LinearInterpolationHook
 from chainerrl.initializers import LeCunNormal
 from chainerrl.optimizers import rmsprop_async
 from chainerrl.replay_buffer import EpisodicReplayBuffer
@@ -50,6 +49,7 @@ class QFunction(chainer.Chain):
 
         return chainerrl.action_value.DiscreteActionValue(x)
 
+
 # 创建ddqn agent
 def create_ddqn_agent(env):
     obs_dim = env.observation_space.shape[0]
@@ -87,6 +87,7 @@ def create_ddqn_agent(env):
         target_update_interval=100, phi=phi)
 
     return agent
+
 
 # 创建acer agent
 def create_acer_agent(env):
@@ -134,10 +135,13 @@ def create_acer_agent(env):
 q_hook = VisdomPlotHook('Average Q Value')
 loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
 
+
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
     ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
     env = gym.make(ENV_NAME)
+    ENV_TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
+    test_env = gym.make(ENV_TEST_NAME)
     np.random.seed(123)
     env.seed(123)
 
@@ -151,6 +155,8 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         eval_n_runs=20,  # 100 episodes are sampled for each evaluation
         outdir=name,  # Save everything to 'result' directory
         step_hooks=[q_hook, loss_hook],
-        successful_score=7)
+        successful_score=7,
+        eval_env=test_env
+    )
 
     return env, agent
