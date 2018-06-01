@@ -1,11 +1,6 @@
 import argparse
-import datetime
-
-import pickle
 
 from bin.test_agent_kerasrl import test_models
-from bin.train_agent_kerasrl import train_dqn_model
-from gym_malware.envs.controls import manipulate2 as manipulate
 
 # timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 timestamp = '201805132111'
