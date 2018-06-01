@@ -125,7 +125,7 @@ def test_models(model, score_model, agent_method, test_result, test_random=True,
 
 
 # 测试模型，传入两种model的路径
-def test_models2(model, score_model, agent_method, test_result, test_random=True, test_score=True, rounds=10000):
+def test_models2(model, score_model, agent_method, test_result, test_random=False, test_score=False, rounds=10000):
     total = len(sha256_holdout)
 
     # baseline: choose actions at random
