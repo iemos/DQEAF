@@ -13,28 +13,47 @@ ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 q_hook = VisdomPlotHook('Average Q Value')
 loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
 
+env_list = {}
+env_test_list = {}
+
+
+def make_env(process_idx, test):
+    if test:
+        if env_test_list.__contains__(process_idx):
+            env = env_test_list.get(process_idx)
+        else:
+            env = gym.make('malware-test-v0')
+            env_test_list[process_idx] = env
+    else:
+        if env_list.__contains__(process_idx):
+            env = env_list.get(process_idx)
+        else:
+            env = gym.make('malware-v0')
+            env_list[process_idx] = env
+
+    return env
+
 
 # 开始训练
-def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
+def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_acer_agent):
     ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
     env = gym.make(ENV_NAME)
-    ENV_TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
-    test_env = gym.make(ENV_TEST_NAME)
     np.random.seed(123)
     env.seed(123)
 
     agent = create_agent(env)
 
-    chainerrl.experiments.train_agent_with_evaluation(
-        agent, env,
-        steps=rounds,  # Train the graduation_agent for this many rounds steps
-        max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=2000,  # Evaluate the graduation_agent after every 1000 steps
-        eval_n_runs=20,  # 100 episodes are sampled for each evaluation
-        outdir=name,  # Save everything to 'result' directory
-        step_hooks=[q_hook, loss_hook],
+    chainerrl.experiments.train_agent_async(
+        outdir=name,
+        processes=8,
+        make_env=make_env,
+        steps=rounds,
+        eval_interval=2000,
+        eval_n_runs=20,
+        max_episode_len=80,
         successful_score=7,
-        eval_env=test_env
+        agent=agent,
+        global_step_hooks=[q_hook, loss_hook]
     )
 
     return env, agent
@@ -50,7 +69,7 @@ args = parser.parse_args()
 
 model_saved_name = timestamp
 rounds = args.rounds
-agent_method = create_ddqn_agent
+agent_method = create_acer_agent
 
 model = "{}{}_{}".format(model_dir, model_saved_name, rounds)
 test_result = "{}{}_{}/scores.txt".format(model_dir, model_saved_name, rounds)
@@ -65,8 +84,8 @@ with open(test_result, 'a+') as f:
 
 # black box
 env, agent = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
-with open(test_result, 'a+', encoding='utf-8') as f:
-    f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
+# with open(test_result, 'a+', encoding='utf-8') as f:
+#     f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
 
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
