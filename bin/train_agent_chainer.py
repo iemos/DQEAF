@@ -58,16 +58,16 @@ def create_ddqn_agent(env):
     q_func = QFunction(obs_dim, n_actions)
     # q_func.to_gpu(0)
 
-    optimizer = chainer.optimizers.Adam(eps=1e-2)
+    optimizer = chainer.optimizers.Adam(eps=1e-3)
     optimizer.setup(q_func)
 
     # Set the discount factor that discounts future rewards.
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    explorer = chainerrl.explorers.Boltzmann()
-    # explorer = chainerrl.explorers.ConstantEpsilonGreedy(
-    #     epsilon=0.3, random_action_func=env.action_space.sample)
+    # explorer = chainerrl.explorers.Boltzmann()
+    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+        epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
@@ -205,8 +205,8 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         agent, env,
         steps=rounds,  # Train the graduation_agent for this many rounds steps
         max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=10000,  # Evaluate the graduation_agent after every 1000 steps
-        eval_n_runs=100,  # 100 episodes are sampled for each evaluation
+        eval_interval=rounds * 2,  # Evaluate the graduation_agent after every 1000 steps
+        eval_n_runs=1,  # 100 episodes are sampled for each evaluation
         outdir=name,  # Save everything to 'result' directory
         step_hooks=[plot_average_q, plot_average_loss])
 
