@@ -80,7 +80,7 @@ def create_ddqn_agent(env):
     # Now create an graduation_agent that will interact with the environment.
     # DQN graduation_agent as described in Mnih (2013) and Mnih (2015).
     # http://arxiv.org/pdf/1312.5602.pdf
-    # http://arxiv.org/abs/1509.06461        
+    # http://arxiv.org/abs/1509.06461
     agent = chainerrl.agents.DoubleDQN(
         q_func, optimizer, replay_buffer, gamma, explorer,
         replay_start_size=32, update_interval=1,
