@@ -46,7 +46,7 @@ if test_score:
     train_agent(rounds=int(rounds), use_score=True, name=score_model, create_agent=agent_method)
 
 # black box
-env = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
+env, _ = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
 with open(test_result, 'a+', encoding='utf-8') as f:
     f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
 
