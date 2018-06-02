@@ -89,7 +89,7 @@ def main():
     print('Output files are saved in {}'.format(args.outdir))
 
     def make_env(test):
-        ENV_NAME = 'malware-score-v0' if test else 'malware-v0'
+        ENV_NAME = 'malware-test-v0' if test else 'malware-v0'
         env = gym.make(ENV_NAME)
         # Use different random seeds for train and test envs
         env_seed = 2 ** 32 - 1 - args.seed if test else args.seed
