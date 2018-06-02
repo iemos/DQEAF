@@ -116,7 +116,7 @@ def main():
             n_hidden_channels=args.n_hidden_channels,
             n_hidden_layers=args.n_hidden_layers)
     if args.gpu >= 0:
-        q_func.to_cpu(args.gpu)
+        q_func.to_gpu(args.gpu)
 
     # Use epsilon-greedy for exploration
     explorer = explorers.LinearDecayEpsilonGreedy(
