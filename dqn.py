@@ -36,7 +36,7 @@ import gym.wrappers
 import numpy as np
 
 import chainerrl
-from chainerrl.agents.dqn import DQN
+from chainerrl.agents import DoubleDQN
 from chainerrl import experiments
 from chainerrl import explorers
 from chainerrl import links
@@ -129,9 +129,10 @@ def main():
         explorer = explorers.Greedy()
 
     # Draw the computational graph and save it in the output directory.
-    # chainerrl.misc.draw_computational_graph(
-    #     [q_func(np.zeros_like(obs_space, dtype=np.float32)[None])],
-    #     os.path.join(args.outdir, 'model'))
+    if args.gpu < 0:
+        chainerrl.misc.draw_computational_graph(
+            [q_func(np.zeros_like(obs_space, dtype=np.float32)[None])],
+            os.path.join(args.outdir, 'model'))
 
     opt = optimizers.Adam()
     opt.setup(q_func)
@@ -161,14 +162,14 @@ def main():
     def phi(obs):
         return obs.astype(np.float32)
 
-    agent = DQN(q_func, opt, rbuf, gamma=args.gamma,
-                explorer=explorer, replay_start_size=args.replay_start_size,
-                target_update_interval=args.target_update_interval,
-                update_interval=args.update_interval,
-                phi=phi, minibatch_size=args.minibatch_size,
-                target_update_method=args.target_update_method,
-                soft_update_tau=args.soft_update_tau,
-                episodic_update=args.episodic_replay, episodic_update_len=16)
+    agent = DoubleDQN(q_func, opt, rbuf, gamma=args.gamma,
+                      explorer=explorer, replay_start_size=args.replay_start_size,
+                      target_update_interval=args.target_update_interval,
+                      update_interval=args.update_interval,
+                      phi=phi, minibatch_size=args.minibatch_size,
+                      target_update_method=args.target_update_method,
+                      soft_update_tau=args.soft_update_tau,
+                      episodic_update=args.episodic_replay, episodic_update_len=16)
 
     if args.load:
         agent.load(args.load)
@@ -194,7 +195,7 @@ def main():
             outdir=args.outdir, eval_env=eval_env,
             max_episode_len=timestep_limit,
             step_hooks=[q_hook, loss_hook],
-            successful_score=6
+            successful_score=7
         )
 
 
