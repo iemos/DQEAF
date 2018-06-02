@@ -29,11 +29,11 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         agent, env,
         steps=rounds,  # Train the graduation_agent for this many rounds steps
         max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=2000,  # Evaluate the graduation_agent after every 1000 steps
+        eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=20,  # 100 episodes are sampled for each evaluation
         outdir=name,  # Save everything to 'result' directory
         step_hooks=[q_hook, loss_hook],
-        successful_score=7,
+        successful_score=6,
         eval_env=test_env
     )
 
@@ -71,22 +71,3 @@ with open(test_result, 'a+', encoding='utf-8') as f:
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
-
-# test
-# total = len(sha256_holdout)
-# fe = pefeatures.PEFeatureExtractor()
-#
-# def agent_policy(agent):
-#     def f(bytez):
-#         # first, get features from bytez
-#         feats = fe.extract(bytez)
-#         action_index = agent.act(feats)
-#         return ACTION_LOOKUP[action_index]
-#
-#     return f
-#
-# # ddqn
-# success, _ = evaluate(agent_policy(agent))
-# blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
-# with open(test_result, 'a+') as f:
-#     f.write("result->{}\n".format(blackbox_result))
