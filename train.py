@@ -4,9 +4,12 @@ import argparse
 import datetime
 import os
 
+from bin.test_agent_chainer import evaluate
 from bin.train_agent_chainer import *
 from bin.train_agent_chainer import create_ddqn_agent
+from gym_malware import sha256_holdout
 from gym_malware.envs.controls import manipulate2 as manipulate
+from gym_malware.envs.utils import pefeatures
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
@@ -71,3 +74,24 @@ with open(test_result, 'a+', encoding='utf-8') as f:
 training_end_time = datetime.datetime.now()
 with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
+
+# test
+total = len(sha256_holdout)
+fe = pefeatures.PEFeatureExtractor()
+
+
+def agent_policy(agent):
+    def f(bytez):
+        # first, get features from bytez
+        feats = fe.extract(bytez)
+        action_index = agent.act(feats)
+        return ACTION_LOOKUP[action_index]
+
+    return f
+
+
+# ddqn
+success, _ = evaluate(agent_policy(agent))
+blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
+with open(test_result, 'a+') as f:
+    f.write("result->{}\n".format(blackbox_result))
