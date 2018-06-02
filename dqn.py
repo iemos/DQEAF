@@ -10,12 +10,17 @@ To solve CartPole-v0, run:
 To solve Pendulum-v0, run:
     python train_dqn_gym.py --env Pendulum-v0
 """
+
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
+import gym_malware
+import datetime
 from builtins import *  # NOQA
 from future import standard_library
+
+from bin.visdom_plot_hook import VisdomPlotHook
 
 standard_library.install_aliases()  # NOQA
 
@@ -27,7 +32,6 @@ from chainer import optimizers
 import gym
 
 gym.undo_logger_setup()  # NOQA
-from gym import spaces
 import gym.wrappers
 import numpy as np
 
@@ -42,17 +46,13 @@ from chainerrl import replay_buffer
 
 
 def main():
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--outdir', type=str, default='results',
                         help='Directory path to save output files.'
                              ' If it does not exist, it will be created.')
-    parser.add_argument('--env', type=str, default='Pendulum-v0')
-    parser.add_argument('--seed', type=int, default=0,
+    parser.add_argument('--seed', type=int, default=123,
                         help='Random seed [0, 2 ** 32)')
-    parser.add_argument('--gpu', type=int, default=0)
+    parser.add_argument('--gpu', type=int, default=-1)
     parser.add_argument('--final-exploration-steps',
                         type=int, default=10 ** 4)
     parser.add_argument('--start-epsilon', type=float, default=1.0)
@@ -60,16 +60,16 @@ def main():
     parser.add_argument('--noisy-net-sigma', type=float, default=None)
     parser.add_argument('--demo', action='store_true', default=False)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=10 ** 5)
-    parser.add_argument('--prioritized-replay', action='store_true')
-    parser.add_argument('--episodic-replay', action='store_true')
+    parser.add_argument('--steps', type=int, default=50000)
+    parser.add_argument('--prioritized-replay', type=bool, default=True)
+    parser.add_argument('--episodic-replay', type=bool, default=True)
     parser.add_argument('--replay-start-size', type=int, default=1000)
     parser.add_argument('--target-update-interval', type=int, default=10 ** 2)
     parser.add_argument('--target-update-method', type=str, default='hard')
     parser.add_argument('--soft-update-tau', type=float, default=1e-2)
     parser.add_argument('--update-interval', type=int, default=1)
-    parser.add_argument('--eval-n-runs', type=int, default=100)
-    parser.add_argument('--eval-interval', type=int, default=10 ** 4)
+    parser.add_argument('--eval-n-runs', type=int, default=50)
+    parser.add_argument('--eval-interval', type=int, default=10 ** 3)
     parser.add_argument('--n-hidden-channels', type=int, default=100)
     parser.add_argument('--n-hidden-layers', type=int, default=2)
     parser.add_argument('--gamma', type=float, default=0.99)
@@ -81,58 +81,45 @@ def main():
     args = parser.parse_args()
 
     # Set a random seed used in ChainerRL
-    misc.set_random_seed(args.seed, gpus=(args.gpu,))
+    if args.gpu >= 0:
+        misc.set_random_seed(args.seed, gpus=(args.gpu,))
 
     args.outdir = experiments.prepare_output_dir(
         args, args.outdir, argv=sys.argv)
     print('Output files are saved in {}'.format(args.outdir))
 
-    def clip_action_filter(a):
-        return np.clip(a, action_space.low, action_space.high)
-
     def make_env(test):
-        env = gym.make(args.env)
+        ENV_NAME = 'malware-score-v0' if test else 'malware-v0'
+        env = gym.make(ENV_NAME)
         # Use different random seeds for train and test envs
         env_seed = 2 ** 32 - 1 - args.seed if test else args.seed
         env.seed(env_seed)
         if args.monitor:
             env = gym.wrappers.Monitor(env, args.outdir)
-        if isinstance(env.action_space, spaces.Box):
-            misc.env_modifiers.make_action_filtered(env, clip_action_filter)
-        if not test:
-            misc.env_modifiers.make_reward_filtered(
-                env, lambda x: x * args.reward_scale_factor)
+        # if not test:
+        #     misc.env_modifiers.make_reward_filtered(
+        #         env, lambda x: x * args.reward_scale_factor)
         if ((args.render_eval and test) or
                 (args.render_train and not test)):
             misc.env_modifiers.make_rendered(env)
         return env
 
     env = make_env(test=False)
-    timestep_limit = env.spec.tags.get(
-        'wrapper_config.TimeLimit.max_episode_steps')
+    timestep_limit = 80
     obs_space = env.observation_space
-    obs_size = obs_space.low.size
+    obs_size = obs_space.shape[0]
     action_space = env.action_space
 
-    if isinstance(action_space, spaces.Box):
-        action_size = action_space.low.size
-        # Use NAF to apply DQN to continuous action spaces
-        q_func = q_functions.FCQuadraticStateQFunction(
-            obs_size, action_size,
-            n_hidden_channels=args.n_hidden_channels,
-            n_hidden_layers=args.n_hidden_layers,
-            action_space=action_space)
-        # Use the Ornstein-Uhlenbeck process for exploration
-        ou_sigma = (action_space.high - action_space.low) * 0.2
-        explorer = explorers.AdditiveOU(sigma=ou_sigma)
-    else:
-        n_actions = action_space.n
-        q_func = q_functions.FCStateQFunctionWithDiscreteAction(
+    n_actions = action_space.n
+    q_func = q_functions.FCStateQFunctionWithDiscreteAction(
             obs_size, n_actions,
             n_hidden_channels=args.n_hidden_channels,
             n_hidden_layers=args.n_hidden_layers)
-        # Use epsilon-greedy for exploration
-        explorer = explorers.LinearDecayEpsilonGreedy(
+    if args.gpu >= 0:
+        q_func.to_cpu(args.gpu)
+
+    # Use epsilon-greedy for exploration
+    explorer = explorers.LinearDecayEpsilonGreedy(
             args.start_epsilon, args.end_epsilon, args.final_exploration_steps,
             action_space.sample)
 
@@ -143,7 +130,7 @@ def main():
 
     # Draw the computational graph and save it in the output directory.
     chainerrl.misc.draw_computational_graph(
-        [q_func(np.zeros_like(obs_space.low, dtype=np.float32)[None])],
+        [q_func(np.zeros_like(obs_space, dtype=np.float32)[None])],
         os.path.join(args.outdir, 'model'))
 
     opt = optimizers.Adam()
@@ -174,7 +161,7 @@ def main():
     def phi(obs):
         return obs.astype(np.float32)
 
-    agent = DQN(q_func, opt, rbuf, gpu=args.gpu, gamma=args.gamma,
+    agent = DQN(q_func, opt, rbuf, gamma=args.gamma,
                 explorer=explorer, replay_start_size=args.replay_start_size,
                 target_update_interval=args.target_update_interval,
                 update_interval=args.update_interval,
@@ -198,11 +185,17 @@ def main():
             args.eval_n_runs, eval_stats['mean'], eval_stats['median'],
             eval_stats['stdev']))
     else:
+        q_hook = VisdomPlotHook('Average Q Value')
+        loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
+
         experiments.train_agent_with_evaluation(
             agent=agent, env=env, steps=args.steps,
             eval_n_runs=args.eval_n_runs, eval_interval=args.eval_interval,
             outdir=args.outdir, eval_env=eval_env,
-            max_episode_len=timestep_limit)
+            max_episode_len=timestep_limit,
+            step_hooks=[q_hook, loss_hook],
+            successful_score=6
+        )
 
 
 if __name__ == '__main__':
