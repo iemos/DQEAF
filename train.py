@@ -4,9 +4,12 @@ import argparse
 import datetime
 import os
 
+import gym
+
 from bin.test_agent_chainer import evaluate
 from bin.train_agent_chainer import *
 from bin.train_agent_chainer import create_ddqn_agent
+from bin.visdom_plot_hook import VisdomPlotHook
 from gym_malware import sha256_holdout
 from gym_malware.envs.controls import manipulate2 as manipulate
 from gym_malware.envs.utils import pefeatures
@@ -32,11 +35,11 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
         agent, env,
         steps=rounds,  # Train the graduation_agent for this many rounds steps
         max_episode_len=env.maxturns,  # Maximum length of each episodes
-        eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
+        eval_interval=500,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=20,  # 100 episodes are sampled for each evaluation
         outdir=name,  # Save everything to 'result' directory
         step_hooks=[q_hook, loss_hook],
-        successful_score=6,
+        successful_score=7,
         eval_env=test_env
     )
 
@@ -49,6 +52,7 @@ model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
 parser.add_argument('--rounds', type=int, default=50000)
+parser.add_argument('--test', action='store_true')
 args = parser.parse_args()
 
 model_saved_name = timestamp
@@ -76,22 +80,23 @@ with open(test_result, 'a+') as f:
     f.write("end->{}\n".format(training_end_time))
 
 # test
-total = len(sha256_holdout)
-fe = pefeatures.PEFeatureExtractor()
+if args.test:
+    total = len(sha256_holdout)
+    fe = pefeatures.PEFeatureExtractor()
 
 
-def agent_policy(agent):
-    def f(bytez):
-        # first, get features from bytez
-        feats = fe.extract(bytez)
-        action_index = agent.act(feats)
-        return ACTION_LOOKUP[action_index]
+    def agent_policy(agent):
+        def f(bytez):
+            # first, get features from bytez
+            feats = fe.extract(bytez)
+            action_index = agent.act(feats)
+            return ACTION_LOOKUP[action_index]
 
-    return f
+        return f
 
 
-# ddqn
-success, _ = evaluate(agent_policy(agent))
-blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
-with open(test_result, 'a+') as f:
-    f.write("result->{}\n".format(blackbox_result))
+    # ddqn
+    success, _ = evaluate(agent_policy(agent))
+    blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
+    with open(test_result, 'a+') as f:
+        f.write("result->{}\n".format(blackbox_result))

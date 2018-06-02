@@ -2,7 +2,6 @@ import chainer
 import chainer.functions as F
 import chainer.links as L
 import chainerrl
-import gym
 import numpy as np
 from chainerrl import links
 from chainerrl.action_value import DiscreteActionValue
@@ -11,8 +10,6 @@ from chainerrl.distribution import SoftmaxDistribution
 from chainerrl.initializers import LeCunNormal
 from chainerrl.optimizers import rmsprop_async
 from chainerrl.replay_buffer import EpisodicReplayBuffer
-
-from bin.visdom_plot_hook import VisdomPlotHook
 
 
 class QFunction(chainer.Chain):
@@ -65,13 +62,14 @@ def create_ddqn_agent(env):
     gamma = 0.95
 
     # Use epsilon-greedy for exploration
-    # explorer = chainerrl.explorers.Boltzmann()
-    explorer = chainerrl.explorers.ConstantEpsilonGreedy(
-        epsilon=0.3, random_action_func=env.action_space.sample)
+    explorer = chainerrl.explorers.Boltzmann()
+    # explorer = chainerrl.explorers.ConstantEpsilonGreedy(
+    #     epsilon=0.3, random_action_func=env.action_space.sample)
 
     # DQN uses Experience Replay.
     # Specify a replay buffer and its capacity.
-    replay_buffer = chainerrl.replay_buffer.ReplayBuffer(capacity=1000)
+    rbuf_capacity = 5 * 10 ** 5
+    replay_buffer = chainerrl.replay_buffer.PrioritizedReplayBuffer(capacity=rbuf_capacity)
 
     # Chainer only accepts numpy.float32 by default, make sure
     # a converter as a feature extractor function phi.
