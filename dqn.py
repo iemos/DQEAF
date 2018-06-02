@@ -82,7 +82,7 @@ def main():
 
     # Set a random seed used in ChainerRL
     if args.gpu >= 0:
-        misc.set_random_seed(args.seed, gpus=(args.gpu,))
+        misc.set_random_seed(args.seed)
 
     args.outdir = experiments.prepare_output_dir(
         args, args.outdir, argv=sys.argv)
