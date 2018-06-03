@@ -21,7 +21,7 @@ loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
 
 
 # 开始训练
-def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent):
+def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent, use_gpu=False):
     ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
     env = gym.make(ENV_NAME)
     ENV_TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
@@ -29,7 +29,7 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
     np.random.seed(123)
     env.seed(123)
 
-    agent = create_agent(env)
+    agent = create_agent(env, use_gpu)
 
     chainerrl.experiments.train_agent_with_evaluation(
         agent, env,
@@ -46,16 +46,32 @@ def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=c
     return env, agent
 
 
+# 获取保存的模型目录
+def get_latest_model_dir_from(basedir):
+    dirs = os.listdir(basedir)
+    lastmodel = -1
+    for d in dirs:
+        try:
+            if int(d) > lastmodel:
+                lastmodel = int(d)
+        except ValueError:
+            continue
+
+    assert lastmodel >= 0, "No saved models!"
+    return os.path.join(basedir, str(lastmodel))
+
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python train.py --rounds rounds(训练的次数)
 model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()
+parser.add_argument('--model-name', type=str, default=timestamp)
 parser.add_argument('--rounds', type=int, default=50000)
 parser.add_argument('--test', action='store_true')
+parser.add_argument('--gpu', action='store_true')
 args = parser.parse_args()
 
-model_saved_name = timestamp
+model_saved_name = args.model_name
 rounds = args.rounds
 agent_method = create_ddqn_agent
 
@@ -65,22 +81,15 @@ test_result = "{}{}_{}/scores.txt".format(model_dir, model_saved_name, rounds)
 if not os.path.exists(model):
     os.makedirs(model)
 
-# start time
-training_start_time = datetime.datetime.now()
-with open(test_result, 'a+') as f:
-    f.write("start->{}\n".format(training_start_time))
-
-# black box
-env, agent = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method)
-with open(test_result, 'a+', encoding='utf-8') as f:
-    f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
-
-training_end_time = datetime.datetime.now()
-with open(test_result, 'a+') as f:
-    f.write("end->{}\n".format(training_end_time))
-
 # test
-if args.test:
+if not args.test:
+    print("training...")
+    env, agent = train_agent(rounds=int(rounds), use_score=False, name=model, create_agent=agent_method,
+                             use_gpu=args.gpu)
+    with open(test_result, 'a+', encoding='utf-8') as f:
+        f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
+else:
+    print("testing...")
     total = len(sha256_holdout)
     fe = pefeatures.PEFeatureExtractor()
 
@@ -94,8 +103,11 @@ if args.test:
 
         return f
 
-
     # ddqn
+    env = gym.make('malware-test-v0')
+    agent = agent_method(env)
+    mm = get_latest_model_dir_from(model)
+    agent.load(mm)
     success, _ = evaluate(agent_policy(agent))
     blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
     with open(test_result, 'a+') as f:

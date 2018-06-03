@@ -48,12 +48,13 @@ class QFunction(chainer.Chain):
 
 
 # 创建ddqn agent
-def create_ddqn_agent(env):
+def create_ddqn_agent(env, use_gpu=False):
     obs_dim = env.observation_space.shape[0]
     n_actions = env.action_space.n
 
     q_func = QFunction(obs_dim, n_actions)
-    q_func.to_gpu(0)
+    if use_gpu:
+        q_func.to_gpu(0)
 
     optimizer = chainer.optimizers.Adam(eps=1e-2)
     optimizer.setup(q_func)
