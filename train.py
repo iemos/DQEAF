@@ -19,7 +19,6 @@ ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 q_hook = VisdomPlotHook('Average Q Value')
 loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
 
-
 # 开始训练
 def train_agent(rounds=10000, use_score=False, name='result_dir', create_agent=create_ddqn_agent, use_gpu=False):
     ENV_NAME = 'malware-score-v0' if use_score else 'malware-v0'
