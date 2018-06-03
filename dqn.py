@@ -15,12 +15,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
-import gym_malware
-import datetime
 from builtins import *  # NOQA
 from future import standard_library
 
-from bin.visdom_plot_hook import VisdomPlotHook
+from hook.plot_hook import PlotHook
 
 standard_library.install_aliases()  # NOQA
 
@@ -185,8 +183,8 @@ def main():
             args.eval_n_runs, eval_stats['mean'], eval_stats['median'],
             eval_stats['stdev']))
     else:
-        q_hook = VisdomPlotHook('Average Q Value')
-        loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
+        q_hook = PlotHook('Average Q Value')
+        loss_hook = PlotHook('Average Loss', plot_index=1)
 
         experiments.train_agent_with_evaluation(
             agent=agent, env=env, steps=args.steps,
