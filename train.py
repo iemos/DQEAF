@@ -207,6 +207,7 @@ def main():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--maxturns', type=int, default=80)
+    parser.add_argument('--test_random', action='store_true', default=True)
     args = parser.parse_args()
 
     # test
@@ -222,6 +223,20 @@ def main():
             f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
     else:
         print("testing...")
+        model_fold = os.path.join(args.outdir, args.load)
+        scores_file = os.path.join(model_fold, 'scores.txt')
+
+        # baseline: choose actions at random
+        if args.test_random:
+            random_action = lambda bytez: np.random.choice(list(manipulate.ACTION_TABLE.keys()))
+            random_success, misclassified = evaluate(random_action)
+            total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
+
+            with open(scores_file, 'a') as f:
+                random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+                f.write(random_result)
+                f.write("==========================\n")
+
         total = len(sha256_holdout)
         fe = pefeatures.PEFeatureExtractor()
 
@@ -237,12 +252,11 @@ def main():
         # ddqn
         env = gym.make('malware-test-v0')
         agent = create_ddqn_agent(env, args)
-        model_fold = os.path.join(args.outdir, args.load)
         mm = get_latest_model_dir_from(model_fold)
         agent.load(mm)
         success, _ = evaluate(agent_policy(agent))
         blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
-        with open(os.path.join(model_fold, 'scores.txt'), 'a') as f:
+        with open(scores_file, 'a') as f:
             f.write("{}->{}\n".format(mm, blackbox_result))
 
 
