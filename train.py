@@ -29,7 +29,7 @@ def create_ddqn_agent(env, args):
         obs_size, n_actions,
         n_hidden_channels=args.n_hidden_channels,
         n_hidden_layers=args.n_hidden_layers)
-    if args.gpu >= 0:
+    if args.gpu:
         q_func.to_gpu(args.gpu)
 
     # Use epsilon-greedy for exploration
@@ -46,7 +46,7 @@ def create_ddqn_agent(env, args):
         explorer = explorers.Greedy()
 
     # Draw the computational graph and save it in the output directory.
-    if args.gpu < 0:
+    if not args.gpu:
         chainerrl.misc.draw_computational_graph(
             [q_func(np.zeros_like(env.observation_space, dtype=np.float32)[None])],
             os.path.join(args.outdir, 'model'))
@@ -201,3 +201,7 @@ def main():
         blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
         with open(os.path.join(args.outdir, 'scores.txt'), 'w') as f:
             f.write("{}->{}\n".format(mm, blackbox_result))
+
+
+if __name__ == '__main__':
+    main()
