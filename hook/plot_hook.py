@@ -8,7 +8,7 @@ import visdom
 from chainerrl.experiments import StepHook
 
 
-class VisdomPlotHook(StepHook):
+class PlotHook(StepHook):
     """Hook that will plot the agent statistics.
 
     You can use this hook to plot

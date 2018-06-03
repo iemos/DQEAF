@@ -4,20 +4,60 @@ import argparse
 import os
 import sys
 
+import chainer
 import chainerrl
+import chainer.functions as F
+import chainer.links as L
 import gym
 import numpy as np
 from chainer import optimizers
-from chainerrl import experiments, explorers, q_functions, links, replay_buffer, misc
+from chainerrl import experiments, explorers, links, replay_buffer, misc
 
 from bin.test_agent_chainer import evaluate
-from bin.visdom_plot_hook import VisdomPlotHook
+from hook.plot_hook import PlotHook
 from gym_malware import sha256_holdout
 from gym_malware.envs.controls import manipulate2 as manipulate
 from gym_malware.envs.utils import pefeatures
+from hook.training_scores_hook import TrainingScoresHook
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
+
+class QFunction(chainer.Chain):
+    def __init__(self, obs_size, n_actions, n_hidden_channels=None):
+        super(QFunction, self).__init__()
+        if n_hidden_channels is None:
+            n_hidden_channels = [1024, 256]
+        net = []
+        inpdim = obs_size
+        for i, n_hid in enumerate(n_hidden_channels):
+            net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
+            net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+            net += [('_act{}'.format(i), F.relu)]
+            inpdim = n_hid
+
+        net += [('output', L.Linear(inpdim, n_actions))]
+
+        with self.init_scope():
+            for n in net:
+                if not n[0].startswith('_'):
+                    setattr(self, n[0], n[1])
+
+        self.forward = net
+
+    def __call__(self, x, test=False):
+        """
+        Args:
+            x (ndarray or chainer.Variable): An observation
+            test (bool): a flag indicating whether it is in test mode
+        """
+        for n, f in self.forward:
+            if not n.startswith('_'):
+                x = getattr(self, n)(x)
+            else:
+                x = f(x)
+
+        return chainerrl.action_value.DiscreteActionValue(x)
 
 # 创建ddqn agent
 def create_ddqn_agent(env, args):
@@ -25,12 +65,19 @@ def create_ddqn_agent(env, args):
     action_space = env.action_space
     n_actions = action_space.n
 
-    q_func = q_functions.FCStateQFunctionWithDiscreteAction(
-        obs_size, n_actions,
-        n_hidden_channels=args.n_hidden_channels,
-        n_hidden_layers=args.n_hidden_layers)
+    # q_func = q_functions.FCStateQFunctionWithDiscreteAction(
+    #     obs_size, n_actions,
+    #     n_hidden_channels=args.n_hidden_channels,
+    #     n_hidden_layers=args.n_hidden_layers)
+    q_func = QFunction(obs_size, n_actions)
     if args.gpu:
         q_func.to_gpu(args.gpu)
+
+    # Draw the computational graph and save it in the output directory.
+    if not args.test and not args.gpu:
+        chainerrl.misc.draw_computational_graph(
+            [q_func(np.zeros_like(env.observation_space, dtype=np.float32)[None])],
+            os.path.join(args.outdir, 'model'))
 
     # Use epsilon-greedy for exploration
     explorer = explorers.LinearDecayEpsilonGreedy(
@@ -44,12 +91,6 @@ def create_ddqn_agent(env, args):
         links.to_factorized_noisy(q_func)
         # Turn off explorer
         explorer = explorers.Greedy()
-
-    # Draw the computational graph and save it in the output directory.
-    if not args.gpu:
-        chainerrl.misc.draw_computational_graph(
-            [q_func(np.zeros_like(env.observation_space, dtype=np.float32)[None])],
-            os.path.join(args.outdir, 'model'))
 
     opt = optimizers.Adam()
     opt.setup(q_func)
@@ -103,8 +144,9 @@ def train_agent(args, use_score=False):
 
     agent = create_ddqn_agent(env, args)
 
-    q_hook = VisdomPlotHook('Average Q Value')
-    loss_hook = VisdomPlotHook('Average Loss', plot_index=1)
+    q_hook = PlotHook('Average Q Value')
+    loss_hook = PlotHook('Average Loss', plot_index=1)
+    scores_hook = TrainingScoresHook('Scores.txt', args.outdir)
 
     chainerrl.experiments.train_agent_with_evaluation(
         agent, env,
@@ -113,7 +155,7 @@ def train_agent(args, use_score=False):
         eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
         outdir=args.outdir,  # Save everything to 'result' directory
-        step_hooks=[q_hook, loss_hook],
+        step_hooks=[q_hook, loss_hook, scores_hook],
         successful_score=7,
         eval_env=test_env
     )
@@ -176,7 +218,7 @@ def main():
 
         env, agent = train_agent(args)
 
-        with open(os.path.join(args.outdir, 'scores.txt'), 'w') as f:
+        with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
             f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
     else:
         print("testing...")
@@ -195,11 +237,12 @@ def main():
         # ddqn
         env = gym.make('malware-test-v0')
         agent = create_ddqn_agent(env, args)
-        mm = get_latest_model_dir_from(args.outdir)
+        model_fold = os.path.join(args.outdir, args.load)
+        mm = get_latest_model_dir_from(model_fold)
         agent.load(mm)
         success, _ = evaluate(agent_policy(agent))
         blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
-        with open(os.path.join(args.outdir, 'scores.txt'), 'w') as f:
+        with open(os.path.join(model_fold, 'scores.txt'), 'a') as f:
             f.write("{}->{}\n".format(mm, blackbox_result))
 
 
