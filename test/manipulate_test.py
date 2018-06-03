@@ -30,7 +30,9 @@ for sha256 in file_list:
                 break
 
     except Exception as e:
-        print("exception")
+        print("====================exception=============")
+        print("====================exception=============")
+        print("====================exception=============")
         print(e)
         bad_file_list.append(sha256)
     index += 1
