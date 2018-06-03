@@ -23,14 +23,17 @@ class TrainingScoresHook(StepHook):
         self.vis = visdom.Visdom(port=8888)
         assert self.vis.check_connection(), "Fail to connect to Visdom backend!"
 
-    def text(self):
-        with open(os.path.join(self.outdir, 'scores.txt'), 'r') as f:
-            content = f.read()
-            if self.textwindow is None:
-                self.textwindow = self.vis.text(content, opts=self.opts)
-            else:
-                self.vis.text(content, win=self.textwindow)
+    def text(self, content):
+        if self.textwindow is None:
+            self.textwindow = self.vis.text(content, opts=self.opts)
+        else:
+            self.vis.text(content, win=self.textwindow, append=True)
 
     def __call__(self, env, agent, step):
         if step % 100 == 0:
-            self.text()
+            with open(os.path.join(self.outdir, 'scores.txt'), 'r') as f:
+                lines = f.readlines()  # 把全部数据文件读到一个列表lines中
+                for line in lines:  # 把lines中的数据逐行读取出来
+                    list = line.strip('\n').split(
+                        '\t')  # 处理逐行数据：strip表示把头尾的'\n'去掉，split表示以空格来分割行数据，然后把处理后的行数据返回到list列表中
+                    self.text('{}\t|\t{}'.format(list[0], list[3]))
