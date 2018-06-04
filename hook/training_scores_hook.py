@@ -38,4 +38,4 @@ class TrainingScoresHook(StepHook):
                     list = line.strip('\n').split(
                         '\t')  # 处理逐行数据：strip表示把头尾的'\n'去掉，split表示以空格来分割行数据，然后把处理后的行数据返回到list列表中
                     content.append(list[3])
-                self.text(",".join(content))
+                self.text("\n".join(content))

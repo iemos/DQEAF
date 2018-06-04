@@ -9,8 +9,10 @@ import chainerrl
 import gym
 import numpy as np
 
+from hook.plot_hook import PlotHook
+
+
 # 使用强化学习模型，创建一个agent智能体
-from bin.step_signature import StepSignature
 
 
 def createAgentDQN(env):
@@ -112,8 +114,8 @@ class randomAgent():
         pass
 
 
-average_q = StepSignature('Average Q')
-average_loss = StepSignature('Average Loss')
+average_q = PlotHook('Average Q')
+average_loss = PlotHook('Average Loss', plot_index=1)
 
 
 def plot_average_q(env, agent, t):
