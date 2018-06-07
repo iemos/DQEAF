@@ -34,10 +34,9 @@ def main():
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--noisy-net-sigma', action='store_true')
-    parser.add_argument('--demo', action='store_true', default=False)
     parser.add_argument('--load', type=str, default=None)
     parser.add_argument('--steps', type=int, default=2000)
-    parser.add_argument('--prioritized-replay', action='store_true', default=True)
+    parser.add_argument('--prioritized-replay', action='store_false', default=True)
     parser.add_argument('--episodic-replay', action='store_true', default=False)
     parser.add_argument('--replay-start-size', type=int, default=1000)
     parser.add_argument('--target-update-interval', type=int, default=10 ** 2)
@@ -50,7 +49,7 @@ def main():
     parser.add_argument('--n-hidden-layers', type=int, default=2)
     parser.add_argument('--gamma', type=float, default=0.95)
     parser.add_argument('--minibatch-size', type=int, default=None)
-    parser.add_argument('--test_random', action='store_true', default=True)
+    parser.add_argument('--test-random', action='store_true', default=False)
     args = parser.parse_args()
 
     class QFunction(chainer.Chain):
@@ -175,7 +174,7 @@ def main():
 
         q_hook = PlotHook('Average Q Value')
         loss_hook = PlotHook('Average Loss', plot_index=1)
-        scores_hook = TrainingScoresHook('Scores.txt', args.outdir)
+        scores_hook = TrainingScoresHook('scores.txt', args.outdir)
 
         chainerrl.experiments.train_agent_with_evaluation(
             agent, env,
@@ -188,6 +187,9 @@ def main():
             successful_score=7,
             eval_env=test_env
         )
+
+        # 保证训练一轮就成功的情况下能成功打印scores.txt文件
+        scores_hook(None, None, 1000)
 
         return env, agent
 
