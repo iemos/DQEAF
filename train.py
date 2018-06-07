@@ -36,8 +36,8 @@ def main():
     parser.add_argument('--noisy-net-sigma', action='store_true')
     parser.add_argument('--load', type=str, default=None)
     parser.add_argument('--steps', type=int, default=2000)
-    parser.add_argument('--prioritized-replay', action='store_false', default=True)
-    parser.add_argument('--episodic-replay', action='store_true', default=False)
+    parser.add_argument('--prioritized-replay', action='store_false')
+    parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
     parser.add_argument('--target-update-interval', type=int, default=10 ** 2)
     parser.add_argument('--target-update-method', type=str, default='hard')
@@ -49,7 +49,8 @@ def main():
     parser.add_argument('--n-hidden-layers', type=int, default=2)
     parser.add_argument('--gamma', type=float, default=0.95)
     parser.add_argument('--minibatch-size', type=int, default=None)
-    parser.add_argument('--test-random', action='store_true', default=False)
+    parser.add_argument('--test-random', action='store_true')
+    parser.add_argument('--rounds', type=int, default=20)
     args = parser.parse_args()
 
     class QFunction(chainer.Chain):
@@ -166,9 +167,9 @@ def main():
         test_env = gym.make(ENV_TEST_NAME)
 
         np.random.seed(123)
-        env.seed(456)
+        env.seed(123)
         # Set a random seed used in ChainerRL
-        misc.set_random_seed(789)
+        misc.set_random_seed(123)
 
         agent = create_ddqn_agent(env, args)
 
@@ -210,14 +211,18 @@ def main():
     # test
     if not args.test:
         print("training...")
-        args.outdir = experiments.prepare_output_dir(
-            args, args.outdir, argv=sys.argv)
-        print('Output files are saved in {}'.format(args.outdir))
 
-        env, agent = train_agent(args)
+        # 反复多次重新训练模型，避免手工操作
+        for _ in range(args.rounds):
+            args.outdir = experiments.prepare_output_dir(
+                args, args.outdir, argv=sys.argv)
+            print('Output files are saved in {}'.format(args.outdir))
 
-        with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
-            f.write("total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
+            env, agent = train_agent(args)
+
+            with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
+                f.write(
+                    "total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
     else:
         print("testing...")
         model_fold = os.path.join(args.outdir, args.load)
