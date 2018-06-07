@@ -223,6 +223,15 @@ def main():
             with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
                 f.write(
                     "total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
+
+            # 标识成功失败
+            dirs = os.listdir(args.outdir)
+            # 10个txt+2个目录
+            if len(dirs) == 12:
+                os.rename(args.outdir, '{}-success'.format(args.outdir))
+
+            # 重置outdir到models
+            args.outdir = 'models'
     else:
         print("testing...")
         model_fold = os.path.join(args.outdir, args.load)

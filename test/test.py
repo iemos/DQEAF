@@ -1,4 +1,7 @@
-from hook.training_scores_hook import TrainingScoresHook
+# 标识成功失败
+import os
 
-hook = TrainingScoresHook('text', '')
-hook(None, None, 0)
+dirs = os.listdir('logs')
+# 10个txt+2个目录
+if len(dirs) == 9:
+    os.rename('logs', 'logs-success')
