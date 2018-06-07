@@ -36,7 +36,7 @@ def main():
     parser.add_argument('--noisy-net-sigma', action='store_true')
     parser.add_argument('--demo', action='store_true', default=False)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=50000)
+    parser.add_argument('--steps', type=int, default=5000)
     parser.add_argument('--prioritized-replay', action='store_true', default=True)
     parser.add_argument('--episodic-replay', action='store_true', default=False)
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -50,7 +50,6 @@ def main():
     parser.add_argument('--n-hidden-layers', type=int, default=2)
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
-    parser.add_argument('--maxturns', type=int, default=80)
     parser.add_argument('--test_random', action='store_true', default=True)
     args = parser.parse_args()
 
@@ -181,7 +180,7 @@ def main():
         chainerrl.experiments.train_agent_with_evaluation(
             agent, env,
             steps=args.steps,  # Train the graduation_agent for this many rounds steps
-            max_episode_len=args.maxturns,  # Maximum length of each episodes
+            max_episode_len=env.maxturns,  # Maximum length of each episodes
             eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
             eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
