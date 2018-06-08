@@ -228,8 +228,7 @@ def main():
             dirs = os.listdir(args.outdir)
             # 训练提前结束，标识成功
             for file in dirs:
-                mm = str(file)
-                if mm.endswith('_finish') and not mm.startswith(args.steps):
+                if str(file).endswith('_finish') and not str(file).startswith(args.steps):
                     os.rename(args.outdir, '{}-success'.format(args.outdir))
 
             # 重置outdir到models
