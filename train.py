@@ -1,6 +1,7 @@
 # coding=UTF-8
 # ! /usr/bin/python
 import argparse
+import linecache
 import os
 import sys
 
@@ -35,7 +36,7 @@ def main():
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--noisy-net-sigma', action='store_true')
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=1200)
+    parser.add_argument('--steps', type=int, default=1100)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -47,7 +48,7 @@ def main():
     parser.add_argument('--eval-interval', type=int, default=10 ** 3)
     parser.add_argument('--n-hidden-channels', type=int, default=512)
     parser.add_argument('--n-hidden-layers', type=int, default=2)
-    parser.add_argument('--gamma', type=float, default=0.95)
+    parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
     parser.add_argument('--rounds', type=int, default=10)
@@ -226,10 +227,20 @@ def main():
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
+            second_line = linecache.getline(os.path.join(args.outdir, 'scores.txt'), 2)
+            success_score = second_line.strip('\n').split('\t')[3]
+
             # 训练提前结束，标识成功
+            success_flag = False
             for file in dirs:
                 if file.endswith('_finish') and not file.startswith(str(args.steps)):
-                    os.rename(args.outdir, '{}-success'.format(args.outdir))
+                    success_flag = True
+                    break
+
+            if success_flag:
+                os.rename(args.outdir, '{}-{}-success'.format(args.outdir, success_score))
+            else:
+                os.rename(args.outdir, '{}-{}'.format(args.outdir, success_score))
 
             # 重置outdir到models
             args.outdir = 'models'
