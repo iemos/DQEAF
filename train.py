@@ -63,7 +63,7 @@ def main():
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 inpdim = n_hid
 
@@ -237,10 +237,7 @@ def main():
                     success_flag = True
                     break
 
-            if success_flag:
-                os.rename(args.outdir, '{}-{}-success'.format(args.outdir, success_score))
-            else:
-                os.rename(args.outdir, '{}-{}'.format(args.outdir, success_score))
+            os.rename(args.outdir, '{}-{}{}'.format(args.outdir, success_score, '-success' if success_flag else ''))
 
             # 重置outdir到models
             args.outdir = 'models'
