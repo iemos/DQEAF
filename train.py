@@ -227,7 +227,8 @@ def main():
             # 标识成功失败
             dirs = os.listdir(args.outdir)
             # 训练提前结束，标识成功
-            for mm in dirs:
+            for file in dirs:
+                mm = str(file)
                 if mm.endswith('_finish') and not mm.startswith(args.steps):
                     os.rename(args.outdir, '{}-success'.format(args.outdir))
 
