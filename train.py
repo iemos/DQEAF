@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--noisy-net-sigma', action='store_true')
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=2000)
+    parser.add_argument('--steps', type=int, default=1200)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -50,7 +50,7 @@ def main():
     parser.add_argument('--gamma', type=float, default=0.95)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
-    parser.add_argument('--rounds', type=int, default=20)
+    parser.add_argument('--rounds', type=int, default=10)
     args = parser.parse_args()
 
     class QFunction(chainer.Chain):
@@ -226,9 +226,10 @@ def main():
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
-            # 10个txt+2个目录
-            if len(dirs) == 12:
-                os.rename(args.outdir, '{}-success'.format(args.outdir))
+            # 训练提前结束，标识成功
+            for mm in dirs:
+                if mm.endswith('_finish') and not mm.startswith(args.steps):
+                    os.rename(args.outdir, '{}-success'.format(args.outdir))
 
             # 重置outdir到models
             args.outdir = 'models'
