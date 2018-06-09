@@ -51,14 +51,14 @@ def main():
     parser.add_argument('--gamma', type=float, default=0.98)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
-    parser.add_argument('--rounds', type=int, default=10)
+    parser.add_argument('--rounds', type=int, default=5)
     args = parser.parse_args()
 
     class QFunction(chainer.Chain):
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [1024, 64]
+                n_hidden_channels = [768, 128]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
