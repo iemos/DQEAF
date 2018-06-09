@@ -48,7 +48,7 @@ def main():
     parser.add_argument('--eval-interval', type=int, default=10 ** 3)
     parser.add_argument('--n-hidden-channels', type=int, default=512)
     parser.add_argument('--n-hidden-layers', type=int, default=2)
-    parser.add_argument('--gamma', type=float, default=0.99)
+    parser.add_argument('--gamma', type=float, default=0.98)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
     parser.add_argument('--rounds', type=int, default=10)
@@ -58,7 +58,7 @@ def main():
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [512, 64]
+                n_hidden_channels = [1024, 64]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
