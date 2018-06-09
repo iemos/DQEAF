@@ -56,14 +56,14 @@ def main():
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [512, 128]
+                n_hidden_channels = [1024, 128]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
                 # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
-                # net += [('_dropout{}'.format(i), F.dropout(0.1))]
+                net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
 
             net += [('output', L.Linear(inpdim, n_actions))]
