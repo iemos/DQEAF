@@ -65,7 +65,7 @@ def main():
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
                 # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
-                net += [('_dropout{}'.format(i), F.dropout(0.1))]
+                # net += [('_dropout{}'.format(i), F.dropout(0.1))]
                 inpdim = n_hid
 
             net += [('output', L.Linear(inpdim, n_actions))]
