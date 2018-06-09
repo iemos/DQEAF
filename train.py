@@ -262,7 +262,7 @@ def main():
         def agent_policy(agent):
             def f(bytez):
                 # first, get features from bytez
-                feats = fe.extract2(bytez)
+                feats = fe.extract(bytez)
                 action_index = agent.act(feats)
                 return ACTION_LOOKUP[action_index]
 
