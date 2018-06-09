@@ -49,19 +49,19 @@ def main():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
-    parser.add_argument('--rounds', type=int, default=3)
+    parser.add_argument('--rounds', type=int, default=10)
     args = parser.parse_args()
 
     class QFunction(chainer.Chain):
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [1024, 128]
+                n_hidden_channels = [1024, 256]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
@@ -125,7 +125,7 @@ def main():
         opt = optimizers.Adam()
         opt.setup(q_func)
 
-        rbuf_capacity = 500
+        rbuf_capacity = 1000
         if args.episodic_replay:
             if args.minibatch_size is None:
                 args.minibatch_size = 4
