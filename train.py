@@ -84,6 +84,8 @@ def main():
             for n, f in self.forward:
                 if not n.startswith('_'):
                     x = getattr(self, n)(x)
+                elif n.startswith('_dropout'):
+                    x = f(x, 0.1)
                 else:
                     x = f(x)
 
