@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--steps', type=int, default=1100)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
-    parser.add_argument('--replay-start-size', type=int, default=100)
+    parser.add_argument('--replay-start-size', type=int, default=500)
     parser.add_argument('--target-update-interval', type=int, default=10 ** 2)
     parser.add_argument('--target-update-method', type=str, default='hard')
     parser.add_argument('--soft-update-tau', type=float, default=1e-2)
@@ -61,7 +61,7 @@ def main():
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
@@ -262,7 +262,7 @@ def main():
         def agent_policy(agent):
             def f(bytez):
                 # first, get features from bytez
-                feats = fe.extract(bytez)
+                feats = fe.extract2(bytez)
                 action_index = agent.act(feats)
                 return ACTION_LOOKUP[action_index]
 
