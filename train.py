@@ -34,7 +34,6 @@ def main():
     parser.add_argument('--final-exploration-steps', type=int, default=10 ** 4)
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
-    parser.add_argument('--noisy-net-sigma', action='store_true')
     parser.add_argument('--load', type=str, default=None)
     parser.add_argument('--steps', type=int, default=1100)
     parser.add_argument('--prioritized-replay', action='store_false')
@@ -118,11 +117,6 @@ def main():
         explorer = explorers.Boltzmann()
         # explorer = explorers.ConstantEpsilonGreedy(
         #     epsilon=0.3, random_action_func=env.action_space.sample)
-
-        if args.noisy_net_sigma:
-            links.to_factorized_noisy(q_func)
-            # Turn off explorer
-            explorer = explorers.Greedy()
 
         opt = optimizers.Adam()
         opt.setup(q_func)
