@@ -115,9 +115,9 @@ def main():
         # explorer = explorers.LinearDecayEpsilonGreedy(
         #     args.start_epsilon, args.end_epsilon, args.final_exploration_steps,
         #     action_space.sample)
-        # explorer = explorers.Boltzmann()
-        explorer = explorers.ConstantEpsilonGreedy(
-            epsilon=0.3, random_action_func=env.action_space.sample)
+        explorer = explorers.Boltzmann()
+        # explorer = explorers.ConstantEpsilonGreedy(
+        #     epsilon=0.3, random_action_func=env.action_space.sample)
 
         if args.noisy_net_sigma:
             links.to_factorized_noisy(q_func)
