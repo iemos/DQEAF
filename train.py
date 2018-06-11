@@ -111,10 +111,10 @@ def main():
                 os.path.join(args.outdir, 'model'))
 
         # Use epsilon-greedy for exploration
-        # explorer = explorers.LinearDecayEpsilonGreedy(
-        #     args.start_epsilon, args.end_epsilon, args.final_exploration_steps,
-        #     action_space.sample)
-        explorer = explorers.Boltzmann()
+        explorer = explorers.LinearDecayEpsilonGreedy(
+            args.start_epsilon, args.end_epsilon, args.final_exploration_steps,
+            action_space.sample)
+        # explorer = explorers.Boltzmann()
         # explorer = explorers.ConstantEpsilonGreedy(
         #     epsilon=0.3, random_action_func=env.action_space.sample)
 
