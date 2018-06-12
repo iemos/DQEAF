@@ -45,7 +45,7 @@ def main():
     parser.add_argument('--update-interval', type=int, default=1)
     parser.add_argument('--eval-n-runs', type=int, default=200)
     parser.add_argument('--eval-interval', type=int, default=1000)
-    parser.add_argument('--gamma', type=float, default=0.90)
+    parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
     parser.add_argument('--test-random', action='store_true')
     parser.add_argument('--rounds', type=int, default=10)
@@ -60,7 +60,7 @@ def main():
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 # net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
