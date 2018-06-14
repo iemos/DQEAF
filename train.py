@@ -60,7 +60,7 @@ def main():
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 # net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
@@ -121,7 +121,7 @@ def main():
         opt = optimizers.Adam()
         opt.setup(q_func)
 
-        rbuf_capacity = 10000
+        rbuf_capacity = 5 * 10 ** 5
         if args.episodic_replay:
             if args.minibatch_size is None:
                 args.minibatch_size = 4
@@ -162,7 +162,7 @@ def main():
         ENV_TEST_NAME = 'malware-score-test-v0' if use_score else 'malware-test-v0'
         test_env = gym.make(ENV_TEST_NAME)
 
-        np.random.seed(123)
+        # np.random.seed(123)
         env.seed(123)
         # Set a random seed used in ChainerRL
         misc.set_random_seed(123)
