@@ -29,5 +29,8 @@ for sha256 in file_list:
     index = index + 1
     print(extractor.extract2(bytez))
     print(extractor.extract2(bytez).shape)
-    if index > 2:
+
+    print(extractor.extract3(bytez))
+    print(extractor.extract3(bytez).shape)
+    if index > 1:
         break
