@@ -30,7 +30,5 @@ for sha256 in file_list:
     print(extractor.extract2(bytez))
     print(extractor.extract2(bytez).shape)
 
-    print(extractor.extract3(bytez))
-    print(extractor.extract3(bytez).shape)
     if index > 1:
         break

@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=50000)
+    parser.add_argument('--steps', type=int, default=30000)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -121,7 +121,7 @@ def main():
         opt = optimizers.Adam()
         opt.setup(q_func)
 
-        rbuf_capacity = 10 ** 3
+        rbuf_capacity = 5 * 10 ** 3
         if args.episodic_replay:
             if args.minibatch_size is None:
                 args.minibatch_size = 4
