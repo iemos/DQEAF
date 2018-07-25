@@ -967,8 +967,14 @@ dd = OrderedDict([('Backdoor.Win32.PcClient.esi', {'actions': [], 'evaded': Fals
                                       'overlay_append', 'remove_signature', 'section_add_org', 'section_add_org',
                                       'imports_append_org'], 'evaded': False})])
 
-count = 1
+count = 0
+success = 0
 for k, v in dd.items():
+    count += 1
     if dd[k]['evaded']:
+        success += 1
         print("{}:{}->{}".format(count, k, v['evaded_sha256']))
-        count += 1
+    else:
+        print("{}:{}->".format(count, k))
+
+print("success count:{}".format(success))
