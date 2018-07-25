@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=30000)
+    parser.add_argument('--steps', type=int, default=9100)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -60,7 +60,7 @@ def main():
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
-                net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
+                # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.relu)]
                 # net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
@@ -219,6 +219,7 @@ def main():
             with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
                 f.write(
                     "total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
+                f.write("history:\n{}".format(env.history))
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
