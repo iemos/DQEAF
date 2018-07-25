@@ -219,7 +219,19 @@ def main():
             with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
                 f.write(
                     "total_turn/episode->{}({}/{})\n".format(env.total_turn / env.episode, env.total_turn, env.episode))
-                f.write("history:\n{}".format(env.history))
+                f.write("history:\n")
+
+                count = 0
+                success_count = 0
+                for k, v in env.history.items():
+                    count += 1
+                    if v['evaded']:
+                        success_count += 1
+                        f.write("{}:{}->{}\n".format(count, k, v['evaded_sha256']))
+                    else:
+                        f.write("{}:{}->\n".format(count, k))
+
+                f.write("success count:{}".format(success_count))
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
