@@ -181,7 +181,7 @@ def main():
             eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
             step_hooks=[q_hook, loss_hook, scores_hook],
-            successful_score=7,
+            successful_score=70,
             eval_env=test_env
         )
 
