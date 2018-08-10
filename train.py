@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=10000)
+    parser.add_argument('--steps', type=int, default=20000)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -55,7 +55,7 @@ def main():
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [256, 64]
+                n_hidden_channels = [512, 256]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
