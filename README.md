@@ -1,4 +1,6 @@
-# 使用深度强化学习进行恶意软件检测规避
+# 使用深度强化学习进行恶意软件检测规避 
+
+**DQAEAF**:Deep Q-network Anti-malware Engines Attacking Framework
 
 The goal of this project is to improve the author's [original work](https://github.com/endgameinc/gym-malware).  
 In his Paper: **Evading Machine Learning Malware Detection**, He builds a framework for attacking static PE anti-malware engines based on reinforcement learning.
@@ -27,7 +29,7 @@ The moves or actions that can be performed on a malware sample in our environmen
 * **ARBE**. Append random bytes to the end of PE file
 * **ARI**. Append a random name library with random function name to the import address table of PE file
 * **ARS**. Append a random name section to the section table of PE file
-* **RS**. Remove signature from certificate table
+* ...
 
 The agent will randomly select these four actions in an attempt to bypass the below independent classifier. Over time, the agent learns which combinations lead to the highest rewards, or learns a policy (*like an optimal plan of attack for any given observation*).
 
@@ -46,4 +48,4 @@ We had redefined the environment based on the `gym-malware` previous work. ^_^
 
 ## TODO
 1. Action修改：按照分类器重新设计action，尽量去掉action随机性
-1. 修改dqn模型，Prioritize Experience Replay?
+1. 修改dqn模型，Prioritize Experience Replay
