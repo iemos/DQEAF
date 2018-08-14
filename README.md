@@ -1,6 +1,6 @@
 # 使用深度强化学习进行恶意软件检测规避 
 
-**DQAEAF**:Deep Q-network Anti-malware Engines Attacking Framework
+**DQEAF**:Deep Q-network anti-malware Engines Attacking Framework
 
 The goal of this project is to improve the author's [original work](https://github.com/endgameinc/gym-malware).  
 In his Paper: **Evading Machine Learning Malware Detection**, He builds a framework for attacking static PE anti-malware engines based on reinforcement learning.
