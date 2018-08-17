@@ -20,7 +20,7 @@ class PlotHook(StepHook):
 
     """
 
-    def __init__(self, title, plot_index=0, xlabel='epoch', ylabel='values',
+    def __init__(self, title, plot_index=0, xlabel='Training epochs', ylabel='values',
                  figsize=(600, 400), margin=(40, 40, 30, 30), fillarea=False):
         self.win = None
         self.opts = dict(
