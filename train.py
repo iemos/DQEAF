@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--outdir', type=str, default='models')
     parser.add_argument('--test', action='store_true')
     parser.add_argument('--gpu', action='store_true')
-    parser.add_argument('--final-exploration-steps', type=int, default=10 ** 3)
+    parser.add_argument('--final-exploration-steps', type=int, default=10 ** 4)
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--load', type=str, default=None)
@@ -43,7 +43,7 @@ def main():
     parser.add_argument('--target-update-method', type=str, default='hard')
     parser.add_argument('--soft-update-tau', type=float, default=1e-2)
     parser.add_argument('--update-interval', type=int, default=1)
-    parser.add_argument('--eval-n-runs', type=int, default=200)
+    parser.add_argument('--eval-n-runs', type=int, default=80)
     parser.add_argument('--eval-interval', type=int, default=1000)
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--minibatch-size', type=int, default=None)
@@ -62,7 +62,7 @@ def main():
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
                 # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.tanh)]
-                # net += [('_dropout{}'.format(i), F.dropout)]
+                net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
 
             net += [('output', L.Linear(inpdim, n_actions))]
