@@ -55,14 +55,14 @@ def main():
         def __init__(self, obs_size, n_actions, n_hidden_channels=None):
             super(QFunction, self).__init__()
             if n_hidden_channels is None:
-                n_hidden_channels = [512, 256]
+                n_hidden_channels = [1024, 256]
             net = []
             inpdim = obs_size
             for i, n_hid in enumerate(n_hidden_channels):
                 net += [('l{}'.format(i), L.Linear(inpdim, n_hid))]
                 # net += [('norm{}'.format(i), L.BatchNormalization(n_hid))]
                 net += [('_act{}'.format(i), F.tanh)]
-                net += [('_dropout{}'.format(i), F.dropout)]
+                # net += [('_dropout{}'.format(i), F.dropout)]
                 inpdim = n_hid
 
             net += [('output', L.Linear(inpdim, n_actions))]
@@ -171,6 +171,7 @@ def main():
 
         q_hook = PlotHook('Average Q Value', ylabel='Average Action Value (Q)')
         loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
+        reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
         scores_hook = TrainingScoresHook('scores.txt', args.outdir)
 
         chainerrl.experiments.train_agent_with_evaluation(
@@ -180,8 +181,8 @@ def main():
             eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
             eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
-            step_hooks=[q_hook, loss_hook, scores_hook],
-            successful_score=14,
+            step_hooks=[q_hook, loss_hook, scores_hook, reward_hook],
+            successful_score=7,
             eval_env=test_env
         )
 
@@ -232,6 +233,7 @@ def main():
                         f.write("{}:{}->\n".format(count, k))
 
                 f.write("success count:{}".format(success_count))
+                f.write(env.history)
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
