@@ -233,7 +233,7 @@ def main():
                         f.write("{}:{}->\n".format(count, k))
 
                 f.write("success count:{}".format(success_count))
-                f.write(env.history)
+                f.write("{}".format(env.history))
 
             # 标识成功失败
             dirs = os.listdir(args.outdir)
