@@ -9,7 +9,8 @@ import chainerrl
 import gym
 import numpy as np
 
-from hook.plot_hook import PlotHook
+
+# from hook.plot_hook import PlotHook
 
 
 # 使用强化学习模型，创建一个agent智能体
@@ -114,24 +115,24 @@ class randomAgent():
         pass
 
 
-average_q = PlotHook('Average Q')
-average_loss = PlotHook('Average Loss', plot_index=1)
+# average_q = PlotHook('Average Q')
+# average_loss = PlotHook('Average Loss', plot_index=1)
 
 
-def plot_average_q(env, agent, t):
-    if t % 10 == 0:
-        stat = agent.get_statistics()
-        d = {}
-        d[stat[0][0]] = stat[0][1]
-        average_q.plot(t, d)
+# def plot_average_q(env, agent, t):
+#     if t % 10 == 0:
+#         stat = agent.get_statistics()
+#         d = {}
+#         d[stat[0][0]] = stat[0][1]
+#         average_q.plot(t, d)
 
 
-def plot_average_loss(env, agent, t):
-    if t % 10 == 0:
-        stat = agent.get_statistics()
-        d = {}
-        d[stat[1][0]] = stat[1][1]
-        average_loss.plot(t, d)
+# def plot_average_loss(env, agent, t):
+#     if t % 10 == 0:
+#         stat = agent.get_statistics()
+#         d = {}
+#         d[stat[1][0]] = stat[1][1]
+#         average_loss.plot(t, d)
 
 
 # 开始训练
@@ -191,7 +192,7 @@ def train_agent(env, rounds=20000):
         eval_interval=1000,  # Evaluate the graduation_agent after every 1000 steps
         eval_n_runs=10,  # 100 episodes are sampled for each evaluation
         outdir='cart',  # Save everything to 'result' directory
-        step_hooks=[plot_average_q, plot_average_loss],
+        # step_hooks=[plot_average_q, plot_average_loss],
         successful_score=100)
 
     return agent
@@ -217,7 +218,7 @@ for i_episode in range(10):
     observation = env.reset()
     R = 0
     for t in range(200):
-        env.render()
+        # env.render()
         action = agent.act(observation)
         observation, reward, done, info = env.step(action)
         R += reward
