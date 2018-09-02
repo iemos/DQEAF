@@ -7,6 +7,8 @@ import tensorflow as tf
 import gym_malware
 
 # Hyper Parameters for DQN
+from hook.plot_hook import PlotHook
+
 GAMMA = 0.9  # discount factor for target Q
 INITIAL_EPSILON = 0.5  # starting value of epsilon
 FINAL_EPSILON = 0.01  # final value of epsilon
@@ -146,9 +148,8 @@ class DQN():
 # Hyper Parameters
 ENV_NAME = 'malware-v0'
 ENV_TEST_NAME = 'malware-test-v0'
-EPISODE = 500  # Episode limitation
+EPISODE = 10000  # Episode limitation
 STEP = 80  # Step limitation in an episode
-TEST = 1  # The number of experiment test every 10 episode
 TEST_SAMPLE_COUNT = 200
 
 
@@ -160,43 +161,57 @@ def main():
 
     test_count = 0
 
+    # q_hook = PlotHook('Average Q Value', ylabel='Average Action Value (Q)')
+    # loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
+    reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
+    step_hooks = [reward_hook]
+
+    total_steps = 0
     # Training...
     for episode in range(EPISODE):
         # initialize task
         state = env.reset()
         # Train
         for step in range(STEP):
+            total_steps += 1
             # e-greedy action for train
             action = agent.egreedy_action(state)
             next_state, reward, done, _ = env.step(action)
             agent.perceive(state, action, reward, next_state, done)
             state = next_state
+
+            # hook
+            for hook in step_hooks:
+                hook(env, agent, episode)
+
             if done:
                 break
 
+        if total_steps > EPISODE:
+            break
+
         # 每1000次测试一下
-        if episode % 10 == 0:
+        if total_steps % 1000 == 0:
             # Testing...
             # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
-            for tt in range(TEST):
-                test_count += 1
-                total_reward = 0
-                for i in range(TEST_SAMPLE_COUNT):
-                    state = env_test.reset()
-                    done = False
-                    while not done:
-                        # env.render()
-                        action = agent.action(state)  # direct action for test
-                        state, reward, done, _ = env_test.step(action)
-                        # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
-                        total_reward += reward
+            test_count += 1
+            total_reward = 0
+            for i in range(TEST_SAMPLE_COUNT):
+                state = env_test.reset()
+                done = False
+                while not done:
+                    # env.render()
+                    action = agent.action(state)  # direct action for test
+                    state, reward, done, _ = env_test.step(action)
+                    # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
+                    total_reward += reward
 
-                ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
+            ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
-                with open('NIS13DQN.txt', 'a+') as f:
-                    f.write('episode:{} Evaluation Average Reward:{}\n'.format(test_count, ave_reward))
-                    print('episode:{} Evaluation Average Reward:{}'.format(test_count, ave_reward))
+            with open('NIS13DQN.txt', 'a+') as f:
+                f.write('episode:{} Evaluation Average Reward:{}\n'.format(test_count, ave_reward))
+                print('episode:{} Evaluation Average Reward:{}'.format(test_count, ave_reward))
 
 
 if __name__ == '__main__':
