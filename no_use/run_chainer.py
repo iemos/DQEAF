@@ -3,9 +3,8 @@
 import argparse
 import datetime
 
-from bin.test_agent_chainer import test_models, test_models2
-from bin.train_agent_chainer import *
-from gym_malware.envs.controls import manipulate2 as manipulate
+from no_use.bin import test_models2
+from no_use.bin.train_agent_chainer import *
 
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python run_chainer.py --model-name name --rounds rounds --agent dqn(or acer)

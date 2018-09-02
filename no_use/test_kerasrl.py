@@ -1,6 +1,6 @@
 import argparse
 
-from bin.test_agent_kerasrl import test_models
+from no_use.bin.test_agent_kerasrl import test_models
 
 # timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 timestamp = '201805132111'

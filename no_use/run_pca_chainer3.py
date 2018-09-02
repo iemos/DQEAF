@@ -2,8 +2,8 @@
 import argparse
 import datetime
 
-from bin.test_agent_pca_chainer3 import test_models
-from bin.train_agent_pca_chainer3 import *
+from no_use.bin import test_models
+from no_use.bin.train_agent_pca_chainer3 import *
 from gym_malware.envs.controls import manipulate2 as manipulate
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")

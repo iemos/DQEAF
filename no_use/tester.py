@@ -3,8 +3,8 @@
 import argparse
 import datetime
 
-from bin.test_agent_chainer import test_models
-from bin.train_agent_chainer import *
+from no_use.bin import test_models
+from no_use.bin.train_agent_chainer import *
 
 model_dir = "models/"
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")

@@ -4,8 +4,7 @@ import argparse
 import datetime
 import os
 
-from bin.train_agent_chainer import *
-from bin.train_agent_chainer import create_ddqn_agent
+from no_use.bin.train_agent_chainer import *
 from gym_malware.envs.controls import manipulate2 as manipulate
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}

@@ -1,8 +1,8 @@
 import argparse
 import datetime
 
-from bin.test_agent_kerasrl import test_models
-from bin.train_agent_kerasrl import train_dqn_model_EpsGreedy_Policy
+from no_use.bin.test_agent_kerasrl import test_models
+from no_use.bin import train_dqn_model_EpsGreedy_Policy
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
 parser = argparse.ArgumentParser()

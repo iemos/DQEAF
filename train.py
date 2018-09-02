@@ -12,9 +12,9 @@ import chainerrl
 import gym
 import numpy as np
 from chainer import optimizers
-from chainerrl import experiments, explorers, links, replay_buffer, misc
+from chainerrl import experiments, explorers, replay_buffer, misc
 
-from bin.test_agent_chainer import evaluate
+from no_use.bin.test_agent_chainer import evaluate
 from gym_malware import sha256_holdout
 from gym_malware.envs.controls import manipulate2 as manipulate
 from gym_malware.envs.utils import pefeatures

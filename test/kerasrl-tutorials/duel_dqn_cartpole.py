@@ -7,7 +7,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 
 # from rl.memory import SequentialMemory
-from bin.change_memory import SequentialMemory_Change
+from no_use.bin.change_memory import SequentialMemory_Change
 
 ENV_NAME = 'CartPole-v0'
 
