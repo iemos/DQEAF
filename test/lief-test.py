@@ -1,4 +1,4 @@
-import pefile
+import lief
 
 from gym_malware.envs.utils import interface
 
@@ -7,6 +7,5 @@ from gym_malware.envs.utils import interface
 from gym_malware.envs.utils.extractPE import extractPE
 
 byte = interface.fetch_file("Backdoor.Win32.Hupigon.zay");
-# binary = lief.PE.parse(byte)
-# print(binary)
-print(extractPE().createFeature(byte))
+binary = lief.PE.parse(byte)
+print(binary)

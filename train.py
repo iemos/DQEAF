@@ -25,6 +25,10 @@ ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
 
 # 用于快速调用chainerrl的训练方法，参数如下：
+# 1、命令行启动visdom
+# ➜  ~ source activate new
+# (new) ➜  ~ python -m visdom.server -p 8888
+# 2、运行train
 # python train.py
 def main():
     parser = argparse.ArgumentParser()
