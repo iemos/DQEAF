@@ -220,6 +220,7 @@ def main():
             q_hook(env, agent, total_steps)
 
             if done:
+                print("episode: %d  total_steps: %d" % (episode, total_steps))
                 steps_hook(env, agent, episode)
                 break
 
