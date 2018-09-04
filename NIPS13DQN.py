@@ -200,6 +200,7 @@ def main():
     step_hooks = [q_hook, steps_hook]
 
     total_steps = 0
+    total_test = 0
     # Training...
     for episode in range(EPISODE):
         # initialize task
@@ -243,8 +244,9 @@ def main():
                     state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
-                # agent.update_test_steps_to_success(step)
-                # test_steps_hook(env, agent, i)
+                total_test += 1
+                agent.update_test_steps_to_success(step)
+                test_steps_hook(env, agent, total_test)
                 step = 0;
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
