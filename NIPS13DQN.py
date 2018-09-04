@@ -201,6 +201,7 @@ def main():
 
     total_steps = 0
     total_test = 0  # total test number: to render the "steps to success in test
+    steps_offset = 0
     # Training...
     for episode in range(EPISODE):
         # initialize task
@@ -208,6 +209,7 @@ def main():
         # Train
         for step in range(STEP):
             total_steps += 1
+            steps_offset += 1
             # e-greedy action for train
             action = agent.egreedy_action(state)
             agent.update_average_q()
@@ -219,45 +221,43 @@ def main():
             # hook
             q_hook(env, agent, total_steps)
 
-            if total_steps % 1000 == 0:
-                print("start test")
-                # Testing...
-                # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
-                # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
-                test_count += 1
-                total_reward = 0
-                test_step = 0
-                for i in range(TEST_SAMPLE_COUNT):
-
-                    done = False
-                    while not done:
-                        # env.render()
-                        test_step += 1
-                        action = agent.action(state)  # direct action for test
-                        state, reward, done, _ = env_test.step(action)
-                        # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
-                        total_reward += reward
-                    total_test += 1
-                    agent.update_test_steps_to_success(test_step)
-                    test_steps_hook(env, agent, total_test)
-                    test_step = 0
-                ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
-
-                with open('NIS13DQN.txt', 'a+') as f:
-                    f.write('episode:{} Evaluation Average Reward:{}\n'.format(test_count, ave_reward))
-                    print('episode:{} Evaluation Average Reward:{}'.format(test_count, ave_reward))
-
-                    
             if done:
                 print("episode: %d  total_steps: %d" % (episode, total_steps))
-                steps_hook(env, agent, episode)
-                break
+            steps_hook(env, agent, episode)
+            break
 
         if total_steps > EPISODE:
             break
 
         # 每1000次测试一下
+        if steps_offset > 1000:
+            steps_offset -= 1000
+            print("start test")
+            # Testing...
+            # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
+            # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
+            test_count += 1
+            total_reward = 0
+            test_step = 0
+            for i in range(TEST_SAMPLE_COUNT):
 
+                done = False
+                while not done:
+                    # env.render()
+                    test_step += 1
+                    action = agent.action(state)  # direct action for test
+                    state, reward, done, _ = env_test.step(action)
+                    # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
+                    total_reward += reward
+                total_test += 1
+                agent.update_test_steps_to_success(test_step)
+                test_steps_hook(env, agent, total_test)
+                test_step = 0
+            ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
+
+            with open('NIS13DQN.txt', 'a+') as f:
+                f.write('episode:{} Evaluation Average Reward:{}\n'.format(test_count, ave_reward))
+                print('episode:{} Evaluation Average Reward:{}'.format(test_count, ave_reward))
 
 
 if __name__ == '__main__':
