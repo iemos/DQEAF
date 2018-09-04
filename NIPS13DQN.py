@@ -233,21 +233,21 @@ def main():
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
             test_count += 1
             total_reward = 0
-            step = 0;
+            test_step = 0;
             for i in range(TEST_SAMPLE_COUNT):
 
                 done = False
                 while not done:
                     # env.render()
-                    step += 1
+                    test_step += 1
                     action = agent.action(state)  # direct action for test
                     state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
                 total_test += 1
-                agent.update_test_steps_to_success(step)
+                agent.update_test_steps_to_success(test_step)
                 test_steps_hook(env, agent, total_test)
-                step = 0;
+                test_step = 0;
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
             with open('NIS13DQN.txt', 'a+') as f:
