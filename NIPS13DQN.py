@@ -155,10 +155,10 @@ class DQN():
     #  print("update average q")
 
     def update_steps_to_success(self, steps):
-        self.steps_to_success = steps;
+        self.steps_to_success = steps
 
     def update_test_steps_to_success(self, steps):
-        self.test_steps_to_success = steps;
+        self.test_steps_to_success = steps
 
     def action(self, state):  # 输出动作
         return np.argmax(self.Q_value.eval(feed_dict={
@@ -191,16 +191,16 @@ def main():
     env_test = gym.make(ENV_TEST_NAME)
     agent = DQN(env)
 
-    test_count = 0
+    test_count = 0  # ??
 
     q_hook = PlotHook('Average Q Value', plot_index=4, ylabel='Average Action Value (Q)')
     loss_hook = PlotHook('Average Loss', plot_index=3, ylabel='Average Loss per Episode')
     steps_hook = PlotHook('Steps to success', plot_index=5, ylabel='Steps to success per Episode')
-    test_steps_hook = PlotHook('Steps to success', plot_index=6, ylabel='Steps to success per Episode')
+    test_steps_hook = PlotHook('Steps to success(test)', plot_index=6, ylabel='Steps to success per Episode(test)')
     step_hooks = [q_hook, steps_hook]
 
     total_steps = 0
-    total_test = 0
+    total_test = 0  # total test number: to render the "steps to success in test
     # Training...
     for episode in range(EPISODE):
         # initialize task
@@ -228,12 +228,13 @@ def main():
 
         # 每1000次测试一下
         if total_steps % 1000 == 0:
+            print("start test")
             # Testing...
             # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
             test_count += 1
             total_reward = 0
-            test_step = 0;
+            test_step = 0
             for i in range(TEST_SAMPLE_COUNT):
 
                 done = False
@@ -247,7 +248,7 @@ def main():
                 total_test += 1
                 agent.update_test_steps_to_success(test_step)
                 test_steps_hook(env, agent, total_test)
-                test_step = 0;
+                test_step = 0
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
             with open('NIS13DQN.txt', 'a+') as f:
