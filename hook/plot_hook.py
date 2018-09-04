@@ -61,7 +61,19 @@ class PlotHook(StepHook):
                 d = {'Average Reward': 10 / self.episode_step}
                 self.plot(step, d)
                 self.episode_step = 0
-
+        elif self.plot_index == 4:
+            if step % 10 == 0:
+                stat = agent.get_statistics()
+                d = {stat[self.plot_index][0]: stat[self.plot_index][1]}
+                self.plot(step, d)
+        elif self.plot_index == 5:
+            stat = agent.get_statistics()
+            d = {stat[self.plot_index][0]: stat[self.plot_index][1]}
+            self.plot(step, d)
+        elif self.plot_index == 6:
+            stat = agent.get_statistics()
+            d = {stat[self.plot_index][0]: stat[self.plot_index][1]}
+            self.plot(step, d)
         else:
             if step % 10 == 0:
                 stat = agent.get_statistics()

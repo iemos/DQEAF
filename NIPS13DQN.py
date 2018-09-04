@@ -8,12 +8,15 @@ import gym_malware
 
 # Hyper Parameters for DQN
 from hook.plot_hook import PlotHook
+from hook.training_scores_hook import TrainingScoresHook
 
 GAMMA = 0.9  # discount factor for target Q
 INITIAL_EPSILON = 0.5  # starting value of epsilon
 FINAL_EPSILON = 0.01  # final value of epsilon
 REPLAY_SIZE = 10000  # experience replay buffer size
 BATCH_SIZE = 32  # size of minibatch
+AVERAGE_Q_DECAY = 0.9
+AVERAGE_LOSS_DECAY = 0.9
 
 
 class DQN():
@@ -26,6 +29,11 @@ class DQN():
         self.epsilon = INITIAL_EPSILON
         self.state_dim = env.observation_space.shape[0]
         self.action_dim = env.action_space.n
+
+        self.average_q = 0
+        self.average_loss = 0
+        self.steps_to_success = 10
+        self.test_steps_to_success = 10
 
         self.create_Q_network()
         self.create_training_method()
@@ -132,6 +140,7 @@ class DQN():
         Q_value = self.Q_value.eval(feed_dict={
             self.state_input: [state]
         })[0]
+        self.MAX_Q = np.max(Q_value)
         if random.random() <= self.epsilon:
             return random.randint(0, self.action_dim - 1)
         else:
@@ -139,10 +148,33 @@ class DQN():
 
         self.epsilon -= (INITIAL_EPSILON - FINAL_EPSILON) / 10000
 
+    def update_average_q(self):
+        self.average_q *= AVERAGE_Q_DECAY
+        self.average_q += (1 - AVERAGE_Q_DECAY) * self.MAX_Q
+
+    #  print("update average q")
+
+    def update_steps_to_success(self, steps):
+        self.steps_to_success = steps;
+
+    def update_test_steps_to_success(self, steps):
+        self.test_steps_to_success = steps;
+
     def action(self, state):  # 输出动作
         return np.argmax(self.Q_value.eval(feed_dict={
             self.state_input: [state]
         })[0])
+
+    def get_statistics(self):
+        return [
+            (),
+            (),
+            (),
+            (),
+            ('average_q', self.average_q),
+            ('steps to success', self.steps_to_success),
+            ('steps to success(test)', self.test_steps_to_success),
+        ]
 
 
 # Hyper Parameters
@@ -161,10 +193,11 @@ def main():
 
     test_count = 0
 
-    # q_hook = PlotHook('Average Q Value', ylabel='Average Action Value (Q)')
-    # loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
-    reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
-    step_hooks = [reward_hook]
+    q_hook = PlotHook('Average Q Value', plot_index=4, ylabel='Average Action Value (Q)')
+    loss_hook = PlotHook('Average Loss', plot_index=3, ylabel='Average Loss per Episode')
+    steps_hook = PlotHook('Steps to success', plot_index=5, ylabel='Steps to success per Episode')
+    test_steps_hook = PlotHook('Steps to success', plot_index=6, ylabel='Steps to success per Episode')
+    step_hooks = [q_hook, steps_hook]
 
     total_steps = 0
     # Training...
@@ -176,15 +209,17 @@ def main():
             total_steps += 1
             # e-greedy action for train
             action = agent.egreedy_action(state)
+            agent.update_average_q()
+            agent.update_steps_to_success(step)
             next_state, reward, done, _ = env.step(action)
             agent.perceive(state, action, reward, next_state, done)
             state = next_state
 
             # hook
-            for hook in step_hooks:
-                hook(env, agent, episode)
+            q_hook(env, agent, total_steps)
 
             if done:
+                steps_hook(env, agent, episode)
                 break
 
         if total_steps > EPISODE:
@@ -197,16 +232,20 @@ def main():
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
             test_count += 1
             total_reward = 0
+            step = 0;
             for i in range(TEST_SAMPLE_COUNT):
-                state = env_test.reset()
+
                 done = False
                 while not done:
                     # env.render()
+                    step += 1
                     action = agent.action(state)  # direct action for test
                     state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
-
+                # agent.update_test_steps_to_success(step)
+                # test_steps_hook(env, agent, i)
+                step = 0;
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
             with open('NIS13DQN.txt', 'a+') as f:
