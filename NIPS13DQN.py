@@ -223,7 +223,7 @@ def main():
 
             if done:
                 print("episode: %d  total_steps: %d" % (episode, total_steps))
-            steps_hook(env, agent, episode)
+                steps_hook(env, agent, episode)
             break
 
         if total_steps > EPISODE:
