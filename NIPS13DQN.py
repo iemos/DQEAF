@@ -251,7 +251,7 @@ def main():
             steps_offset -= 1000
             logger.info('start testing')
 
-            for j in range(TEST_SAMPLE_COUNT):
+            for i in range(TEST_SAMPLE_COUNT):
                 logger.info('start testing episode: %s', test_count)
                 test_state = env_test.reset()
                 done = False
@@ -263,7 +263,10 @@ def main():
                     logger.info('current steps: %s, current reward: %s', test_step, reward)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
-                logger.info('episode %s is done in %s steps', test_count, test_step)
+                if reward == 10:
+                    logger.info('episode %s fail with %s steps', test_count, test_step)
+                else:
+                    logger.info('episode %s is done in %s steps', test_count, test_step)
                 agent.update_test_steps_to_success(test_step)
                 test_steps_hook(env, agent, test_count)
 
