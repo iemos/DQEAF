@@ -207,11 +207,9 @@ def main():
     total_test = 0  # total test number: to render the "steps to success in test
     steps_offset = 0
     # Training...
-    logger.info('start training')
     for episode in range(EPISODE):
         # initialize task
         state = env.reset()
-        logger.info('start training episode: %s', episode)
         # Train
         for step in range(STEP):
             total_steps += 1
@@ -228,12 +226,10 @@ def main():
             q_hook(env, agent, total_steps)
 
             if done:
-                logger.info('episode %s is done in %s steps', episode, step)
                 steps_hook(env, agent, episode)
                 break
 
             if step == STEP - 1:
-                logger.info('episode %s do not success', episode)
                 steps_hook(env, agent, episode)
                 break
 
@@ -249,10 +245,8 @@ def main():
             total_reward = 0
             test_step = 0
             steps_offset -= 1000
-            logger.info('start testing')
 
             for i in range(TEST_SAMPLE_COUNT):
-                logger.info('start testing episode: %s', test_count)
                 test_state = env_test.reset()
                 done = False
                 while not done:
@@ -260,13 +254,8 @@ def main():
                     test_step += 1
                     action = agent.action(test_state)  # direct action for test
                     test_state, reward, done, _ = env_test.step(action)
-                    logger.info('current steps: %s, current reward: %s', test_step, reward)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
-                if reward == 10:
-                    logger.info('episode %s fail with %s steps', test_count, test_step)
-                else:
-                    logger.info('episode %s is done in %s steps', test_count, test_step)
                 agent.update_test_steps_to_success(test_step)
                 test_steps_hook(env, agent, test_count)
 
