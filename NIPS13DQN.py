@@ -242,23 +242,25 @@ def main():
 
         # 每1000次测试一下
         if steps_offset > 1000:
-            steps_offset -= 1000
-            logger.info('start testing')
             # Testing...
             # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
             test_count += 1
             total_reward = 0
             test_step = 0
-            for i in range(TEST_SAMPLE_COUNT):
+            steps_offset -= 1000
+            logger.info('start testing')
+
+            for j in range(TEST_SAMPLE_COUNT):
                 logger.info('start testing episode: %s', test_count)
+                test_state = env_test.reset()
                 done = False
                 while not done:
                     # env.render()
                     test_step += 1
-                    action = agent.action(state)  # direct action for test
-                    state, reward, done, _ = env_test.step(action)
-                    logger.info('current steps: %s',test_step)
+                    action = agent.action(test_state)  # direct action for test
+                    test_state, reward, done, _ = env_test.step(action)
+                    logger.info('current steps: %s, current reward: %s', test_step, reward)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
                 logger.info('episode %s is done in %s steps', test_count, test_step)
