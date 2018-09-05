@@ -113,12 +113,15 @@ class DQN():
         # Step 2: calculate y
         y_batch = []
         Q_value_batch = self.Q_value.eval(feed_dict={self.state_input: next_state_batch})
+        loss_sum = 0
         for i in range(0, BATCH_SIZE):
             done = minibatch[i][4]
             if done:
                 y_batch.append(reward_batch[i])
             else:
                 y_batch.append(reward_batch[i] + GAMMA * np.max(Q_value_batch[i]))
+            loss_sum += np.square(y_batch[i] - np.max(Q_value_batch[i]))
+        self.update_average_loss(loss_sum)
 
         self.optimizer.run(feed_dict={
             self.y_input: y_batch,
@@ -153,6 +156,10 @@ class DQN():
         self.average_q *= AVERAGE_Q_DECAY
         self.average_q += (1 - AVERAGE_Q_DECAY) * self.MAX_Q
 
+    def update_average_loss(self, loss_sum):
+        self.average_loss *= AVERAGE_LOSS_DECAY
+        self.average_loss += (1 - AVERAGE_LOSS_DECAY) * (loss_sum/BATCH_SIZE)
+
     #  print("update average q")
 
     def update_steps_to_success(self, steps):
@@ -175,6 +182,7 @@ class DQN():
             ('average_q', self.average_q),
             ('steps to success', self.steps_to_success),
             ('steps to success(test)', self.test_steps_to_success),
+            ('average_loss', self.average_loss),
         ]
 
 
@@ -198,9 +206,9 @@ def main():
     test_count = 0  # ??
 
     q_hook = PlotHook('Average Q Value', plot_index=4, ylabel='Average Action Value (Q)')
-    loss_hook = PlotHook('Average Loss', plot_index=3, ylabel='Average Loss per Episode')
     steps_hook = PlotHook('Steps to success', plot_index=5, ylabel='Steps to success per Episode')
     test_steps_hook = PlotHook('Steps to success(test)', plot_index=6, ylabel='Steps to success per Episode(test)')
+    loss_hook = PlotHook('Average Loss', plot_index=7, ylabel='Average Loss per Episode')
     step_hooks = [q_hook, steps_hook]
 
     total_steps = 0
@@ -224,6 +232,7 @@ def main():
 
             # hook
             q_hook(env, agent, total_steps)
+            loss_hook(env, agent, total_steps)
 
             if done:
                 steps_hook(env, agent, episode)
