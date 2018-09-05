@@ -5,6 +5,7 @@ import gym
 import numpy as np
 import tensorflow as tf
 import gym_malware
+import logging
 
 # Hyper Parameters for DQN
 from hook.plot_hook import PlotHook
@@ -186,6 +187,9 @@ TEST_SAMPLE_COUNT = 200
 
 
 def main():
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
     # initialize OpenAI Gym env and dqn agent
     env = gym.make(ENV_NAME)
     env_test = gym.make(ENV_TEST_NAME)
@@ -203,9 +207,11 @@ def main():
     total_test = 0  # total test number: to render the "steps to success in test
     steps_offset = 0
     # Training...
+    logger.info('start training')
     for episode in range(EPISODE):
         # initialize task
         state = env.reset()
+        logger.info('start training episode: %s', episode)
         # Train
         for step in range(STEP):
             total_steps += 1
@@ -222,7 +228,12 @@ def main():
             q_hook(env, agent, total_steps)
 
             if done:
-                print("episode: %d  total_steps: %d" % (episode, total_steps))
+                logger.info('episode %s is done in %s steps', episode, step)
+                steps_hook(env, agent, episode)
+                break
+
+            if step == STEP - 1:
+                logger.info('episode %s do not success', episode)
                 steps_hook(env, agent, episode)
                 break
 
@@ -232,7 +243,7 @@ def main():
         # 每1000次测试一下
         if steps_offset > 1000:
             steps_offset -= 1000
-            print("start test")
+            logger.info('start testing')
             # Testing...
             # ENV_TEST_NAME与ENV_NAME其实是一个env，区别在于读取samples的方法
             # 训练的时候是从1846-200=1646个样本中随机选取；测试的时候是从200个样本逐个读取
@@ -240,7 +251,7 @@ def main():
             total_reward = 0
             test_step = 0
             for i in range(TEST_SAMPLE_COUNT):
-
+                logger.info('start testing episode: %s', test_count)
                 done = False
                 while not done:
                     # env.render()
@@ -249,9 +260,15 @@ def main():
                     state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
-                total_test += 1
+                logger.info('episode %s is done in %s steps', test_count, test_step)
                 agent.update_test_steps_to_success(test_step)
-                test_steps_hook(env, agent, total_test)
+                test_steps_hook(env, agent, test_count)
+
+                with open('NIS13DQN.txt', 'a+') as f:
+                    f.write('episode:{} steps:{}\n'.format(test_count, test_step))
+                    print('episode:{} steps:{}\n'.format(test_count, test_step))
+
+                test_count += 1
                 test_step = 0
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
 
