@@ -258,15 +258,12 @@ def main():
                     test_step += 1
                     action = agent.action(state)  # direct action for test
                     state, reward, done, _ = env_test.step(action)
+                    logger.info('current steps: %s',test_step)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
                 logger.info('episode %s is done in %s steps', test_count, test_step)
                 agent.update_test_steps_to_success(test_step)
                 test_steps_hook(env, agent, test_count)
-
-                with open('NIS13DQN.txt', 'a+') as f:
-                    f.write('episode:{} steps:{}\n'.format(test_count, test_step))
-                    print('episode:{} steps:{}\n'.format(test_count, test_step))
 
                 test_count += 1
                 test_step = 0
