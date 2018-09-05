@@ -253,7 +253,7 @@ def main():
             for i in range(TEST_SAMPLE_COUNT):
                 logger.info('start testing episode: %s', test_count)
                 done = False
-                while not done:
+                while done:
                     # env.render()
                     test_step += 1
                     action = agent.action(state)  # direct action for test
