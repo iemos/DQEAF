@@ -202,6 +202,7 @@ def main():
 
     test_count = 0
     total_steps = 0  # total train steps
+    total_test = 0
     steps_offset = 0  # offset from 1000: do test every 1000 steps
 
     # hook
@@ -244,7 +245,6 @@ def main():
             test_count += 1
             steps_offset -= 1000
             total_reward = 0
-            total_test = 0
             for i in range(TEST_SAMPLE_COUNT):
                 test_state = env_test.reset()
                 total_test += 1
