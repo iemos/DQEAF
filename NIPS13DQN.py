@@ -247,8 +247,8 @@ def main():
             total_test = 0
             for i in range(TEST_SAMPLE_COUNT):
                 test_state = env_test.reset()
+                total_test += 1
                 for step in range(STEP):
-                    total_test += 1
                     action = agent.action(test_state)  # direct action for test
                     test_state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
