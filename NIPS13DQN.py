@@ -188,7 +188,7 @@ ENV_TEST_NAME = 'malware-test-v0'
 EPISODE = 10000  # Episode limitation
 MAX_STEPS = 30000  # Total steps limitation
 STEP = 60  # Step limitation in an episode
-TEST_SAMPLE_COUNT = 200
+TEST_SAMPLE_COUNT = 20
 
 
 def main():
@@ -244,17 +244,18 @@ def main():
             test_count += 1
             steps_offset -= 1000
             total_reward = 0
-
+            total_test = 0
             for i in range(TEST_SAMPLE_COUNT):
                 test_state = env_test.reset()
                 for step in range(STEP):
+                    total_test += 1
                     action = agent.action(test_state)  # direct action for test
                     test_state, reward, done, _ = env_test.step(action)
                     # 规避成功reward是10，其他情况都是0，所以最后除以10可以统计，200个样本中规避成功了多少个文件
                     total_reward += reward
                     if done:
                         agent.update_test_steps_to_success(step)
-                        test_steps_hook(env, agent, test_count)
+                        test_steps_hook(env, agent, total_test)
                         break
             test_count += 1
             ave_reward = total_reward / (TEST_SAMPLE_COUNT * 10)
