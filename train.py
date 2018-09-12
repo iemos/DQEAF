@@ -4,7 +4,6 @@ import argparse
 import linecache
 import os
 import sys
-import datetime
 
 import chainer
 import chainer.functions as F
@@ -50,7 +49,7 @@ def main():
     parser.add_argument('--start-epsilon', type=float, default=1.0)
     parser.add_argument('--end-epsilon', type=float, default=0.1)
     parser.add_argument('--load', type=str, default=None)
-    parser.add_argument('--steps', type=int, default=5000)
+    parser.add_argument('--steps', type=int, default=30000)
     parser.add_argument('--prioritized-replay', action='store_false')
     parser.add_argument('--episodic-replay', action='store_true')
     parser.add_argument('--replay-start-size', type=int, default=1000)
@@ -188,18 +187,18 @@ def main():
         loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
         reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
         scores_hook = TrainingScoresHook('scores.txt', args.outdir)
-        training_start_time = datetime.datetime.now()
-        chainerrl.experiments.train_agent(
+
+        chainerrl.experiments.train_agent_with_evaluation(
             agent, env,
             steps=args.steps,  # Train the graduation_agent for this many rounds steps
             max_episode_len=env.maxturns,  # Maximum length of each episodes
+            eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
+            eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
             step_hooks=[q_hook, loss_hook, scores_hook, reward_hook],
             successful_score=7,
+            eval_env=test_env
         )
-        training_end_time = datetime.datetime.now()
-        with open("train_time.txt", 'a+') as f:
-            f.write("start_time->{}   end_time->{}\n".format(training_start_time,training_end_time))
 
         # 保证训练一轮就成功的情况下能成功打印scores.txt文件
         scores_hook(None, None, 1000)
