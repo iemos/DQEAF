@@ -187,14 +187,15 @@ def main():
         q_hook = PlotHook('Average Q Value', ylabel='Average Action Value (Q)')
         loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
         reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
-        scores_hook = TrainingScoresHook('scores.txt', args.outdir)
+        # scores_hook = TrainingScoresHook('scores.txt', args.outdir)
+
         training_start_time = datetime.datetime.now()
         chainerrl.experiments.train_agent(
             agent, env,
             steps=args.steps,  # Train the graduation_agent for this many rounds steps
             max_episode_len=env.maxturns,  # Maximum length of each episodes
             outdir=args.outdir,  # Save everything to 'result' directory
-            step_hooks=[q_hook, loss_hook, scores_hook, reward_hook],
+            step_hooks=[q_hook, loss_hook, reward_hook],
             successful_score=7,
         )
         training_end_time = datetime.datetime.now()
@@ -202,7 +203,7 @@ def main():
             f.write("start_time->{}   end_time->{}\n".format(training_start_time,training_end_time))
 
         # 保证训练一轮就成功的情况下能成功打印scores.txt文件
-        scores_hook(None, None, 1000)
+        # scores_hook(None, None, 1000)
 
         return env, agent
 
