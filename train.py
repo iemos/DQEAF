@@ -292,8 +292,8 @@ def main():
                 args, args.outdir, argv=sys.argv)
             print('Output files are saved in {}'.format(args.outdir))
 
-            # env, agent = train_agent(args)
-            env, agent = train_keras_dqn_model(args)
+            env, agent = train_agent(args)
+            # env, agent = train_keras_dqn_model(args)
 
             with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
                 f.write(
