@@ -54,14 +54,25 @@ class PlotHook(StepHook):
         else:
             self.vis.line(Y=Y, X=X, win=self.win, update='append', opts=self.opts)
 
-    def __call__(self, env, agent, step):
-        if self.plot_index == 2:
-            self.episode_step += 1
-            if env.current_reward == 10:
-                d = {'Average Reward': 10 / self.episode_step}
+    def __call__(self, env, agent, step, value=0):
+        if self.plot_index == 0 or self.plot_index == 1:
+            if step % 10 == 0:
+                stat = agent.get_statistics()
+                d = {stat[self.plot_index][0]: stat[self.plot_index][1]}
                 self.plot(step, d)
-                self.episode_step = 0
-
+        elif self.plot_index == 2 or self.plot_index == 3:
+            stat = agent.get_statistics()
+            d = {stat[self.plot_index - 2][0]: stat[self.plot_index - 2][1]}
+            self.plot(step, d)
+        elif self.plot_index == 4:
+            d = {'Steps to finish (train)': value}
+            self.plot(step, d)
+        elif self.plot_index == 5:
+            d = {'Steps to finish (test)': value}
+            self.plot(step, d)
+        elif self.plot_index == 6:
+            d = {'success rate': value}
+            self.plot(step, d)
         else:
             if step % 10 == 0:
                 stat = agent.get_statistics()

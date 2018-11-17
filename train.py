@@ -20,6 +20,7 @@ from gym_malware.envs.controls import manipulate2 as manipulate
 from gym_malware.envs.utils import pefeatures
 from hook.plot_hook import PlotHook
 from hook.training_scores_hook import TrainingScoresHook
+from my_chainer import my_train_agent
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
@@ -169,25 +170,35 @@ def main():
 
         agent = create_ddqn_agent(env, args)
 
-        q_hook = PlotHook('Average Q Value', ylabel='Average Action Value (Q)')
-        loss_hook = PlotHook('Average Loss', plot_index=1, ylabel='Average Loss per Episode')
-        reward_hook = PlotHook('Average Reward', plot_index=2, ylabel='Reward Value per Episode')
-        scores_hook = TrainingScoresHook('scores.txt', args.outdir)
+        step_q_hook = PlotHook('Average Q Value (Step)', plot_index=0, xlabel='train step',
+                               ylabel='Average Q Value (Step)')
+        step_loss_hook = PlotHook('Average Loss (Step)', plot_index=1, xlabel='train step',
+                                  ylabel='Average Loss (Step)')
+        episode_q_hook = PlotHook('Average Q Value (Episode)', plot_index=2, xlabel='train episode',
+                                  ylabel='Average Q Value (Episode)')
+        episode_loss_hook = PlotHook('Average Loss (Episode)', plot_index=3, xlabel='train episode',
+                                     ylabel='Average Loss (Episode)')
+        episode_finish_hook = PlotHook('Steps to finish (train)', plot_index=4, xlabel='train episode',
+                                       ylabel='Steps to finish (train)')
+        test_finish_hook = PlotHook('Steps to finish (test)', plot_index=5, xlabel='test episode',
+                                    ylabel='Steps to finish (test)')
+        test_scores_hook = PlotHook('success rate', plot_index=6, xlabel='test epoch', ylabel='success rate')
 
-        chainerrl.experiments.train_agent_with_evaluation(
+        my_train_agent.train_agent_with_evaluation(
             agent, env,
             steps=args.steps,  # Train the graduation_agent for this many rounds steps
             max_episode_len=env.maxturns,  # Maximum length of each episodes
             eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
             eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
-            step_hooks=[q_hook, loss_hook, scores_hook, reward_hook],
+            episode_hooks=[episode_q_hook, episode_loss_hook, episode_finish_hook],
+            test_hooks=[test_scores_hook, test_finish_hook],
             successful_score=7,
             eval_env=test_env
         )
 
         # 保证训练一轮就成功的情况下能成功打印scores.txt文件
-        scores_hook(None, None, 1000)
+        # scores_hook(None, None, 1000)
 
         return env, agent
 
@@ -216,6 +227,7 @@ def main():
             print('Output files are saved in {}'.format(args.outdir))
 
             env, agent = train_agent(args)
+            print(env.history);
 
             with open(os.path.join(args.outdir, 'scores.txt'), 'a') as f:
                 f.write(
