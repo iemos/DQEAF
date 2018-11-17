@@ -145,6 +145,7 @@ class Evaluator(object):
         self.prev_eval_t = (self.step_offset -
                             self.step_offset % self.eval_interval)
         self.logger = logger or logging.getLogger(__name__)
+        self.test_hooks = test_hooks
 
         # Write a header line first
         with open(os.path.join(self.outdir, 'scores.txt'), 'w') as f:
