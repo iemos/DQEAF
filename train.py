@@ -24,6 +24,7 @@ from my_chainer import my_train_agent
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
+log_path = "email_email.txt"
 
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python train.py
@@ -226,6 +227,9 @@ def main():
             args.outdir = experiments.prepare_output_dir(
                 args, args.outdir, argv=sys.argv)
             print('Output files are saved in {}'.format(args.outdir))
+
+            with open(log_path,'a+') as f:
+                f.write("Output files are saved in {}\n".format(args.outdir))
 
             env, agent = train_agent(args)
             print(env.history);
