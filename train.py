@@ -191,6 +191,7 @@ def main():
             eval_interval=args.eval_interval,  # Evaluate the graduation_agent after every 1000 steps
             eval_n_runs=args.eval_n_runs,  # 100 episodes are sampled for each evaluation
             outdir=args.outdir,  # Save everything to 'result' directory
+            step_hooks=[step_q_hook, step_loss_hook],
             episode_hooks=[episode_q_hook, episode_loss_hook, episode_finish_hook],
             test_hooks=[test_scores_hook, test_finish_hook],
             successful_score=7,
