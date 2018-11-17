@@ -24,7 +24,7 @@ from my_chainer import my_train_agent
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
-log_path = "worm-worm.txt"
+log_path = "trojan-trojan.txt"
 
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python train.py
