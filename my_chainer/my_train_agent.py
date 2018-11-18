@@ -15,6 +15,7 @@ from chainerrl.misc.ask_yes_no import ask_yes_no
 from chainerrl.misc.makedirs import makedirs
 
 from my_chainer import my_evaluator
+from my_chainer import my_evaluator_multiprocess
 
 
 def save_agent_replay_buffer(agent, t, outdir, suffix='', logger=None):
@@ -133,7 +134,7 @@ def train_agent_with_evaluation(
     if eval_max_episode_len is None:
         eval_max_episode_len = max_episode_len
 
-    evaluator = my_evaluator.Evaluator(agent=agent,
+    evaluator = my_evaluator_multiprocess.Evaluator(agent=agent,
                                        n_runs=eval_n_runs,
                                        eval_interval=eval_interval, outdir=outdir,
                                        max_episode_len=eval_max_episode_len,
