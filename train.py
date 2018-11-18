@@ -24,7 +24,8 @@ from my_chainer import my_train_agent
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
-log_path = "worm-worm.txt"
+log_path = "rootkit-rootkit.txt"
+
 
 # 用于快速调用chainerrl的训练方法，参数如下：
 # python train.py
@@ -171,19 +172,22 @@ def main():
 
         agent = create_ddqn_agent(env, args)
 
-        step_q_hook = PlotHook('Average Q Value (Step)', plot_index=0, xlabel='train step',
-                               ylabel='Average Q Value (Step)')
-        step_loss_hook = PlotHook('Average Loss (Step)', plot_index=1, xlabel='train step',
-                                  ylabel='Average Loss (Step)')
-        episode_q_hook = PlotHook('Average Q Value (Episode)', plot_index=2, xlabel='train episode',
-                                  ylabel='Average Q Value (Episode)')
-        episode_loss_hook = PlotHook('Average Loss (Episode)', plot_index=3, xlabel='train episode',
-                                     ylabel='Average Loss (Episode)')
-        episode_finish_hook = PlotHook('Steps to finish (train)', plot_index=4, xlabel='train episode',
-                                       ylabel='Steps to finish (train)')
-        test_finish_hook = PlotHook('Steps to finish (test)', plot_index=5, xlabel='test episode',
-                                    ylabel='Steps to finish (test)')
-        test_scores_hook = PlotHook('success rate', plot_index=6, xlabel='test epoch', ylabel='success rate')
+        type = "rootkit"
+
+        step_q_hook = PlotHook('Average Q Value (Step)'+type, plot_index=0, xlabel='train step',
+                               ylabel='Average Q Value (Step)'+type)
+        step_loss_hook = PlotHook('Average Loss (Step)'+type, plot_index=1, xlabel='train step',
+                                  ylabel='Average Loss (Step)'+type)
+        episode_q_hook = PlotHook('Average Q Value (Episode)'+type, plot_index=2, xlabel='train episode',
+                                  ylabel='Average Q Value (Episode)'+type)
+        episode_loss_hook = PlotHook('Average Loss (Episode)'+type, plot_index=3, xlabel='train episode',
+                                     ylabel='Average Loss (Episode)'+type)
+        episode_finish_hook = PlotHook('Steps to finish (train)+type', plot_index=4, xlabel='train episode',
+                                       ylabel='Steps to finish (train)'+type)
+        test_finish_hook = PlotHook('Steps to finish (test)'+type, plot_index=5, xlabel='test episode',
+                                    ylabel='Steps to finish (test)'+type)
+        test_scores_hook = PlotHook('success rate'+type, plot_index=6, xlabel='test epoch',
+                                    ylabel='success rate'+type)
 
         my_train_agent.train_agent_with_evaluation(
             agent, env,
@@ -228,7 +232,7 @@ def main():
                 args, args.outdir, argv=sys.argv)
             print('Output files are saved in {}'.format(args.outdir))
 
-            with open(log_path,'a+') as f:
+            with open(log_path, 'a+') as f:
                 f.write("Output files are saved in {}\n".format(args.outdir))
 
             env, agent = train_agent(args)
@@ -305,6 +309,7 @@ def main():
         blackbox_result = "black: {}({}/{})".format(len(success) / total, len(success), total)
         with open(scores_file, 'a') as f:
             f.write("{}->{}\n".format(mm, blackbox_result))
+
 
 if __name__ == '__main__':
     main()
