@@ -134,7 +134,7 @@ def train_agent_with_evaluation(
     if eval_max_episode_len is None:
         eval_max_episode_len = max_episode_len
 
-    evaluator = my_evaluator_multiprocess.Evaluator(agent=agent,
+    evaluator = my_evaluator.Evaluator(agent=agent,
                                        n_runs=eval_n_runs,
                                        eval_interval=eval_interval, outdir=outdir,
                                        max_episode_len=eval_max_episode_len,
