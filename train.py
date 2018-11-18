@@ -24,7 +24,7 @@ from my_chainer import my_train_agent
 
 ACTION_LOOKUP = {i: act for i, act in enumerate(manipulate.ACTION_TABLE.keys())}
 
-log_path = "rootkit-rootkit.txt"
+log_path = "trojan-trojan.txt"
 
 
 # 用于快速调用chainerrl的训练方法，参数如下：
@@ -172,7 +172,7 @@ def main():
 
         agent = create_ddqn_agent(env, args)
 
-        type = "rootkit"
+        type = "trojan"
 
         step_q_hook = PlotHook('Average Q Value (Step)'+type, plot_index=0, xlabel='train step',
                                ylabel='Average Q Value (Step)'+type)
