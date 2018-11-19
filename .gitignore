@@ -10,3 +10,7 @@ gym_malware/envs/utils
 # 忽略的文件
 *.pyc
 nohup.out
+backdoor-backdoor.txt
+.idea/graduation3.iml
+.idea/misc.xml
+.idea/graduation3.iml
