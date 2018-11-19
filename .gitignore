@@ -1,8 +1,9 @@
 # 需要忽略的文件夹
 .idea
 evaded
+models
+!models/*-success
 
 # 忽略的文件
 *.pyc
 nohup.out
-*.txt
