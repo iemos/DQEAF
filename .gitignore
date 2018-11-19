@@ -1,7 +1,7 @@
 # 需要忽略的文件夹
 .idea
 evaded
-models
+models/*
 !models/*-success
 gym_malware/envs/utils
 !gym_malware/envs/utils/*.py
