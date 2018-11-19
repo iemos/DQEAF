@@ -19,7 +19,7 @@ def evaluate(action_function):
     misclassified = []
     for sha256 in sha256_holdout:
         success_dict = defaultdict(list)
-        bytez = interface.fetch_file(sha256)
+        bytez = interface.fetch_file(sha256, True)
         label = interface.get_label_local(bytez)
         if label == 0.0:
             misclassified.append(sha256)

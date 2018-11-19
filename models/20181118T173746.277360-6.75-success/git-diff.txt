@@ -1,0 +1,12 @@
+diff --git a/successful_actions2.txt b/successful_actions2.txt
+deleted file mode 100644
+index 4b2185b..0000000
+--- a/successful_actions2.txt
++++ /dev/null
+@@ -1,6 +0,0 @@
+-Train episode 1: Backdoor.Win32.PcClient.ie fail
+-['ARBE', 'section_add_org', 'RS', 'ARBE', 'section_add_org', 'section_add_org', 'section_add_org', 'section_add_org', 'RS', 'section_add_org', 'RS', 'imports_append_org', 'ARBE', 'section_add_org', 'imports_append_org', 'ARBE', 'ARBE', 'ARBE', 'imports_append_org', 'RS', 'imports_append_org', 'section_add_org', 'section_add_org', 'imports_append_org', 'ARBE', 'RS', 'RS', 'RS', 'RS', 'ARBE', 'RS', 'ARBE', 'section_add_org', 'ARBE', 'section_add_org', 'RS', 'imports_append_org', 'section_add_org', 'section_add_org', 'ARBE', 'imports_append_org', 'section_add_org', 'ARBE', 'RS', 'section_add_org', 'RS', 'section_add_org', 'section_add_org', 'imports_append_org', 'section_add_org', 'ARBE', 'RS', 'RS', 'RS', 'section_add_org', 'ARBE', 'section_add_org', 'imports_append_org', 'ARBE', 'section_add_org']
+-
+-Train episode 2: Backdoor.Win32.PcClient.llx succeed
+-['section_add_org']
+-

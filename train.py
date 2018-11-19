@@ -284,7 +284,7 @@ def main():
             total = len(sha256_holdout) - len(misclassified)  # don't count misclassified towards success
 
             with open(scores_file, 'a') as f:
-                random_result = "random: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
+                random_result = "\nrandom: {}({}/{})\n".format(len(random_success) / total, len(random_success), total)
                 f.write(random_result)
                 f.write("==========================\n")
 

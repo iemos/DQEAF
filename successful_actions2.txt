@@ -1,6 +1,0 @@
-Train episode 1: Backdoor.Win32.PcClient.ie fail
-['ARBE', 'section_add_org', 'RS', 'ARBE', 'section_add_org', 'section_add_org', 'section_add_org', 'section_add_org', 'RS', 'section_add_org', 'RS', 'imports_append_org', 'ARBE', 'section_add_org', 'imports_append_org', 'ARBE', 'ARBE', 'ARBE', 'imports_append_org', 'RS', 'imports_append_org', 'section_add_org', 'section_add_org', 'imports_append_org', 'ARBE', 'RS', 'RS', 'RS', 'RS', 'ARBE', 'RS', 'ARBE', 'section_add_org', 'ARBE', 'section_add_org', 'RS', 'imports_append_org', 'section_add_org', 'section_add_org', 'ARBE', 'imports_append_org', 'section_add_org', 'ARBE', 'RS', 'section_add_org', 'RS', 'section_add_org', 'section_add_org', 'imports_append_org', 'section_add_org', 'ARBE', 'RS', 'RS', 'RS', 'section_add_org', 'ARBE', 'section_add_org', 'imports_append_org', 'ARBE', 'section_add_org']
-
-Train episode 2: Backdoor.Win32.PcClient.llx succeed
-['section_add_org']
-

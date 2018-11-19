@@ -1,0 +1,82 @@
+On branch Final-Version
+Your branch is up-to-date with 'origin/Final-Version'.
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	deleted:    successful_actions2.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	gym_malware/envs/utils/email-test-80/
+	gym_malware/envs/utils/email.zip
+	gym_malware/envs/utils/email/
+	gym_malware/envs/utils/rootkit-test-80/
+	gym_malware/envs/utils/rootkit/
+	gym_malware/envs/utils/samples-test-80/
+	gym_malware/envs/utils/trojan-test-80/
+	gym_malware/envs/utils/trojan/
+	gym_malware/envs/utils/worm-test-80/
+	gym_malware/envs/utils/worm.zip
+	gym_malware/envs/utils/worm/
+	models/20181115T131844.100756/
+	models/20181115T132839.390416/
+	models/20181115T132858.858914/
+	models/20181115T132913.753547/
+	models/20181115T133148.263204/
+	models/20181115T133253.843377/
+	models/20181115T133550.007460/
+	models/20181115T133805.403733/
+	models/20181115T134117.653598/
+	models/20181115T134350.940916/
+	models/20181115T135247.367371/
+	models/20181115T140255.423291/
+	models/20181115T224519.038443/
+	models/20181115T224709.695748/
+	models/20181115T224744.863093-4.875/
+	models/20181116T035318.554904-4.25/
+	models/20181116T095201.651730/
+	models/20181116T102945.223387/
+	models/20181116T103033.241553/
+	models/20181116T103104.407373/
+	models/20181116T161705.861750-0.0-success/
+	models/20181116T193738.012498/
+	models/20181117T131635.043322/
+	models/20181117T131705.927091-50.708333333333336-success/
+	models/20181117T132623.534123-0.0-success/
+	models/20181117T135305.632794-39.479166666666664-success/
+	models/20181117T151544.492074/
+	models/20181117T152957.804786/
+	models/20181117T153829.285514/
+	models/20181117T154441.151634-0.5/
+	models/20181117T211459.638343/
+	models/20181117T221056.428075/
+	models/20181117T221750.593307/
+	models/20181117T222052.392564/
+	models/20181117T224221.717396/
+	models/20181117T224333.977151/
+	models/20181117T224427.802745/
+	models/20181117T224523.722827/
+	models/20181117T224622.740891/
+	models/20181118T095117.363794/
+	models/20181118T095440.370043/
+	models/20181118T130658.963912/
+	models/20181118T131424.933786/
+	models/20181118T132221.360646/
+	models/20181118T153354.734737/
+	models/20181118T153504.948634/
+	models/20181118T160702.596868/
+	models/20181118T160741.998858/
+	models/20181118T162538.817341/
+	models/20181118T165634.706192/
+	models/20181118T165902.370908/
+	models/20181118T170028.370896/
+	models/20181118T170403.580731/
+	models/20181118T170543.307730/
+	models/20181118T170638.819361/
+	models/20181118T170754.551852/
+	models/20181118T170936.496787/
+	models/20181118T173014.420231/
+
+no changes added to commit (use "git add" and/or "git commit -a")
