@@ -3,6 +3,9 @@
 evaded
 models
 !models/*-success
+gym_malware/envs/utils
+!gym_malware/envs/utils/*.py
+!gym_malware/envs/utils/*.pkl
 
 # 忽略的文件
 *.pyc
