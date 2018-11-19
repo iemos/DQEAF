@@ -105,7 +105,8 @@ def main():
         #     n_hidden_layers=args.n_hidden_layers)
         q_func = QFunction(obs_size, n_actions)
         if args.gpu:
-            q_func.to_gpu(args.gpu)
+            # 使用第一个gpu
+            q_func.to_gpu(0)
 
         # Draw the computational graph and save it in the output directory.
         if not args.test and not args.gpu:
