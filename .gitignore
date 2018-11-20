@@ -11,6 +11,3 @@ gym_malware/envs/utils
 *.pyc
 nohup.out
 backdoor-backdoor.txt
-.idea/graduation3.iml
-.idea/misc.xml
-.idea/graduation3.iml
