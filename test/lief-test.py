@@ -6,8 +6,6 @@ from gym_malware.envs.utils import interface
 # Mac系统下使用0.8要报错，原因未知
 from gym_malware.envs.utils.extractPE import extractPE
 
-
-
 # byte = interface.fetch_file('Worm.Win32.AutoRun.sbf', test=True)
 # binary = lief.PE.parse(byte)
 # print(binary)
@@ -17,13 +15,20 @@ from gym_malware.envs.utils.extractPE import extractPE
 sha_list = interface.get_available_sha256()
 normal = []
 unnormal = []
+index = 1
 for sha256 in sha_list:
     bytez = interface.fetch_file(sha256)
+    print("========================{}========================".format(index))
+    print("========================{}========================".format(sha256))
     try:
         binary = lief.PE.parse(bytez)
+        print(binary)
         normal.append(sha256)
     except:
         unnormal.append(sha256)
         interface.delete_file(sha256)
+
+    index = index + 1
+
 
 print('normal:{}, unnormal:{}'.format(normal.__len__(), unnormal.__len__()))
